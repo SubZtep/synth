@@ -2,6 +2,7 @@ import React from "react"
 import useAudio from "../scripts/useAudio"
 import GainNode from "./nodes/GainNode"
 import OscillatorNode from "./nodes/OscillatorNode"
+import ConvolverNode from "./nodes/ConvolverNode"
 import BiquadFilterNode from "./nodes/BiquadFilterNode"
 
 export default function AudioNodeList() {
@@ -36,6 +37,14 @@ export default function AudioNodeList() {
                 key={nodeType.key}
                 mykey={nodeType.key}
                 biquadFilterNode={nodeType.node as BiquadFilterNode}
+              />
+            )
+          case "ConvolverNode":
+            return (
+              <ConvolverNode
+                key={nodeType.key}
+                mykey={nodeType.key}
+                convolverNode={nodeType.node as ConvolverNode}
               />
             )
           default:

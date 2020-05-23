@@ -28,10 +28,10 @@ export default function Menu() {
           <a href="#intro">Intro</a>
         </li>
         <li>
-          <a href="#components">Audio Nodes</a>
+          <a href="#nodes">Audio Nodes</a>
           <ul>
             <li>
-              <a href="#button">Audio Source</a>
+              Audio Source
               <ul>
                 <li>
                   <a href="#OscillatorNode" onClick={clickHandler} css={add}>
@@ -41,7 +41,7 @@ export default function Menu() {
               </ul>
             </li>
             <li>
-              <a href="#button">Effect Filters</a>
+              Effect Filters
               <ul>
                 <li>
                   <a href="#BiquadFilterNode" onClick={clickHandler} css={add}>
@@ -53,12 +53,17 @@ export default function Menu() {
                     Gain
                   </a>
                 </li>
+                <li>
+                  <a href="#ConvolverNode" onClick={clickHandler} css={add}>
+                    Convolver
+                  </a>
+                </li>
               </ul>
             </li>
           </ul>
         </li>
         <li>
-          <a href="#issues-contributing-etc">Issues, Contributing, etc.</a>
+          <a href="#outro">Outro</a>
         </li>
       </ul>
     </aside>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react"
-import { ctime } from "../../scripts/audio"
+import React from "react"
+import NodeOverview from "../elems/NodeOverview"
 import useAudio from "../../scripts/useAudio"
+import useGain from "../../scripts/useGain"
 
 type Props = {
   mykey: string
@@ -8,12 +9,8 @@ type Props = {
 }
 
 export default function GainNode({ mykey, gainNode }: Props) {
-  const [gain, setGain] = useState(1)
   const { delNodeType } = useAudio()
-
-  useEffect(() => {
-    gainNode.gain.setValueAtTime(gain, ctime)
-  }, [gainNode.gain, gain])
+  const gainForm = useGain(gainNode, -1, 1, 0.1)
 
   const close = () => {
     delNodeType(mykey)
@@ -22,32 +19,14 @@ export default function GainNode({ mykey, gainNode }: Props) {
     <section className="component" id="gain">
       <h3>Gain</h3>
       <div>
-        <blockquote>
-          <div className="title-bar-controls" css={{ float: "right" }}>
-            <button aria-label="Close" onClick={close}></button>
-          </div>
-          GainNode. Represents a periodic waveform, such as a sine wave.
-        </blockquote>
-        <p>Volume what what</p>
-        <div className="example">
-          <div className="field-row">
-            <label>
-              Gain:
-              <br />
-              {gain}
-            </label>
-            <div className="is-vertical">
-              <input
-                type="range"
-                min="-3.4"
-                max="3.4"
-                step="0.01"
-                value={gain}
-                onChange={event => setGain(event.currentTarget.valueAsNumber)}
-              />
-            </div>
-          </div>
-        </div>
+        <NodeOverview
+          onClick={close}
+          link="https://developer.mozilla.org/en-US/docs/Web/API/GainNode"
+        >
+          The GainNode interface represents a change in volume.
+        </NodeOverview>
+
+        <div className="example">{gainForm}</div>
       </div>
     </section>
   )

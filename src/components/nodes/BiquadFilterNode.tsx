@@ -1,6 +1,10 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import useAudio from "../../scripts/useAudio"
+import NodeOverview from "../elems/NodeOverview"
+import useType from "../../scripts/useType"
+import useFrequency from "../../scripts/useFrequency"
+import useGain from "../../scripts/useGain"
 
 type Props = {
   mykey: string
@@ -9,8 +13,9 @@ type Props = {
 
 export default function BiquadFilterNode({ mykey, biquadFilterNode }: Props) {
   const { delNodeType } = useAudio()
-
-  biquadFilterNode.type = "allpass"
+  const typeForm = useType(biquadFilterNode, ["lowshelf", "highshelf", "peaking"])
+  const frequencyForm = useFrequency(biquadFilterNode)
+  const gainForm = useGain(biquadFilterNode)
 
   const close = () => {
     delNodeType(mykey)
@@ -21,13 +26,19 @@ export default function BiquadFilterNode({ mykey, biquadFilterNode }: Props) {
       <h3>Biquad</h3>
 
       <div>
-        <blockquote>
-          <div className="title-bar-controls" css={{ float: "right" }}>
-            <button aria-label="Close" onClick={close}></button>
-          </div>
-          BiquadFilterNode. It is an <code>AudioNode</code> that can represent different kinds of
-          filters, tone control devices, and graphic equalizers.
-        </blockquote>
+        <NodeOverview
+          onClick={close}
+          link="https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode"
+        >
+          The <code>BiquadFilterNode</code> interface a simple low-order filter. It can represent
+          different kinds of filters, tone control devices, and graphic equalizers.
+        </NodeOverview>
+
+        <div className="example">
+          {typeForm}
+          {frequencyForm}
+          {gainForm}
+        </div>
       </div>
     </section>
   )
