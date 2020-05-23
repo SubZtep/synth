@@ -1,8 +1,13 @@
 import { useContext } from "react"
-import { audioContext } from "./audio"
+import { audioContext } from "../scripts/audio"
 import { RoutingContext } from "../App"
 
-export type AudioNodeType = "OscillatorNode" | "GainNode" | "BiquadFilterNode" | "ConvolverNode"
+export type AudioNodeType =
+  | "OscillatorNode"
+  | "GainNode"
+  | "BiquadFilterNode"
+  | "ConvolverNode"
+  | "AnalyserNode"
 
 export type NodeType = {
   nodeType: AudioNodeType
@@ -26,6 +31,8 @@ export default function useAudio() {
         return audioContext.createBiquadFilter()
       case "ConvolverNode":
         return audioContext.createConvolver()
+      case "AnalyserNode":
+        return audioContext.createAnalyser()
     }
   }
 

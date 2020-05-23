@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import useAudio from "../../scripts/useAudio"
+import useAudio from "../../hooks/useAudio"
 import NodeOverview from "../elems/NodeOverview"
-import useType from "../../scripts/useType"
-import useFrequency from "../../scripts/useFrequency"
-import useGain from "../../scripts/useGain"
+import useType from "../../hooks/useType"
+import useFrequency from "../../hooks/useFrequency"
+import useGain from "../../hooks/useGain"
 
 type Props = {
   mykey: string

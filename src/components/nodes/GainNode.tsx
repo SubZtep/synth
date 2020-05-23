@@ -1,7 +1,7 @@
 import React from "react"
 import NodeOverview from "../elems/NodeOverview"
-import useAudio from "../../scripts/useAudio"
-import useGain from "../../scripts/useGain"
+import useAudio from "../../hooks/useAudio"
+import useGain from "../../hooks/useGain"
 
 type Props = {
   mykey: string

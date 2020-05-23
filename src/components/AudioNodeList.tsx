@@ -1,9 +1,10 @@
 import React from "react"
-import useAudio from "../scripts/useAudio"
+import useAudio from "../hooks/useAudio"
 import GainNode from "./nodes/GainNode"
 import OscillatorNode from "./nodes/OscillatorNode"
 import ConvolverNode from "./nodes/ConvolverNode"
 import BiquadFilterNode from "./nodes/BiquadFilterNode"
+import AnalyserNode from "./nodes/AnalyserNode"
 
 export default function AudioNodeList() {
   const { nodeTypes } = useAudio()
@@ -45,6 +46,14 @@ export default function AudioNodeList() {
                 key={nodeType.key}
                 mykey={nodeType.key}
                 convolverNode={nodeType.node as ConvolverNode}
+              />
+            )
+          case "AnalyserNode":
+            return (
+              <AnalyserNode
+                key={nodeType.key}
+                mykey={nodeType.key}
+                analyserNode={nodeType.node as AnalyserNode}
               />
             )
           default:

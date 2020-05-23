@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { useState, useEffect } from "react"
-import useAudio from "../../scripts/useAudio"
+import useAudio from "../../hooks/useAudio"
 import NodeOverview from "../elems/NodeOverview"
-import useFrequency from "../../scripts/useFrequency"
-import useDetune from "../../scripts/useDetune"
-import useType from "../../scripts/useType"
+import useFrequency from "../../hooks/useFrequency"
+import useDetune from "../../hooks/useDetune"
+import useType from "../../hooks/useType"
 
 type Props = {
   mykey: string

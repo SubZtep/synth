@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react"
 import Menu from "./components/Menu"
 import Page from "./components/Page"
-import { NodeType } from "./scripts/useAudio"
+import { NodeType } from "./hooks/useAudio"
 
 type RoutingContextType = {
   routing: NodeType[]

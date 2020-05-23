@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core"
-import useAudio, { AudioNodeType } from "../scripts/useAudio"
+import useAudio, { AudioNodeType } from "../hooks/useAudio"
 
 const add = css({
   cursor: "cell",
@@ -56,6 +56,16 @@ export default function Menu() {
                 <li>
                   <a href="#ConvolverNode" onClick={clickHandler} css={add}>
                     Convolver
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              Visualization
+              <ul>
+                <li>
+                  <a href="#AnalyserNode" onClick={clickHandler} css={add}>
+                    Analyser
                   </a>
                 </li>
               </ul>

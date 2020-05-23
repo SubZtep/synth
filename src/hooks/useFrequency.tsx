@@ -1,6 +1,6 @@
 import React from "react"
 import { useState, useEffect } from "react"
-import { ctime } from "./audio"
+import { ctime } from "../scripts/audio"
 
 export default function useFrequency(node: AudioNode) {
   const [frequency, setFrequency] = useState(440)

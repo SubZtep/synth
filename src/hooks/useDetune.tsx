@@ -1,6 +1,6 @@
 import React from "react"
 import { useState, useEffect } from "react"
-import { ctime } from "./audio"
+import { ctime } from "../scripts/audio"
 
 export default function useDetune(node: AudioNode) {
   const [detune, setDetune] = useState(0)
@@ -17,8 +17,8 @@ export default function useDetune(node: AudioNode) {
       <input
         className="detune"
         type="range"
-        min={-5000}
-        max={5000}
+        min={-10000}
+        max={10000}
         value={detune}
         onChange={event => setDetune(event.currentTarget.valueAsNumber)}
       />

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import useAudio from "../../scripts/useAudio"
+import useAudio from "../../hooks/useAudio"
 import NodeOverview from "../elems/NodeOverview"
 
 type Props = {
