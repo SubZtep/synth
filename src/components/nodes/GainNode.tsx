@@ -1,28 +1,22 @@
-import React from "react"
+import React, { useRef, useEffect } from "react"
 import NodeOverview from "../elems/NodeOverview"
 import useAudio from "../../hooks/useAudio"
 import useGain from "../../hooks/useGain"
 
-type Props = {
-  mykey: string
-  gainNode: GainNode
-}
+export default function GainNode({ id }: { id: string }) {
+  const { audioContext, setNode } = useAudio()
+  const node = useRef(audioContext.createGain())
+  const gainForm = useGain(node.current, -1, 1, 0.1)
 
-export default function GainNode({ mykey, gainNode }: Props) {
-  const { delNodeType } = useAudio()
-  const gainForm = useGain(gainNode, -1, 1, 0.1)
+  useEffect(() => {
+    setNode(id, node.current)
+  }, [])
 
-  const close = () => {
-    delNodeType(mykey)
-  }
   return (
     <section className="component" id="gain">
       <h3>Gain</h3>
       <div>
-        <NodeOverview
-          onClick={close}
-          link="https://developer.mozilla.org/en-US/docs/Web/API/GainNode"
-        >
+        <NodeOverview id={id} link="https://developer.mozilla.org/en-US/docs/Web/API/GainNode">
           The GainNode interface represents a change in volume.
         </NodeOverview>
 

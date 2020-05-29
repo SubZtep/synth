@@ -1,15 +1,12 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { useRef, useEffect, useState } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
 import useAudio from "../../hooks/useAudio"
 import NodeOverview from "../elems/NodeOverview"
 
-type Props = {
-  mykey: string
-  analyserNode: AnalyserNode
-}
-
-export default function AnalyserNode({ mykey, analyserNode }: Props) {
+export default function AnalyserNode({ id }: { id: string }) {
+  const { audioContext, setNode } = useAudio()
+  const node = useRef(audioContext.createAnalyser())
   const [fftSizes] = useState<number[]>(() => {
     const ffts = []
     for (let i = 5; i < 16; i++) {
@@ -18,24 +15,7 @@ export default function AnalyserNode({ mykey, analyserNode }: Props) {
     return ffts
   })
   const [fftSize, setFftSize] = useState(2048)
-  const { delNodeType } = useAudio()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvasCtx = canvasRef.current?.getContext("2d")
-    if (canvasCtx) {
-      draw(canvasCtx)
-    }
-  }, [])
-
-  const bufferLength = useRef<number>(analyserNode.frequencyBinCount)
-  const dataArray = useRef<Uint8Array>(new Uint8Array(bufferLength.current))
-
-  useEffect(() => {
-    analyserNode.fftSize = fftSize
-    bufferLength.current = analyserNode.frequencyBinCount
-    dataArray.current = new Uint8Array(bufferLength.current)
-  }, [fftSize])
 
   const draw = (canvasCtx: CanvasRenderingContext2D) => {
     requestAnimationFrame(() => {
@@ -44,7 +24,7 @@ export default function AnalyserNode({ mykey, analyserNode }: Props) {
     const width = canvasRef.current?.width || 320
     const height = canvasRef.current?.height || 240
 
-    analyserNode.getByteTimeDomainData(dataArray.current)
+    node.current.getByteTimeDomainData(dataArray.current)
     canvasCtx.fillStyle = "rgb(200, 200, 200)"
     canvasCtx.fillRect(0, 0, width, height)
     canvasCtx.lineWidth = 2
@@ -71,19 +51,32 @@ export default function AnalyserNode({ mykey, analyserNode }: Props) {
     canvasCtx.stroke()
   }
 
-  const close = () => {
-    delNodeType(mykey)
-  }
+  useEffect(() => {
+    setNode(id, node.current)
+  }, [])
+
+  useEffect(() => {
+    const canvasCtx = canvasRef.current?.getContext("2d")
+    if (canvasCtx) {
+      draw(canvasCtx)
+    }
+  }, [canvasRef, draw])
+
+  const bufferLength = useRef<number>(node.current.frequencyBinCount)
+  const dataArray = useRef<Uint8Array>(new Uint8Array(bufferLength.current))
+
+  useEffect(() => {
+    node.current.fftSize = fftSize
+    bufferLength.current = node.current.frequencyBinCount
+    dataArray.current = new Uint8Array(bufferLength.current)
+  }, [fftSize, node.current.fftSize, node.current.frequencyBinCount])
 
   return (
     <section className="component" id="gain">
       <h3>Analyser</h3>
 
       <div>
-        <NodeOverview
-          onClick={close}
-          link="https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode"
-        >
+        <NodeOverview id={id} link="https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode">
           The <code>AnalyserNode</code> interface represents a node able to provide real-time
           frequency and time-domain analysis information, for the purposes of data analysis and
           visualization.

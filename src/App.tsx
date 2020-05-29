@@ -1,11 +1,11 @@
 import React, { createContext, useState } from "react"
 import Menu from "./components/Menu"
 import Page from "./components/Page"
-import { NodeType } from "./hooks/useAudio"
+import { AudioNodeBundle } from "./hooks/useAudio"
 
 type RoutingContextType = {
-  routing: NodeType[]
-  setRouting: (routing: NodeType[]) => void
+  routing: AudioNodeBundle[]
+  setRouting: (routing: AudioNodeBundle[]) => void
 }
 
 export const RoutingContext = createContext<RoutingContextType>({
@@ -14,7 +14,7 @@ export const RoutingContext = createContext<RoutingContextType>({
 })
 
 export default function App() {
-  const [routing, setRouting] = useState<NodeType[]>([])
+  const [routing, setRouting] = useState<AudioNodeBundle[]>([])
   return (
     <RoutingContext.Provider value={{ routing, setRouting }}>
       <Menu />

@@ -1,23 +1,19 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core"
-import useAudio, { AudioNodeType } from "../hooks/useAudio"
+import useAudio from "../hooks/useAudio"
 
 const add = css({
   cursor: "cell",
 })
 
 export default function Menu() {
-  const { addNodeType } = useAudio()
+  const { createAudioNodeBundle } = useAudio()
 
   const clickHandler = (event: React.MouseEvent) => {
     event.preventDefault()
-    const nodeType = event.currentTarget.getAttribute("href")?.substring(1) as AudioNodeType
+    const nodeType = event.currentTarget.getAttribute("href")?.substring(1)
     if (nodeType) {
-      try {
-        addNodeType(nodeType)
-      } catch (err) {
-        alert(err)
-      }
+      createAudioNodeBundle(nodeType)
     }
   }
 
@@ -36,6 +32,11 @@ export default function Menu() {
                 <li>
                   <a href="#OscillatorNode" onClick={clickHandler} css={add}>
                     Oscillator
+                  </a>
+                </li>
+                <li>
+                  <a href="#MediaElementAudioSourceNode" onClick={clickHandler} css={add}>
+                    Media
                   </a>
                 </li>
               </ul>

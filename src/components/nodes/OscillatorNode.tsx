@@ -1,48 +1,41 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import useAudio from "../../hooks/useAudio"
 import NodeOverview from "../elems/NodeOverview"
 import useFrequency from "../../hooks/useFrequency"
 import useDetune from "../../hooks/useDetune"
 import useType from "../../hooks/useType"
 
-type Props = {
-  mykey: string
-  oscillatorNode: OscillatorNode
-}
-
-export default function OscillatorNode({ mykey, oscillatorNode }: Props) {
-  const { destination, delNodeType } = useAudio()
-  const frequencyForm = useFrequency(oscillatorNode)
-  const detuneForm = useDetune(oscillatorNode)
-  const typeForm = useType(oscillatorNode, ["sine", "square", "sawtooth", "triangle"])
+export default function OscillatorNode({ id }: { id: string }) {
+  const { audioContext, setNode, reconnectAllNodes, setParam } = useAudio()
+  const node = useRef(audioContext.createOscillator())
+  const frequencyForm = useFrequency(node.current)
+  const detuneForm = useDetune(node.current)
+  const typeForm = useType(node.current, ["sine", "square", "sawtooth", "triangle"])
   const [start, setStart] = useState(false)
 
   useEffect(() => {
-    oscillatorNode.start()
-    oscillatorNode.disconnect()
-  }, [oscillatorNode])
+    node.current.start()
+    setNode(id, node.current)
+    node.current.disconnect()
+  }, [])
 
   useEffect(() => {
+    setParam(id, "start", start)
     if (start) {
-      oscillatorNode.connect(destination(mykey))
+      reconnectAllNodes()
     } else {
-      oscillatorNode.disconnect()
+      node.current.disconnect()
     }
-  }, [destination, mykey, oscillatorNode, start])
-
-  const close = () => {
-    oscillatorNode.disconnect()
-    delNodeType(mykey)
-  }
+  }, [start])
 
   return (
     <section className="component" id="oscillator">
       <h3>Oscillator</h3>
       <div>
         <NodeOverview
-          onClick={close}
+          id={id}
           link="https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode"
         >
           The <code>OscillatorNode</code> interface represents a periodic waveform, such as a sine
@@ -50,12 +43,14 @@ export default function OscillatorNode({ mykey, oscillatorNode }: Props) {
           tone.
         </NodeOverview>
 
-        <button className={start ? "active" : undefined} onClick={() => setStart(true)}>
-          Start
-        </button>
-        <button css={{ marginLeft: 6 }} onClick={() => setStart(false)}>
-          Stop
-        </button>
+        <div className="example">
+          <button className={start ? "active" : undefined} onClick={() => setStart(true)}>
+            Start
+          </button>
+          <button css={{ marginLeft: 6 }} onClick={() => setStart(false)}>
+            Stop
+          </button>
+        </div>
 
         <div className="example">
           {frequencyForm}

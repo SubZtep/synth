@@ -7,7 +7,11 @@ type Props = {
 export default function CloseButton({ onClick }: Props) {
   const attrs = onClick ? { onClick } : {}
   return (
-    <div className="title-bar-controls" css={{ float: "right" }} title="Remove Node">
+    <div
+      className="title-bar-controls"
+      css={{ position: "absolute", top: 8, right: 8 }}
+      title="Remove Node"
+    >
       <button aria-label="Close" {...attrs}></button>
     </div>
   )

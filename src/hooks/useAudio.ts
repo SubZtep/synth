@@ -1,18 +1,14 @@
-import { useContext } from "react"
+import { useContext, createElement } from "react"
 import { audioContext } from "../scripts/audio"
 import { RoutingContext } from "../App"
 
-export type AudioNodeType =
-  | "OscillatorNode"
-  | "GainNode"
-  | "BiquadFilterNode"
-  | "ConvolverNode"
-  | "AnalyserNode"
-
-export type NodeType = {
-  nodeType: AudioNodeType
-  node: AudioNode
-  key: string
+export type AudioNodeBundle = {
+  el: JSX.Element
+  id: string
+  params: {
+    [key: string]: any
+  }
+  node?: AudioNode
 }
 
 /**
@@ -21,62 +17,73 @@ export type NodeType = {
 export default function useAudio() {
   const store = useContext(RoutingContext)
 
-  const createAudioNode = (nodeType: AudioNodeType) => {
-    switch (nodeType) {
-      case "OscillatorNode":
-        return audioContext.createOscillator()
-      case "GainNode":
-        return audioContext.createGain()
-      case "BiquadFilterNode":
-        return audioContext.createBiquadFilter()
-      case "ConvolverNode":
-        return audioContext.createConvolver()
-      case "AnalyserNode":
-        return audioContext.createAnalyser()
-    }
+  const reconnectAllNodes = () => {
+    let { routing } = store
+    routing = reconnectAllNodesMiddleware(routing)
+    store.setRouting([...routing])
   }
 
-  const reconnectAllNodes = (routing: NodeType[]) => {
+  const reconnectAllNodesMiddleware = (routing: AudioNodeBundle[]) => {
+    console.log({ routing })
     if (routing.length > 0) {
-      routing.forEach((nt, index) => {
-        nt.node.disconnect()
-        if (index > 1) {
-          routing[index - 1].node.connect(nt.node)
+      routing.forEach((bundle, index) => {
+        bundle.node!.disconnect()
+        if (index > 0) {
+          const from = routing![index - 1]
+          if (from.el.type.name === OscillatorNode.name && from.params.start === false) {
+            return
+          }
+          console.log(`${from.el.type.name} -> ${bundle.el.type.name}`)
+          from.node!.connect(bundle.node!)
         }
       })
-      routing[routing.length - 1].node.connect(audioContext.destination)
+      console.log(`${routing[routing.length - 1].el.type.name} -> audioContext.destination`)
+      routing[routing.length - 1].node!.connect(audioContext.destination)
     }
     return routing
   }
 
-  const addNodeType = (nodeType: AudioNodeType) => {
+  const createAudioNodeBundle = (nodeType: string) => {
     let { routing } = store
-    if (nodeType === "OscillatorNode" && routing.length > 0) {
-      throw new Error("Only one oscillator and must be the first please.")
+    const inputNodes = [OscillatorNode.name, MediaElementAudioSourceNode.name]
+    if (
+      inputNodes.includes(nodeType) &&
+      routing.find(bundle => inputNodes.includes(bundle.el.type.name))
+    ) {
+      alert("Input Node Already Exists!")
+      return
     }
 
-    const routingNode: NodeType = {
-      nodeType,
-      node: createAudioNode(nodeType),
-      key: `k${Math.random().toString()}`,
+    const id = "k" + Math.random().toString()
+    const node: AudioNodeBundle = {
+      el: createElement(require(`../components/nodes/${nodeType}`).default, { key: id, id }),
+      id,
+      params: {},
     }
-
-    routing.push(routingNode)
-    routing = reconnectAllNodes(routing)
+    routing.push(node)
     store.setRouting([...routing])
   }
 
-  const delNodeType = (key: string) => {
+  const setNode = (id: string, node: AudioNode) => {
     let { routing } = store
-    routing = routing.filter(nt => nt.key !== key)
-    routing = reconnectAllNodes(routing)
+    routing.find(bundle => bundle.id === id)!.node = node
+    store.setRouting([...routing])
+    reconnectAllNodes()
+  }
+
+  const setParam = (id: string, key: string, value: any) => {
+    let { routing } = store
+    routing.find(node => node.id === id)!.params[key] = value
     store.setRouting([...routing])
   }
 
-  const destination = (key: string) => {
-    const { routing } = store
-    const index = routing.findIndex(nt => nt.key === key)
-    return index < routing.length - 1 ? routing[index + 1].node : audioContext.destination
+  const param = (id: string, key: string) => store.routing.find(node => node.id === id)!.params[key]
+
+  const removeAudioNodeBundle = (id: string) => {
+    let { routing } = store
+    routing = routing.filter(bundle => bundle.id !== id)
+    routing = reconnectAllNodesMiddleware(routing)
+    store.setRouting([...routing])
   }
 
   /**
@@ -85,9 +92,13 @@ export default function useAudio() {
   const nodeTypes = () => store.routing
 
   return {
-    addNodeType,
-    delNodeType,
+    audioContext,
+    createAudioNodeBundle,
+    setNode,
+    reconnectAllNodes,
+    removeAudioNodeBundle,
+    setParam,
+    param,
     nodeTypes,
-    destination,
   }
 }
