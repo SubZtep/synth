@@ -21,7 +21,7 @@ export default function MediaElementAudioSourceNode({ id }: { id: string }) {
   }, [playable])
 
   return (
-    <section className="component" id="oscillator">
+    <section className="component">
       <h3>Media</h3>
       <div>
         <NodeOverview

@@ -36,7 +36,12 @@ export default function Menu() {
                 </li>
                 <li>
                   <a href="#MediaElementAudioSourceNode" onClick={clickHandler} css={add}>
-                    Media
+                    Audio File
+                  </a>
+                </li>
+                <li>
+                  <a href="#MediaStreamAudioSourceNode" onClick={clickHandler} css={add}>
+                    Microphone
                   </a>
                 </li>
               </ul>

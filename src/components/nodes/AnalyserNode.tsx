@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { useRef, useEffect, useState, useCallback } from "react"
+import { useRef, useEffect, useState } from "react"
 import useAudio from "../../hooks/useAudio"
 import NodeOverview from "../elems/NodeOverview"
 
