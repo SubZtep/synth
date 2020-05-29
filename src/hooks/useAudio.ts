@@ -46,12 +46,18 @@ export default function useAudio() {
   const createAudioNodeBundle = (nodeType: string) => {
     let { routing } = store
     const inputNodes = [OscillatorNode.name, MediaElementAudioSourceNode.name]
-    if (
-      inputNodes.includes(nodeType) &&
-      routing.find(bundle => inputNodes.includes(bundle.el.type.name))
-    ) {
-      alert("Input Node Already Exists!")
-      return
+    let pushAfter = true
+
+    if (inputNodes.includes(nodeType)) {
+      const index = routing.findIndex(bundle => inputNodes.includes(bundle.el.type.name))
+      if (index !== -1) {
+        if (!window.confirm(`Input Node Already Exists!\n\nWould you like to update it?`)) {
+          return
+        }
+        console.log("SPLICE INDEEEEx", index)
+        routing.splice(index, 1)
+        pushAfter = false
+      }
     }
 
     const id = "k" + Math.random().toString()
@@ -60,7 +66,12 @@ export default function useAudio() {
       id,
       params: {},
     }
-    routing.push(node)
+    // if (pushAfter) {
+    //   routing.push(node)
+    // } else {
+    //   routing.unshift(node)
+    // }
+    routing[pushAfter ? "push" : "unshift"](node)
     store.setRouting([...routing])
   }
 

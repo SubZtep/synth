@@ -19,6 +19,7 @@ export default function OscillatorNode({ id }: { id: string }) {
     node.current.start()
     setNode(id, node.current)
     node.current.disconnect()
+    return () => node.current.disconnect()
   }, [])
 
   useEffect(() => {

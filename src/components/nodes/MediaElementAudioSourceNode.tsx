@@ -51,8 +51,10 @@ export default function MediaElementAudioSourceNode({ id }: { id: string }) {
           <audio
             crossOrigin="anonymus"
             onError={event => {
-              // @ts-ignore
-              if (confirm((event.target.error as MediaError).message + `\n\nClear Source?`)) {
+              if (
+                // @ts-ignore
+                window.confirm((event.target.error as MediaError).message + `\n\nClear Source?`)
+              ) {
                 setSource("")
               }
             }}
