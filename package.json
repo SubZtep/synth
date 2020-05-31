@@ -2,6 +2,7 @@
   "name": "audionodes",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://subztep.github.io/audionodes/build/",
   "dependencies": {
     "98.css": "^0.1.16",
     "@emotion/core": "^10.0.28",

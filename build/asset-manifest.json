@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.js": "/static/js/main.c99ab196.chunk.js",
-    "main.js.map": "/static/js/main.c99ab196.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.8f4472bf.js",
-    "runtime-main.js.map": "/static/js/runtime-main.8f4472bf.js.map",
-    "static/css/2.5f296b27.chunk.css": "/static/css/2.5f296b27.chunk.css",
-    "static/js/2.e4899cd3.chunk.js": "/static/js/2.e4899cd3.chunk.js",
-    "static/js/2.e4899cd3.chunk.js.map": "/static/js/2.e4899cd3.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.fae162d37dcb574c21292e67a90c7e88.js": "/precache-manifest.fae162d37dcb574c21292e67a90c7e88.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/2.5f296b27.chunk.css.map": "/static/css/2.5f296b27.chunk.css.map",
-    "static/js/2.e4899cd3.chunk.js.LICENSE.txt": "/static/js/2.e4899cd3.chunk.js.LICENSE.txt",
-    "static/media/98.css": "/static/media/ms_sans_serif_bold.cb1c7473.woff2"
+    "main.js": "/audionodes/build/static/js/main.c99ab196.chunk.js",
+    "main.js.map": "/audionodes/build/static/js/main.c99ab196.chunk.js.map",
+    "runtime-main.js": "/audionodes/build/static/js/runtime-main.ccb1b189.js",
+    "runtime-main.js.map": "/audionodes/build/static/js/runtime-main.ccb1b189.js.map",
+    "static/css/2.be08b6c7.chunk.css": "/audionodes/build/static/css/2.be08b6c7.chunk.css",
+    "static/js/2.e4899cd3.chunk.js": "/audionodes/build/static/js/2.e4899cd3.chunk.js",
+    "static/js/2.e4899cd3.chunk.js.map": "/audionodes/build/static/js/2.e4899cd3.chunk.js.map",
+    "index.html": "/audionodes/build/index.html",
+    "precache-manifest.43fefce909db1610848d3adbc7a5f55d.js": "/audionodes/build/precache-manifest.43fefce909db1610848d3adbc7a5f55d.js",
+    "service-worker.js": "/audionodes/build/service-worker.js",
+    "static/css/2.be08b6c7.chunk.css.map": "/audionodes/build/static/css/2.be08b6c7.chunk.css.map",
+    "static/js/2.e4899cd3.chunk.js.LICENSE.txt": "/audionodes/build/static/js/2.e4899cd3.chunk.js.LICENSE.txt",
+    "static/media/98.css": "/audionodes/build/static/media/ms_sans_serif_bold.cb1c7473.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.8f4472bf.js",
-    "static/css/2.5f296b27.chunk.css",
+    "static/js/runtime-main.ccb1b189.js",
+    "static/css/2.be08b6c7.chunk.css",
     "static/js/2.e4899cd3.chunk.js",
     "static/js/main.c99ab196.chunk.js"
   ]
