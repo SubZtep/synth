@@ -1,10 +1,11 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import NodeOverview from "../elems/NodeOverview"
-import useAudio from "../../hooks/useAudio"
 import { useRef, useEffect, useState } from "react"
+import useAudio, { NodeProps } from "../../hooks/useAudio"
+import { Section, Main, Example } from "../elems/styled"
+import NodeOverview from "../elems/NodeOverview"
 
-export default function MediaElementAudioSourceNode({ id }: { id: string }) {
+export default function MediaElementAudioSourceNode({ id }: NodeProps) {
   const { audioContext, setNode } = useAudio()
   const node = useRef<MediaElementAudioSourceNode>()
   const audio = useRef<HTMLMediaElement>(null)
@@ -14,16 +15,15 @@ export default function MediaElementAudioSourceNode({ id }: { id: string }) {
 
   useEffect(() => {
     if (playable && audio.current) {
-      console.log("AAA")
       node.current = audioContext.createMediaElementSource(audio.current)
       setNode(id, node.current)
     }
   }, [playable])
 
   return (
-    <section className="component">
+    <Section id={id}>
       <h3>Media</h3>
-      <div>
+      <Main>
         <NodeOverview
           id={id}
           link="https://developer.mozilla.org/en-US/docs/Web/API/MediaElementAudioSourceNode"
@@ -31,9 +31,8 @@ export default function MediaElementAudioSourceNode({ id }: { id: string }) {
           The <code>MediaElementAudioSourceNode</code> interface represents an audio source
           consisting of an HTML5 element.
         </NodeOverview>
-
         <p>Use any public audio file with anonymys access enabled. Press ENTER to load.</p>
-        <div className="example">
+        <Example>
           <form
             onSubmit={event => {
               event.preventDefault()
@@ -45,9 +44,9 @@ export default function MediaElementAudioSourceNode({ id }: { id: string }) {
               <input type="text" value={source} onChange={value => setSource(value.target.value)} />
             </div>
           </form>
-        </div>
+        </Example>
         <p>Use the player below.</p>
-        <div className="example">
+        <Example>
           <audio
             crossOrigin="anonymus"
             onError={event => {
@@ -63,12 +62,10 @@ export default function MediaElementAudioSourceNode({ id }: { id: string }) {
             src={audioSource}
             onCanPlayThrough={event => {
               setPlayable(true)
-              console.log("BBB", event)
             }}
-            onEmptied={event => console.log("EEEE", event)}
           />
-        </div>
-      </div>
-    </section>
+        </Example>
+      </Main>
+    </Section>
   )
 }

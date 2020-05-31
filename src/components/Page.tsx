@@ -15,11 +15,6 @@ export default function Page() {
         just try some of the existing nodes, surely to achieve the imagined goal the scriptable{" "}
         <code>AudioWorklet</code> interface is to look forward.
       </p>
-      <p>
-        The <code>AudioContext</code> interface inherits the nodes an create an audio routing graph.
-        Click on a node name on the left menu to add to the graph.{" "}
-        <span css={{ position: "absolute", fontSize: 21, marginLeft: 4, marginTop: -4 }}>🖯</span>
-      </p>
 
       <h2 id="nodes">Audio Nodes</h2>
 

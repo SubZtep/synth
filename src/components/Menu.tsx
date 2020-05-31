@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core"
 import useAudio from "../hooks/useAudio"
+import useMicrophone from "../hooks/useMicrophone"
 
 const add = css({
   cursor: "cell",
@@ -8,12 +9,23 @@ const add = css({
 
 export default function Menu() {
   const { createAudioNodeBundle } = useAudio()
+  const { requestAudio } = useMicrophone()
+
+  requestAudio(() => document.getElementById("micmenu")?.remove())
 
   const clickHandler = (event: React.MouseEvent) => {
     event.preventDefault()
     const nodeType = event.currentTarget.getAttribute("href")?.substring(1)
     if (nodeType) {
-      createAudioNodeBundle(nodeType)
+      const node = createAudioNodeBundle(nodeType)
+      if (node) {
+        window.requestAnimationFrame(() => {
+          const elem = document.getElementById(node.id)
+          if (elem?.offsetTop) {
+            window.scrollTo({ top: elem.offsetTop, left: 0, behavior: "smooth" })
+          }
+        })
+      }
     }
   }
 
@@ -39,7 +51,7 @@ export default function Menu() {
                     Audio File
                   </a>
                 </li>
-                <li>
+                <li id="micmenu">
                   <a href="#MediaStreamAudioSourceNode" onClick={clickHandler} css={add}>
                     Microphone
                   </a>

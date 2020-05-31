@@ -1,10 +1,11 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { useEffect, useRef } from "react"
-import useAudio from "../../hooks/useAudio"
+import useAudio, { NodeProps } from "../../hooks/useAudio"
 import NodeOverview from "../elems/NodeOverview"
+import { Section, Main } from "../elems/styled"
 
-export default function ConvolverNode({ id }: { id: string }) {
+export default function ConvolverNode({ id }: NodeProps) {
   const { audioContext, setNode } = useAudio()
   const node = useRef(audioContext.createBiquadFilter())
 
@@ -13,14 +14,14 @@ export default function ConvolverNode({ id }: { id: string }) {
   }, [])
 
   return (
-    <section className="component" id="gain">
+    <Section id={id}>
       <h3>Convolver</h3>
-      <div>
+      <Main>
         <NodeOverview id={id} link="https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode">
           The <code>ConvolverNode</code> interface performs a Linear Convolution on a given
           AudioBuffer, often used to achieve a reverb effect.
         </NodeOverview>
-      </div>
-    </section>
+      </Main>
+    </Section>
   )
 }

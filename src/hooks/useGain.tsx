@@ -1,5 +1,4 @@
-import React from "react"
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { ctime } from "../scripts/audio"
 
 export default function useGain(node: AudioNode, min = -40, max = 40, step = 1) {

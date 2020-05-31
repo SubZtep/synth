@@ -2,6 +2,12 @@ import { useContext, createElement } from "react"
 import { audioContext } from "../scripts/audio"
 import { RoutingContext } from "../App"
 
+const inputNodes = [
+  OscillatorNode.name,
+  MediaElementAudioSourceNode.name,
+  MediaStreamAudioSourceNode.name,
+]
+
 export type AudioNodeBundle = {
   el: JSX.Element
   id: string
@@ -9,6 +15,10 @@ export type AudioNodeBundle = {
     [key: string]: any
   }
   node?: AudioNode
+}
+
+export type NodeProps = {
+  id: string
 }
 
 /**
@@ -24,40 +34,40 @@ export default function useAudio() {
   }
 
   const reconnectAllNodesMiddleware = (routing: AudioNodeBundle[]) => {
-    console.log({ routing })
     if (routing.length > 0) {
       routing.forEach((bundle, index) => {
-        bundle.node!.disconnect()
-        if (index > 0) {
-          const from = routing![index - 1]
-          if (from.el.type.name === OscillatorNode.name && from.params.start === false) {
-            return
+        if (bundle.node) {
+          bundle.node.disconnect()
+          if (index > 0) {
+            const from = routing![index - 1]
+            if (
+              !from.node ||
+              (from.el.type.name === OscillatorNode.name && from.params.start === false)
+            ) {
+              return
+            }
+            from.node.connect(bundle.node)
           }
-          console.log(`${from.el.type.name} -> ${bundle.el.type.name}`)
-          from.node!.connect(bundle.node!)
         }
       })
-      console.log(`${routing[routing.length - 1].el.type.name} -> audioContext.destination`)
-      routing[routing.length - 1].node!.connect(audioContext.destination)
+      routing[routing.length - 1].node?.connect(audioContext.destination)
     }
     return routing
   }
 
   const createAudioNodeBundle = (nodeType: string) => {
     let { routing } = store
-    const inputNodes = [OscillatorNode.name, MediaElementAudioSourceNode.name]
     let pushAfter = true
 
     if (inputNodes.includes(nodeType)) {
       const index = routing.findIndex(bundle => inputNodes.includes(bundle.el.type.name))
       if (index !== -1) {
-        if (!window.confirm(`Input Node Already Exists!\n\nWould you like to update it?`)) {
+        if (!window.confirm(`Input Node Already Exists!\n\nWould you like to replace it?`)) {
           return
         }
-        console.log("SPLICE INDEEEEx", index)
         routing.splice(index, 1)
-        pushAfter = false
       }
+      pushAfter = false
     }
 
     const id = "k" + Math.random().toString()
@@ -66,13 +76,9 @@ export default function useAudio() {
       id,
       params: {},
     }
-    // if (pushAfter) {
-    //   routing.push(node)
-    // } else {
-    //   routing.unshift(node)
-    // }
     routing[pushAfter ? "push" : "unshift"](node)
     store.setRouting([...routing])
+    return node
   }
 
   const setNode = (id: string, node: AudioNode) => {
@@ -97,9 +103,6 @@ export default function useAudio() {
     store.setRouting([...routing])
   }
 
-  /**
-   * Store that holding audio nodes.
-   */
   const nodeTypes = () => store.routing
 
   return {

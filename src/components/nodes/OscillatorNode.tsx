@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { useState, useEffect, useRef } from "react"
-import useAudio from "../../hooks/useAudio"
-import NodeOverview from "../elems/NodeOverview"
+import useAudio, { NodeProps } from "../../hooks/useAudio"
+import { Section, Main, Example } from "../elems/styled"
 import useFrequency from "../../hooks/useFrequency"
+import NodeOverview from "../elems/NodeOverview"
 import useDetune from "../../hooks/useDetune"
 import useType from "../../hooks/useType"
 
-export default function OscillatorNode({ id }: { id: string }) {
+export default function OscillatorNode({ id }: NodeProps) {
   const { audioContext, setNode, reconnectAllNodes, setParam } = useAudio()
   const node = useRef(audioContext.createOscillator())
   const frequencyForm = useFrequency(node.current)
@@ -32,9 +33,9 @@ export default function OscillatorNode({ id }: { id: string }) {
   }, [start])
 
   return (
-    <section className="component" id="oscillator">
+    <Section id={id}>
       <h3>Oscillator</h3>
-      <div>
+      <Main>
         <NodeOverview
           id={id}
           link="https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode"
@@ -44,21 +45,21 @@ export default function OscillatorNode({ id }: { id: string }) {
           tone.
         </NodeOverview>
 
-        <div className="example">
+        <Example>
           <button className={start ? "active" : undefined} onClick={() => setStart(true)}>
             Start
           </button>
           <button css={{ marginLeft: 6 }} onClick={() => setStart(false)}>
             Stop
           </button>
-        </div>
+        </Example>
 
-        <div className="example">
+        <Example>
           {frequencyForm}
           {detuneForm}
           {typeForm}
-        </div>
-      </div>
-    </section>
+        </Example>
+      </Main>
+    </Section>
   )
 }

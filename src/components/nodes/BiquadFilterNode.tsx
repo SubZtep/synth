@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { useRef, useEffect } from "react"
-import useAudio from "../../hooks/useAudio"
-import NodeOverview from "../elems/NodeOverview"
-import useType from "../../hooks/useType"
+import useAudio, { NodeProps } from "../../hooks/useAudio"
+import { Section, Main, Example } from "../elems/styled"
 import useFrequency from "../../hooks/useFrequency"
+import NodeOverview from "../elems/NodeOverview"
 import useGain from "../../hooks/useGain"
+import useType from "../../hooks/useType"
 
-export default function BiquadFilterNode({ id }: { id: string }) {
+export default function BiquadFilterNode({ id }: NodeProps) {
   const { audioContext, setNode } = useAudio()
   const node = useRef(audioContext.createBiquadFilter())
   const typeForm = useType(node.current, ["lowshelf", "highshelf", "peaking"])
@@ -19,10 +20,10 @@ export default function BiquadFilterNode({ id }: { id: string }) {
   }, [])
 
   return (
-    <section className="component" id="gain">
+    <Section id={id}>
       <h3>Biquad</h3>
 
-      <div>
+      <Main>
         <NodeOverview
           id={id}
           link="https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode"
@@ -31,12 +32,12 @@ export default function BiquadFilterNode({ id }: { id: string }) {
           different kinds of filters, tone control devices, and graphic equalizers.
         </NodeOverview>
 
-        <div className="example">
+        <Example>
           {typeForm}
           {frequencyForm}
           {gainForm}
-        </div>
-      </div>
-    </section>
+        </Example>
+      </Main>
+    </Section>
   )
 }
