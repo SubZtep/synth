@@ -3,12 +3,22 @@ import ReactDOM from "react-dom"
 import App from "./App"
 // import * as serviceWorker from "./serviceWorker"
 import { Global, css } from "@emotion/core"
+import { library } from "@fortawesome/fontawesome-svg-core"
+import { fab } from "@fortawesome/free-brands-svg-icons"
+import { fad } from "@fortawesome/pro-duotone-svg-icons"
+import { fal } from "@fortawesome/pro-light-svg-icons"
+import { far } from "@fortawesome/pro-regular-svg-icons"
+import { fas } from "@fortawesome/pro-solid-svg-icons"
+
+//TODO: collect icons and check sizes https://fontawesome.com/how-to-use/on-the-web/using-with/react#using
+library.add(fab, fad, fal, far, fas)
 
 ReactDOM.render(
   // <React.StrictMode>
   <Fragment>
     <Global
       styles={css`
+        @import url("https://fonts.googleapis.com/css2?family=Tomorrow&display=swap");
         * {
           box-sizing: border-box;
         }
@@ -18,7 +28,7 @@ ReactDOM.render(
           margin: 0;
           width: 100vw;
           height: 100vh;
-          font-family: Arial;
+          font-family: Tomorrow, sans-serif;
           font-style: normal;
           font-weight: 400;
           font-size: 16px;

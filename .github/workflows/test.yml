@@ -1,0 +1,18 @@
+name: Test
+on: push
+jobs:
+  setup-and-test:
+    name: Setup & List TS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install dependencies
+        run: |
+          npm config set "@fortawesome:registry" https://npm.fontawesome.com/ && npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}"
+          npm install
+      - name: Check TypeScript
+        run: ./node_modules/.bin/tsc

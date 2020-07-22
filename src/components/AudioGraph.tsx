@@ -9,6 +9,7 @@ import ReactFlow, {
   Connection,
   Background,
   XYPosition,
+  useStoreState,
   removeElements,
   BackgroundVariant,
 } from "react-flow-renderer"
@@ -37,6 +38,8 @@ const initialElements: Elements = [
 ]
 
 const NodeGraph = () => {
+  const nodes = useStoreState(store => store.nodes)
+  console.log("REFRESH", nodes)
   const [elements, setElements] = useState(initialElements)
   const selected = useRef<Elements | null>(null)
 
