@@ -1,15 +1,54 @@
-import React from "react"
+import React, { Fragment } from "react"
 import ReactDOM from "react-dom"
 import App from "./App"
 // import * as serviceWorker from "./serviceWorker"
-import "../node_modules/98.css/dist/98.css"
-import "../node_modules/98.css/dist/docs.css"
-import "../node_modules/98.css/dist/vs.css"
+import { Global, css } from "@emotion/core"
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <Fragment>
+    <Global
+      styles={css`
+        * {
+          box-sizing: border-box;
+        }
+        html,
+        body {
+          padding: 0;
+          margin: 0;
+          width: 100vw;
+          height: 100vh;
+          font-family: Arial;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 16px;
+        }
+        .react-flow__controls-button {
+          width: 25px;
+          height: 25px;
+        }
+        .react-flow__node.audioNode {
+          border: 2px solid #ccc;
+          border-radius: 3px;
+          background-color: #eee;
+          padding: 10px;
+          &.selected {
+            border-color: #222;
+          }
+        }
+        .react-flow__edge {
+          .react-flow__edge-path {
+            stroke: #33c;
+          }
+          &.selected .react-flow__edge-path {
+            stroke-width: 2.5;
+          }
+        }
+      `}
+    />
     <App />
-  </React.StrictMode>,
+  </Fragment>,
+  // </React.StrictMode>,
   document.getElementById("root")
 )
 
