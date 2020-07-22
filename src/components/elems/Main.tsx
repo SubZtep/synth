@@ -1,7 +1,6 @@
 import styled from "@emotion/styled"
 
 const Main = styled.div`
-  background-color: #ccffd4;
   width: 100vw;
   height: 100vh;
   margin: 0;

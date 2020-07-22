@@ -33,9 +33,13 @@ ReactDOM.render(
           font-weight: 400;
           font-size: 16px;
         }
+        button {
+          font-family: Tomorrow, sans-serif;
+        }
         .react-flow__controls-button {
           width: 25px;
           height: 25px;
+          opacity: 0.5;
         }
         .react-flow__node.audioNode {
           border: 2px solid #ccc;

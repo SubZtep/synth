@@ -7,14 +7,20 @@ import AudioGraph from "./components/AudioGraph"
 import Main from "./components/elems/Main"
 import Visual from "./components/Visual"
 import Piano from "./components/Piano"
+import Header from "./components/elems/Header"
 
 export default function App() {
   return (
     <Main>
-      <div css={{ backgroundColor: "#003333", color: "#eeffff", display: "flex" }}>
-        <h1 css={{ margin: "0 0 0 3px" }}>WAAπsynth</h1>
-        <FontAwesomeIcon icon={["fal", "coffee"]} />
-      </div>
+      <Header>
+        <h1 css={{ margin: 0, color: "#f2f4f7" }}>WAAπSynth</h1>
+        <FontAwesomeIcon
+          icon={["fas", "bars"]}
+          size="lg"
+          css={{ cursor: "pointer" }}
+          onClick={() => alert("YO")}
+        />
+      </Header>
       <EditorWrapper>
         <ReactFlowProvider>
           <AudioGraph />
