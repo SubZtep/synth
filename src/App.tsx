@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { ReactFlowProvider } from "react-flow-renderer"
-import EditorWrapper from "./components/elems/EditorWrapper"
-import AudioGraph from "./components/AudioGraph"
-import Main from "./components/elems/Main"
-import Visual from "./components/Visual"
-import Piano from "./components/Piano"
-import Header from "./components/Header"
+import EditorWrapper from "./components/misc/EditorWrapper"
+import AudioGraph from "./components/graph/AudioGraph"
+import Main from "./components/misc/Main"
+import Visual from "./components/visual/Visual"
+import Piano from "./components/piano/Piano"
+import Header from "./components/header/Header"
 
 export default function App() {
   return (
