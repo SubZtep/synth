@@ -14,6 +14,7 @@ import ReactFlow, {
 } from "react-flow-renderer"
 import Oscillator from "./nodes/Oscillator"
 import Gain from "./nodes/Gain"
+import BiquadFilter from "./nodes/BiquadFilter"
 import { newNodePosition } from "../scripts/utils"
 import { GraphMutateButton } from "./elems/buttons"
 import { AUDIO_CONTEXT_DESTINATION } from "../types"
@@ -93,6 +94,17 @@ const NodeGraph = () => {
       },
     ])
 
+  const addBiquadFilter = () =>
+    setElements([
+      ...elements,
+      {
+        id: (elements.length + 1).toString(),
+        type: "biquadfilter",
+        className: "audioNode",
+        position: newNodePosition(width, height),
+      },
+    ])
+
   return (
     <ReactFlow
       elements={elements}
@@ -101,6 +113,7 @@ const NodeGraph = () => {
       nodeTypes={{
         oscillator: Oscillator,
         gain: Gain,
+        biquadfilter: BiquadFilter,
       }}
       connectionLineStyle={{ stroke: "#006" }}
       snapToGrid={true}
@@ -118,7 +131,11 @@ const NodeGraph = () => {
         <FontAwesomeIcon icon={["fas", "volume"]} />
         Add Gain
       </GraphMutateButton>
-      <GraphMutateButton third onClick={removeSelected}>
+      <GraphMutateButton third onClick={addBiquadFilter}>
+        <FontAwesomeIcon icon={["fas", "filter"]} />
+        Add Biquad Filter
+      </GraphMutateButton>
+      <GraphMutateButton fourth onClick={removeSelected}>
         <FontAwesomeIcon icon={["fas", "trash-alt"]} />
         Remove Selected
       </GraphMutateButton>

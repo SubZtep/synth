@@ -22,7 +22,6 @@ export default memo(({ id }: NodeComponentProps) => {
           Frequency (-24k — 24k)
           <input
             disabled={!ready}
-            className="frequency"
             type="number"
             min="-24000"
             max="24000"
