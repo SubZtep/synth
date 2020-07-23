@@ -1,5 +1,7 @@
 import React, { Fragment } from "react"
 import ReactDOM from "react-dom"
+import { Provider } from "react-redux"
+import store from "./store"
 import App from "./App"
 // import * as serviceWorker from "./serviceWorker"
 import { Global, css } from "@emotion/core"
@@ -62,7 +64,9 @@ ReactDOM.render(
         }
       `}
     />
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </Fragment>,
   // </React.StrictMode>,
   document.getElementById("root")
