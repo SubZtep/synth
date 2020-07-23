@@ -1,64 +1,60 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { memo, useState, useRef, useEffect, Fragment } from "react"
+import { memo, useState, Fragment } from "react"
 import { Handle, Position, NodeComponentProps } from "react-flow-renderer"
+import useOscillatorNode from "../../hooks/useOscillatorNode"
 import { Title, FormWrapper, Hr } from "../elems/nodeform"
-import useFrequency from "../../hooks/useFrequency"
-import useDetune from "../../hooks/useDetune"
-import useType from "../../hooks/useType"
-import useAudio from "../../hooks/useAudio"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { NodeButton } from "../elems/buttons"
+import { Label } from "../elems/nodeform"
+
+const types: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"]
 
 export default memo(({ id }: NodeComponentProps) => {
-  // const { audioContext, setNode, reconnectAllNodes, setParam } = useAudio()
-  const { audioContext, addNode, delNode } = useAudio()
-  const node = useRef(audioContext.createOscillator())
-  const frequencyForm = useFrequency(node.current)
-  const detuneForm = useDetune(node.current)
-  const typeForm = useType(node.current, ["sine", "square", "sawtooth", "triangle"])
-  const [start, setStart] = useState(false)
-
-  useEffect(() => {
-    node.current.start()
-    addNode(id, node.current)
-    node.current.disconnect()
-    return () => {
-      node.current.disconnect()
-      delNode(id)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (start) {
-      node.current.start()
-    } else {
-      node.current.disconnect()
-      //
-    }
-  }, [start])
+  const [frequency, setFrequency] = useState(440)
+  const [detune, setDetune] = useState(0)
+  const [type, setType] = useState(types[0])
+  const { ready } = useOscillatorNode(id, frequency, detune, type)
 
   return (
     <Fragment>
       <Title>Oscillator #{id}</Title>
       <FormWrapper>
-        {frequencyForm}
+        <Label>
+          Frequency (-24k — 24k)
+          <input
+            disabled={!ready}
+            className="frequency"
+            type="number"
+            min="-24000"
+            max="24000"
+            value={frequency}
+            onChange={event => setFrequency(event.currentTarget.valueAsNumber)}
+          />
+        </Label>
         <Hr />
-        {detuneForm}
+        <Label>
+          Detune (-10k — 10k)
+          <input
+            className="detune"
+            type="number"
+            min={-10000}
+            max={10000}
+            value={detune}
+            onChange={event => setDetune(event.currentTarget.valueAsNumber)}
+          />
+        </Label>
         <Hr />
-        {typeForm}
-        <Hr />
-        {start ? (
-          <NodeButton onClick={() => setStart(false)}>
-            <FontAwesomeIcon icon={["fas", "stop-circle"]} />
-            Stop
-          </NodeButton>
-        ) : (
-          <NodeButton onClick={() => setStart(true)}>
-            <FontAwesomeIcon icon={["fas", "play-circle"]} />
-            Play
-          </NodeButton>
-        )}
+        <Label>Type</Label>
+        {types.map(typeVal => (
+          <Label key={typeVal}>
+            <input
+              type="radio"
+              value={typeVal}
+              checked={type === typeVal}
+              onChange={event => setType(event.currentTarget.value as OscillatorType)}
+            />
+            {typeVal}
+          </Label>
+        ))}
       </FormWrapper>
       <Handle type="source" position={Position.Bottom} style={{ background: "#B0BF1A" }} />
     </Fragment>

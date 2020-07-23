@@ -18,10 +18,9 @@ export const newNodePosition = (
   canvasHeight: number,
   bottom = false
 ): XYPosition => {
-  const halfWidth = canvasWidth / 2
   const halfHeight = canvasHeight / 2
   return {
-    x: randomBetween(-halfWidth, halfWidth),
-    y: bottom ? randomBetween(0, halfHeight) : randomBetween(-halfHeight, 0),
+    x: randomBetween(0, canvasWidth - 200),
+    y: bottom ? randomBetween(halfHeight, canvasHeight) : randomBetween(0, halfHeight),
   }
 }
