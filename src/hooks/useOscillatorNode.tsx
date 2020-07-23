@@ -13,7 +13,6 @@ const useOscillatorNode = (id: string, frequency: number, detune: number, type: 
 
   useEffect(() => {
     ;(nodes.get(id) as OscillatorNode).frequency.setValueAtTime(frequency, ctime)
-    // ;(nodes[id] as OscillatorNode).frequency.setValueAtTime(frequency, ctime)
   }, [id, frequency])
 
   useEffect(() => {

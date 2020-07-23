@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 
 export const GraphMutateButton = styled.button<any>`
   position: absolute;
-  top: ${props => (props.second ? "40px" : "8px")};
+  top: ${props => (props.third ? "72px" : props.second ? "40px" : "8px")};
   right: 10px;
   width: 160px;
   height: 28px;
