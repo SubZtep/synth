@@ -1,4 +1,5 @@
-import React, { useState, useRef, CSSProperties } from "react"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import React, { useState, useRef } from "react"
 import ReactFlow, {
   Edge,
   Node,
@@ -8,42 +9,20 @@ import ReactFlow, {
   Controls,
   Connection,
   Background,
-  XYPosition,
   useStoreState,
   removeElements,
   BackgroundVariant,
+  ArrowHeadType,
 } from "react-flow-renderer"
+import useAudio from "../hooks/useAudio"
 import Oscillator from "./nodes/Oscillator"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { randomBetween } from "../scripts/utils"
-
-const newNodePosition = (canvasWidth: number, canvasHeight: number, bottom = false): XYPosition => {
-  // x: Math.round((canvasWidth - 100) * Math.random()),
-  // y: Math.round((bottom ? canvasHeight - 50 : 50) * Math.random()),
-
-  const halfWidth = canvasWidth / 2
-  const halfHeight = canvasHeight / 2
-
-  return {
-    x: randomBetween(-halfWidth, halfWidth),
-    y: bottom ? randomBetween(0, halfHeight) : randomBetween(-halfHeight, 0),
-  }
-}
-
-const btnCss: CSSProperties = {
-  position: "absolute",
-  top: 8,
-  right: 10,
-  width: 160,
-  height: 28,
-  zIndex: 4,
-  borderRadius: 4,
-  backgroundColor: "#212d40",
-  borderColor: "#212d40",
-  color: "#fff",
-}
+import { newNodePosition } from "../scripts/utils"
+import { GraphMutateButton } from "./elems/buttons"
 
 const NodeGraph = () => {
+  console.log("RELOAAAAAD")
+
+  const { connectNodes, disconnectNodes, delNode } = useAudio()
   // const nodes = useStoreState(store => store.nodes)
   const width = useStoreState(
     store => store.width,
@@ -54,30 +33,59 @@ const NodeGraph = () => {
     (prev, next) => prev === next
   )
 
-  const [elements, setElements] = useState<Elements>([
-    {
-      id: "destination",
-      type: "output",
-      selectable: false,
-      connectable: true,
-      data: { label: "Audio Output" },
-      style: {
-        backgroundColor: "#364156",
-        color: "#fff",
+  console.log({ width, height })
+
+  const [elements, setElements] = useState<Elements>(() => {
+    // console.log("AAAAA", width)
+    return [
+      {
+        id: "destination",
+        type: "output",
+        selectable: false,
+        connectable: true,
+        data: { label: "Audio Output" },
+        style: {
+          backgroundColor: "#364156",
+          color: "#fff",
+        },
+        // position: newNodePosition(width, height, true),
+        position: { x: width / 2, y: height / 2 },
       },
-      position: newNodePosition(width, height, true),
-    },
-  ])
+    ]
+  })
   const selected = useRef<Elements | null>(null)
 
   const removeSelected = () => {
     if (selected.current !== null) {
+      selected.current.forEach(el => {
+        if (el.type !== undefined) {
+          console.log("XXXXXX", el)
+          // Node
+          delNode(el.id)
+        } else {
+          // Edge
+          disconnectNodes((el as Edge).source, (el as Edge).target)
+        }
+      })
+
       setElements(removeElements(selected.current, elements))
       selected.current = null
     }
   }
 
-  const onConnect = (connection: Edge | Connection) => setElements(els => addEdge(connection, els))
+  const onConnect = (connection: Edge | Connection) => {
+    if (connection.source === null || connection.target === null) {
+      return
+    }
+    // ;(connection as Edge).animated = true
+    ;(connection as Edge).arrowHeadType = ArrowHeadType.Arrow
+
+    // Connect nodes audio
+    connectNodes(connection.source, connection.target)
+
+    // Connect nodes visual
+    setElements(els => addEdge(connection, els))
+  }
 
   const addOscillator = () => {
     const id = (elements.length + 1).toString()
@@ -86,8 +94,9 @@ const NodeGraph = () => {
       type: "oscillator",
       className: "audioNode",
       position: newNodePosition(width, height),
+      //FIXME: weird form coz slider move the node with itself
+      // draggable: true,
     }
-    console.log({ osc })
     const elems = [...elements, osc]
     setElements(elems)
   }
@@ -95,10 +104,13 @@ const NodeGraph = () => {
   return (
     <ReactFlow
       elements={elements}
+      onLoad={() => {
+        console.log("LOADED JUHUU")
+      }}
       onConnect={onConnect}
-      onLoad={reactFlowInstance =>
-        reactFlowInstance.fitView({ padding: elements.length < 4 ? 2 : 0 })
-      }
+      // onLoad={reactFlowInstance => {
+      //   return reactFlowInstance.fitView({ padding: elements.length < 4 ? 2 : 0 })
+      // }}
       onSelectionChange={els => (selected.current = els)}
       nodeTypes={{
         oscillator: Oscillator,
@@ -108,7 +120,7 @@ const NodeGraph = () => {
       snapGrid={[16, 16]}
       style={{ backgroundColor: "#7d4e57" }}
     >
-      {/* <MiniMap
+      <MiniMap
         nodeColor={(n: Node): string => {
           if (n.style?.background) return n.style.background.toString()
           if (n.type === "input") return "#9999ff"
@@ -116,18 +128,18 @@ const NodeGraph = () => {
           if (n.type === "default") return "#ff6060"
           return "#eee"
         }}
-      /> */}
+      />
       <Controls showInteractive={false} />
-      <Background variant={BackgroundVariant.Lines} color="black" gap={32} />
+      <Background variant={BackgroundVariant.Lines} color="#A16873" gap={32} />
 
-      <button onClick={addOscillator} style={btnCss}>
-        <FontAwesomeIcon icon={["fas", "wave-sine"]} pull="left" color="#ccc" />
+      <GraphMutateButton onClick={addOscillator}>
+        <FontAwesomeIcon icon={["fas", "wave-sine"]} />
         Add Oscillator
-      </button>
-      <button onClick={removeSelected} style={{ ...btnCss, top: 40 }}>
-        <FontAwesomeIcon icon={["fas", "trash-alt"]} pull="left" color="#ccc" />
+      </GraphMutateButton>
+      <GraphMutateButton second onClick={removeSelected}>
+        <FontAwesomeIcon icon={["fas", "trash-alt"]} />
         Remove Selected
-      </button>
+      </GraphMutateButton>
     </ReactFlow>
   )
 }

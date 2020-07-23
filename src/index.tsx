@@ -42,12 +42,13 @@ ReactDOM.render(
           opacity: 0.5;
         }
         .react-flow__node.audioNode {
-          border: 2px solid #ccc;
+          border: 2px solid #212d40;
           border-radius: 3px;
-          background-color: #eee;
+          background-color: #212d40;
+          color: #fff;
           padding: 10px;
           &.selected {
-            border-color: #222;
+            border-color: #aebdd5;
           }
         }
         .react-flow__edge {
@@ -56,6 +57,7 @@ ReactDOM.render(
           }
           &.selected .react-flow__edge-path {
             stroke-width: 2.5;
+            stroke: #aebdd5;
           }
         }
       `}

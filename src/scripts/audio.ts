@@ -3,3 +3,9 @@ export const audioContext = new (window.AudioContext || window.webkitAudioContex
 
 export const ctime = audioContext.currentTime
 export const destination = audioContext.destination
+
+type Nodes = {
+  [id: string]: AudioNode
+}
+
+export const nodes: Nodes = {}
