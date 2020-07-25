@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useState, useRef, useEffect } from "react"
 import ReactFlow, {
   Edge,
@@ -15,10 +14,18 @@ import ReactFlow, {
 import Oscillator from "./nodes/Oscillator"
 import Gain from "./nodes/Gain"
 import BiquadFilter from "./nodes/BiquadFilter"
+import Analyser from "./nodes/Analyser"
 import { newNodePosition } from "../../scripts/utils"
-import { GraphMutateButton } from "./buttons"
+import { GraphButtons, GraphButton } from "./buttons"
 import { AUDIO_CONTEXT_DESTINATION } from "../../types"
 import useAudioNodes from "../../hooks/useAudioNodes"
+
+export const audioNodeTypes = {
+  oscillator: Oscillator,
+  gain: Gain,
+  biquadfilter: BiquadFilter,
+  analyser: Analyser,
+}
 
 const defaultNode: Node = {
   id: AUDIO_CONTEXT_DESTINATION,
@@ -72,34 +79,12 @@ const NodeGraph = () => {
     }
   }
 
-  const addOscillator = () =>
+  const addAudioNode = (type: keyof typeof audioNodeTypes) => () =>
     setElements([
       ...elements,
       {
         id: (elements.length + 1).toString(),
-        type: "oscillator",
-        className: "audioNode",
-        position: newNodePosition(width, height),
-      },
-    ])
-
-  const addGain = () =>
-    setElements([
-      ...elements,
-      {
-        id: (elements.length + 1).toString(),
-        type: "gain",
-        className: "audioNode",
-        position: newNodePosition(width, height),
-      },
-    ])
-
-  const addBiquadFilter = () =>
-    setElements([
-      ...elements,
-      {
-        id: (elements.length + 1).toString(),
-        type: "biquadfilter",
+        type,
         className: "audioNode",
         position: newNodePosition(width, height),
       },
@@ -109,36 +94,33 @@ const NodeGraph = () => {
     <ReactFlow
       elements={elements}
       onConnect={onConnect}
+      nodeTypes={audioNodeTypes}
       onSelectionChange={els => (selected.current = els)}
-      nodeTypes={{
-        oscillator: Oscillator,
-        gain: Gain,
-        biquadfilter: BiquadFilter,
-      }}
       connectionLineStyle={{ stroke: "#006" }}
+      style={{ backgroundColor: "#7d4e57" }}
       snapToGrid={true}
       snapGrid={[16, 16]}
-      style={{ backgroundColor: "#7d4e57" }}
     >
       <Controls showInteractive={false} />
       <Background variant={BackgroundVariant.Lines} color="#A16873" gap={32} />
 
-      <GraphMutateButton onClick={addOscillator}>
-        <FontAwesomeIcon icon={["fas", "wave-sine"]} />
-        Add Oscillator
-      </GraphMutateButton>
-      <GraphMutateButton second onClick={addGain}>
-        <FontAwesomeIcon icon={["fas", "volume"]} />
-        Add Gain
-      </GraphMutateButton>
-      <GraphMutateButton third onClick={addBiquadFilter}>
-        <FontAwesomeIcon icon={["fas", "filter"]} />
-        Add Biquad Filter
-      </GraphMutateButton>
-      <GraphMutateButton fourth onClick={removeSelected}>
-        <FontAwesomeIcon icon={["fas", "trash-alt"]} />
-        Remove Selected
-      </GraphMutateButton>
+      <GraphButtons>
+        <GraphButton onClick={addAudioNode("oscillator")} icon={["fas", "wave-sine"]}>
+          Add Oscillator
+        </GraphButton>
+        <GraphButton onClick={addAudioNode("gain")} icon={["fas", "volume"]}>
+          Add Gain
+        </GraphButton>
+        <GraphButton onClick={addAudioNode("biquadfilter")} icon={["fas", "filter"]}>
+          Add Biquad Filter
+        </GraphButton>
+        <GraphButton onClick={addAudioNode("analyser")} icon={["fas", "analytics"]}>
+          Add Analyser
+        </GraphButton>
+        <GraphButton onClick={removeSelected} icon={["fas", "trash-alt"]}>
+          Remove Selected
+        </GraphButton>
+      </GraphButtons>
     </ReactFlow>
   )
 }

@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react"
 import { audioContext, nodes, ctime } from "../scripts/audio"
 
-const useBiquadFilterNode = (
-  id: string,
-  type: BiquadFilterType,
-  frequency: number,
-  gain: number
-) => {
+const useBiquadFilter = (id: string, type: BiquadFilterType, frequency: number, gain: number) => {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -31,4 +26,4 @@ const useBiquadFilterNode = (
   }
 }
 
-export default useBiquadFilterNode
+export default useBiquadFilter

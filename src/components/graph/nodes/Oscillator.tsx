@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core"
 import { memo, useState, Fragment } from "react"
 import { Handle, Position, NodeComponentProps } from "react-flow-renderer"
-import useOscillatorNode from "../../../hooks/useOscillatorNode"
+import useOscillator from "../../../hooks/useOscillator"
 import { Title, FormWrapper, Hr } from "../nodeform"
 import { Label } from "../nodeform"
 
@@ -12,7 +12,7 @@ export default memo(({ id }: NodeComponentProps) => {
   const [frequency, setFrequency] = useState(440)
   const [detune, setDetune] = useState(0)
   const [type, setType] = useState(types[0])
-  const { ready } = useOscillatorNode(id, frequency, detune, type)
+  const { ready } = useOscillator(id, frequency, detune, type)
 
   return (
     <Fragment>
@@ -25,7 +25,7 @@ export default memo(({ id }: NodeComponentProps) => {
             type="number"
             min="-24000"
             max="24000"
-            value={frequency}
+            defaultValue={frequency}
             onChange={event => setFrequency(event.currentTarget.valueAsNumber)}
           />
         </Label>
@@ -37,7 +37,7 @@ export default memo(({ id }: NodeComponentProps) => {
             type="number"
             min={-10000}
             max={10000}
-            value={detune}
+            defaultValue={detune}
             onChange={event => setDetune(event.currentTarget.valueAsNumber)}
           />
         </Label>
@@ -47,7 +47,7 @@ export default memo(({ id }: NodeComponentProps) => {
           <Label key={typeVal}>
             <input
               type="radio"
-              value={typeVal}
+              defaultValue={typeVal}
               checked={type === typeVal}
               onChange={event => setType(event.currentTarget.value as OscillatorType)}
             />

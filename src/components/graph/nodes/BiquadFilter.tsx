@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core"
 import { memo, useState, Fragment } from "react"
 import { Handle, Position, NodeComponentProps } from "react-flow-renderer"
-import useBiquadFilterNode from "../../../hooks/useBiquadFilterNode"
+import useBiquadFilter from "../../../hooks/useBiquadFilter"
 import { Title, FormWrapper, Hr } from "../nodeform"
 import { Label } from "../nodeform"
 
@@ -12,7 +12,7 @@ export default memo(({ id }: NodeComponentProps) => {
   const [type, setType] = useState(types[0])
   const [frequency, setFrequency] = useState(440)
   const [gain, setGain] = useState(0)
-  const { ready } = useBiquadFilterNode(id, type, frequency, gain)
+  const { ready } = useBiquadFilter(id, type, frequency, gain)
 
   return (
     <Fragment>
@@ -24,7 +24,7 @@ export default memo(({ id }: NodeComponentProps) => {
           <Label key={typeVal}>
             <input
               type="radio"
-              value={typeVal}
+              defaultValue={typeVal}
               checked={type === typeVal}
               onChange={event => setType(event.currentTarget.value as BiquadFilterType)}
             />
@@ -39,7 +39,7 @@ export default memo(({ id }: NodeComponentProps) => {
             type="number"
             min="-24000"
             max="24000"
-            value={frequency}
+            defaultValue={frequency}
             onChange={event => setFrequency(event.currentTarget.valueAsNumber)}
           />
         </Label>
@@ -51,7 +51,7 @@ export default memo(({ id }: NodeComponentProps) => {
             type="number"
             min={-40}
             max={40}
-            value={gain}
+            defaultValue={gain}
             onChange={event => setGain(event.currentTarget.valueAsNumber)}
           />
         </Label>

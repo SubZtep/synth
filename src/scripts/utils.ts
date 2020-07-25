@@ -24,3 +24,17 @@ export const newNodePosition = (
     y: bottom ? randomBetween(halfHeight, canvasHeight) : randomBetween(0, halfHeight),
   }
 }
+
+/**
+ * Fix canvas blur problem
+ * @param canvas Canvas DOM element
+ * @returns Dimensions array
+ */
+export const dpiFix = (canvas: HTMLCanvasElement) => {
+  const width = +getComputedStyle(canvas).getPropertyValue("width").slice(0, -2)
+  const height = +getComputedStyle(canvas).getPropertyValue("height").slice(0, -2)
+  const dpi = window.devicePixelRatio
+  canvas.setAttribute("width", (width * dpi).toString())
+  canvas.setAttribute("height", (height * dpi).toString())
+  return { width, height }
+}

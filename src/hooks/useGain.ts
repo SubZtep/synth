@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { audioContext, nodes, ctime } from "../scripts/audio"
 
-const useGainNode = (id: string, gain: number) => {
+const useGain = (id: string, gain: number) => {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -18,4 +18,4 @@ const useGainNode = (id: string, gain: number) => {
   }
 }
 
-export default useGainNode
+export default useGain

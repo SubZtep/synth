@@ -13,7 +13,7 @@ const Name = () => {
       <FontAwesomeIcon icon={["fal", "file-signature"]} size="lg" />
       <input
         type="text"
-        value={name}
+        defaultValue={name}
         onChange={event => dispatch(setName(event.target.value))}
         css={css`
           background-color: transparent;

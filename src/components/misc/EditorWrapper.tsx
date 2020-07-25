@@ -9,13 +9,13 @@ const EditorWrapper = styled.div`
     "audionodes visual"
     "audionodes piano";
 
-  > :nth-of-type(1) {
+  > :first-of-type {
     grid-area: audionodes;
   }
-  > :nth-of-type(2) {
-    grid-area: visual;
+  > canvas {
+    grid-area: visual !important;
   }
-  > :nth-of-type(3) {
+  > :last-of-type {
     grid-area: piano;
   }
 `

@@ -2,13 +2,13 @@
 import { jsx } from "@emotion/core"
 import { memo, useState, Fragment } from "react"
 import { Handle, Position, NodeComponentProps } from "react-flow-renderer"
-import useGainNode from "../../../hooks/useGainNode"
+import useGain from "../../../hooks/useGain"
 import { Title, FormWrapper } from "../nodeform"
 import { Label } from "../nodeform"
 
 export default memo(({ id }: NodeComponentProps) => {
   const [gain, setGain] = useState(1)
-  const { ready } = useGainNode(id, gain)
+  const { ready } = useGain(id, gain)
 
   return (
     <Fragment>
@@ -23,7 +23,7 @@ export default memo(({ id }: NodeComponentProps) => {
             min={0}
             max={1}
             step={0.1}
-            value={gain}
+            defaultValue={gain}
             onChange={event => setGain(event.currentTarget.valueAsNumber)}
           />
         </Label>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { audioContext, nodes, ctime } from "../scripts/audio"
 
-const useOscillatorNode = (id: string, frequency: number, detune: number, type: OscillatorType) => {
+const useOscillator = (id: string, frequency: number, detune: number, type: OscillatorType) => {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -28,4 +28,4 @@ const useOscillatorNode = (id: string, frequency: number, detune: number, type: 
   }
 }
 
-export default useOscillatorNode
+export default useOscillator
