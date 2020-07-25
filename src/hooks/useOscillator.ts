@@ -1,27 +1,72 @@
-import { useState, useEffect } from "react"
-import { audioContext, nodes, ctime } from "../scripts/audio"
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useRef } from "react"
+import { ElementId } from "react-flow-renderer"
+import { audioContext, nodes, ctime, connectNodes } from "../scripts/audio"
 
-const useOscillator = (id: string, frequency: number, detune: number, type: OscillatorType) => {
+const useOscillator = (
+  id: string,
+  active: boolean,
+  target: ElementId | null,
+  frequency: number,
+  detune: number,
+  type: OscillatorType
+) => {
   const [ready, setReady] = useState(false)
+  const node = useRef<OscillatorNode | null>(null)
+
+  const oscillatorFactory = () => {
+    if (node.current === null) {
+      const osc = audioContext.createOscillator()
+      osc.onended = () => {
+        throw new Error(`Oscillator #{$id} ended.`)
+      }
+      osc.frequency.setValueAtTime(frequency, ctime)
+      osc.detune.setValueAtTime(detune, ctime)
+      osc.type = type
+      node.current = osc
+      nodes.set(id, osc)
+      if (target !== null) {
+        connectNodes(id, target)
+      }
+    }
+  }
 
   useEffect(() => {
-    const osc = audioContext.createOscillator()
-    osc.start()
-    nodes.set(id, osc)
+    oscillatorFactory()
     setReady(true)
   }, [id])
 
   useEffect(() => {
-    ;(nodes.get(id) as OscillatorNode).frequency.setValueAtTime(frequency, ctime)
-  }, [id, frequency])
+    if (active) {
+      node.current!.start()
+    } else {
+      if (node.current !== null) {
+        node.current.disconnect()
+        node.current = null
+        oscillatorFactory()
+      }
+    }
+  }, [active])
 
   useEffect(() => {
-    ;(nodes.get(id) as OscillatorNode).detune.setValueAtTime(detune, ctime)
-  }, [id, detune])
+    if (node.current !== null && target !== null) {
+      connectNodes(id, target)
+    }
+  }, [target])
 
   useEffect(() => {
-    ;(nodes.get(id) as OscillatorNode).type = type
-  }, [id, type])
+    node.current?.frequency.setValueAtTime(frequency, ctime)
+  }, [frequency])
+
+  useEffect(() => {
+    node.current?.detune.setValueAtTime(detune, ctime)
+  }, [detune])
+
+  useEffect(() => {
+    if (node.current !== null) {
+      node.current.type = type
+    }
+  }, [type])
 
   return {
     ready,

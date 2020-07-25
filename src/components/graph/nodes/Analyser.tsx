@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core"
+import { jsx, css } from "@emotion/core"
 import { memo, useState, Fragment } from "react"
 import { Handle, Position, NodeComponentProps } from "react-flow-renderer"
 import useAnalyser, { fftSizes, FFTSize } from "../../../hooks/useAnalyser"
@@ -20,6 +20,7 @@ export default memo(({ id }: NodeComponentProps) => {
         <Label>
           FFT Size
           <select
+            css={{ float: "right" }}
             disabled={!ready}
             defaultValue={fftSize}
             onChange={event => setFftSize(+event.currentTarget.value as FFTSize)}
@@ -34,6 +35,7 @@ export default memo(({ id }: NodeComponentProps) => {
         <Label>
           Colour
           <input
+            css={{ float: "right" }}
             type="color"
             onChange={event => setColor(event.currentTarget.value)}
             defaultValue={color}

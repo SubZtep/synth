@@ -13,11 +13,13 @@ type Analyser = {
 type ActiveSound = {
   name: string
   analysers: Analyser[]
+  playFrequency: number | null
 }
 
 const initialState: ActiveSound = {
   name: "No Name",
   analysers: [],
+  playFrequency: null,
 }
 
 const activeSoundSlice = createSlice({
@@ -38,10 +40,20 @@ const activeSoundSlice = createSlice({
     delAnalyser: (state: ActiveSound, { payload }: PayloadAction<string>) => {
       state.analysers = state.analysers.filter(ananyser => ananyser.id !== payload)
     },
+    setPlayFrequency: (state: ActiveSound, { payload }: PayloadAction<number | null>) => {
+      state.playFrequency = payload
+    },
   },
 })
 
-export const selectName = (state: RootState) => state.activeSound.name
-export const selectAnalysers = (state: RootState) => state.activeSound.analysers
-export const { setName, addAnalyser, setAnalyser, delAnalyser } = activeSoundSlice.actions
+export const selectName = ({ activeSound }: RootState) => activeSound.name
+export const selectAnalysers = ({ activeSound }: RootState) => activeSound.analysers
+export const selectPlayFrequency = ({ activeSound }: RootState) => activeSound.playFrequency
+export const {
+  setName,
+  addAnalyser,
+  setAnalyser,
+  delAnalyser,
+  setPlayFrequency,
+} = activeSoundSlice.actions
 export default activeSoundSlice.reducer

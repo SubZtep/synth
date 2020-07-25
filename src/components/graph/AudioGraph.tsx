@@ -17,8 +17,12 @@ import BiquadFilter from "./nodes/BiquadFilter"
 import Analyser from "./nodes/Analyser"
 import { newNodePosition } from "../../scripts/utils"
 import { GraphButtons, GraphButton } from "./buttons"
-import { AUDIO_CONTEXT_DESTINATION } from "../../types"
-import useAudioNodes from "../../hooks/useAudioNodes"
+import {
+  connectNodes,
+  disconnectNodes,
+  delNode,
+  AUDIO_CONTEXT_DESTINATION,
+} from "../../scripts/audio"
 
 export const audioNodeTypes = {
   oscillator: Oscillator,
@@ -43,7 +47,6 @@ const defaultNode: Node = {
 const checkSize = (prev: number, next: number) => prev === next
 
 const NodeGraph = () => {
-  const { connectNodes, disconnectNodes, delNode } = useAudioNodes()
   // const nodes = useStoreState(store => store.nodes)
   const width = useStoreState(store => store.width, checkSize)
   const height = useStoreState(store => store.height, checkSize)
