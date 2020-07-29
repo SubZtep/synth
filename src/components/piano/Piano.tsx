@@ -6,9 +6,9 @@ import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
 
 const pianoStyle = css`
   display: flex;
-  width: calc(100% - 30px);
+  width: 100%;
   > div {
-    background-color: #fff;
+    background-color: #aaa;
     flex: 1;
     position: relative;
     height: 240px;

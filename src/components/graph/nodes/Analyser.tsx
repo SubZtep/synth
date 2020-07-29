@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core"
+import { jsx } from "@emotion/core"
 import { memo, useState, Fragment } from "react"
 import { Handle, Position, NodeComponentProps } from "react-flow-renderer"
 import useAnalyser, { fftSizes, FFTSize } from "../../../hooks/useAnalyser"

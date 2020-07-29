@@ -18,6 +18,7 @@ const useOscillator = (
     if (node.current === null) {
       const osc = audioContext.createOscillator()
       osc.onended = () => {
+        setReady(false)
         throw new Error(`Oscillator #{$id} ended.`)
       }
       osc.frequency.setValueAtTime(frequency, ctime)
