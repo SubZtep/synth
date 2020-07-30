@@ -8,7 +8,6 @@ export const FormWrapper = styled.div`
   padding: 8px;
   margin: 8px 0;
   background-color: #364156;
-  cursor: default;
 `
 
 export const Label = styled.label`
@@ -31,4 +30,20 @@ export const Hr = styled.hr`
   margin: 10px 0 6px 0;
   border: 0;
   border-bottom: 2px ridge #212d40;
+`
+
+export const AddButton = styled.button`
+  border: 0;
+  background: transparent;
+  color: #0c0;
+  font-size: 0.7rem;
+  padding: 0 8px;
+`
+
+export const DelButton = styled.button`
+  border: 0;
+  background: transparent;
+  color: #f33;
+  font-size: 0.7rem;
+  padding: 0;
 `

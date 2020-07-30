@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react"
 import { ElementId } from "react-flow-renderer"
-import { audioContext, nodes, ctime, connectNodes } from "../scripts/audio"
+import { audioContext, nodes, connectNodes } from "../scripts/audio"
 
 const useOscillator = (
   id: string,
@@ -21,8 +21,8 @@ const useOscillator = (
         setReady(false)
         throw new Error(`Oscillator #{$id} ended.`)
       }
-      osc.frequency.setValueAtTime(frequency, ctime)
-      osc.detune.setValueAtTime(detune, ctime)
+      osc.frequency.setValueAtTime(frequency, audioContext.currentTime)
+      osc.detune.setValueAtTime(detune, audioContext.currentTime)
       osc.type = type
       node.current = osc
       nodes.set(id, osc)
@@ -56,11 +56,11 @@ const useOscillator = (
   }, [target])
 
   useEffect(() => {
-    node.current?.frequency.setValueAtTime(frequency, ctime)
+    node.current?.frequency.setValueAtTime(frequency, audioContext.currentTime)
   }, [frequency])
 
   useEffect(() => {
-    node.current?.detune.setValueAtTime(detune, ctime)
+    node.current?.detune.setValueAtTime(detune, audioContext.currentTime)
   }, [detune])
 
   useEffect(() => {

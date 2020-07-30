@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { audioContext, nodes, ctime } from "../scripts/audio"
+import { audioContext, nodes } from "../scripts/audio"
 
 const useBiquadFilter = (id: string, type: BiquadFilterType, frequency: number, gain: number) => {
   const [ready, setReady] = useState(false)
@@ -14,11 +14,14 @@ const useBiquadFilter = (id: string, type: BiquadFilterType, frequency: number, 
   }, [id, type])
 
   useEffect(() => {
-    ;(nodes.get(id) as BiquadFilterNode).frequency.setValueAtTime(frequency, ctime)
+    ;(nodes.get(id) as BiquadFilterNode).frequency.setValueAtTime(
+      frequency,
+      audioContext.currentTime
+    )
   }, [id, frequency])
 
   useEffect(() => {
-    ;(nodes.get(id) as BiquadFilterNode).gain.setValueAtTime(gain, ctime)
+    ;(nodes.get(id) as BiquadFilterNode).gain.setValueAtTime(gain, audioContext.currentTime)
   }, [id, gain])
 
   return {

@@ -3,7 +3,6 @@ import { ElementId } from "react-flow-renderer"
 // @ts-ignore
 export const audioContext = new (window.AudioContext || window.webkitAudioContext)()
 
-export const ctime = audioContext.currentTime
 export const destination = audioContext.destination
 
 export const nodes = new Map<string, AudioNode>()
@@ -26,6 +25,10 @@ export const disconnectNodes = (source: string, target: string) => {
     const destination = nodes.get(target)
     if (destination) nodes.get(source)?.disconnect(destination)
   }
+}
+
+export const addNode = (id: string, audioNode: AudioNode) => {
+  nodes.set(id, audioNode)
 }
 
 export const delNode = (id: string) => {

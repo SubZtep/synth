@@ -7,17 +7,20 @@ import Main from "./components/misc/Main"
 import Visual from "./components/visual/AnalyserView"
 import Piano from "./components/piano/Piano"
 import Header from "./components/header/Header"
+import ErrorBoundary from "./ErrorBoundary"
 
 export default function App() {
   return (
     <Main>
       <Header />
       <EditorWrapper>
-        <ReactFlowProvider>
-          <AudioGraph />
-        </ReactFlowProvider>
-        <Visual />
-        <Piano />
+        <ErrorBoundary>
+          <ReactFlowProvider>
+            <AudioGraph />
+          </ReactFlowProvider>
+          <Visual />
+          <Piano />
+        </ErrorBoundary>
       </EditorWrapper>
     </Main>
   )

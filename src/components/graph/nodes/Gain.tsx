@@ -1,34 +1,45 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { memo, useState, Fragment } from "react"
-import { Handle, Position, NodeComponentProps } from "react-flow-renderer"
-import useGain from "../../../hooks/useGain"
-import { Title, FormWrapper } from "../nodeform"
-import { Label } from "../nodeform"
+import { NodeComponentProps } from "react-flow-renderer"
+import { memo, Fragment, useEffect, useRef, useState } from "react"
+import { audioContext, addNode, delNode } from "../../../scripts/audio"
+import AudioParamDefaults from "./AudioParamDefaults"
+import { AudioParamSetting } from "./AudioParamForm"
+import { Title, FormWrapper, AddButton } from "../nodeform"
+import HandleOutputs from "./HandleOutputs"
+import HandleInputs from "./HandleInputs"
+import AudioParams from "./AudioParams"
+import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
 
 export default memo(({ id }: NodeComponentProps) => {
-  const [gain, setGain] = useState(1)
-  const { ready } = useGain(id, gain)
+  const gain = useRef(audioContext.createGain())
+  const audioParams = useAudioParamKeys(gain.current)
+  const [params, setParams] = useState<AudioParamSetting[]>([
+    { name: "gain", call: "setValueAtTime", values: [1, 0] },
+    { name: "gain", call: "exponentialRampToValueAtTime", values: [0.01, 0.5] },
+  ])
+
+  useEffect(() => {
+    addNode(id, gain.current)
+    return () => delNode(id)
+  }, [id])
+
+  const addParam = () => {
+    setParams([...params, { name: audioParams[0], call: "setValueAtTime", values: [1, 0] }])
+  }
 
   return (
     <Fragment>
-      <Handle type="target" position={Position.Top} style={{ background: "#fff6" }} />
+      <HandleInputs numberOfInputs={gain.current.numberOfInputs} />
       <Title>Gain #{id}</Title>
-      <FormWrapper>
-        <Label>
-          Gain (0.0 — 1.0)
-          <input
-            disabled={!ready}
-            type="number"
-            min={0}
-            max={1}
-            step={0.1}
-            defaultValue={gain}
-            onChange={event => setGain(event.currentTarget.valueAsNumber)}
-          />
-        </Label>
-      </FormWrapper>
-      <Handle type="source" position={Position.Bottom} style={{ background: "#B0BF1A" }} />
+      <AudioParamDefaults audioNode={gain.current} keys={audioParams} />
+      {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
+      {params.length > 0 && (
+        <FormWrapper>
+          <AudioParams audioNode={gain.current} params={params} setParams={setParams} />
+        </FormWrapper>
+      )}
+      <HandleOutputs numberOfOutputs={gain.current.numberOfOutputs} />
     </Fragment>
   )
 })
