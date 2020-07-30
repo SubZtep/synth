@@ -52,6 +52,9 @@ export const selectName = ({ activeSound }: RootState) => activeSound.name
 export const selectAnalyser = ({ activeSound }: RootState) => (id: string) =>
   activeSound.analysers.find(analyser => analyser.id === id)
 export const selectAnalysers = ({ activeSound }: RootState) => activeSound.analysers
+export const selectAudioNodes = ({ activeSound }: RootState) => ({
+  analysers: activeSound.analysers,
+})
 export const selectPlayFrequency = ({ activeSound }: RootState) => activeSound.playFrequency
 export const {
   setName,
