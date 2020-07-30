@@ -52,6 +52,7 @@ const NodeGraph = () => {
   const height = useStoreState(store => store.height, checkSize)
   const [elements, setElements] = useState<Elements>([])
   const selected = useRef<Elements | null>(null)
+  const nextId = useRef<number>(1)
 
   useEffect(() => {
     if (width > 0 && height > 0 && elements.length === 0) {
@@ -86,7 +87,7 @@ const NodeGraph = () => {
     setElements([
       ...elements,
       {
-        id: (elements.length + 1).toString(),
+        id: (nextId.current++).toString(),
         type,
         className: "audioNode",
         position: newNodePosition(width, height),

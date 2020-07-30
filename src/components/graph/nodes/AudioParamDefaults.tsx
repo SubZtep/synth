@@ -29,12 +29,17 @@ export default ({ audioNode, keys }: Props) => {
           <p css={defP} key={key}>
             {key}: {param.defaultValue}
             <small>
-              (
-              {param.minValue <= Number.MIN_SAFE_INTEGER &&
-              param.maxValue >= Number.MAX_SAFE_INTEGER
-                ? `0 - 1 ?`
-                : `${param.minValue} — ${param.maxValue}`}
-              )
+              {param.minValue <= Number.MIN_SAFE_INTEGER
+                ? "∞"
+                : param.minValue % 1 === 0
+                ? param.minValue
+                : param.minValue.toFixed(2)}{" "}
+              —{" "}
+              {param.maxValue >= Number.MAX_SAFE_INTEGER
+                ? "∞"
+                : param.maxValue % 1 === 0
+                ? param.maxValue
+                : param.maxValue.toFixed(2)}
             </small>
           </p>
         )

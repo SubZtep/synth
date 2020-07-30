@@ -1,23 +1,54 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { memo, useState, Fragment } from "react"
-import { Handle, Position, NodeComponentProps } from "react-flow-renderer"
-import useBiquadFilter from "../../../hooks/useBiquadFilter"
-import { Title, FormWrapper, Hr } from "../nodeform"
+import { useSelector } from "react-redux"
+import { NodeComponentProps } from "react-flow-renderer"
+import { memo, useState, useRef, useEffect, Fragment } from "react"
+import { selectPlayFrequency } from "../../../features/activeSound/activeSoundSlice"
+import { audioContext, applyParams, addNode, delNode } from "../../../scripts/audio"
+import { Title, FormWrapper, Hr, AddButton } from "../nodeform"
+import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
+import AudioParamDefaults from "./AudioParamDefaults"
+import { AudioParamSetting } from "./AudioParamForm"
+import HandleOutputs from "./HandleOutputs"
+import HandleInputs from "./HandleInputs"
+import AudioParams from "./AudioParams"
 import { Label } from "../nodeform"
 
 const types: BiquadFilterType[] = ["lowshelf", "highshelf", "peaking"]
 
 export default memo(({ id }: NodeComponentProps) => {
+  const biquad = useRef(audioContext.createBiquadFilter())
+  const audioParams = useAudioParamKeys(biquad.current)
+  const playFrequency = useSelector(selectPlayFrequency)
   const [type, setType] = useState(types[0])
-  const [frequency, setFrequency] = useState(440)
-  const [gain, setGain] = useState(0)
-  const { ready } = useBiquadFilter(id, type, frequency, gain)
+  const [params, setParams] = useState<AudioParamSetting[]>([])
+
+  useEffect(() => {
+    addNode(id, biquad.current)
+    return () => delNode(id)
+  }, [id])
+
+  useEffect(() => {
+    if (playFrequency !== null) {
+      applyParams(biquad.current, params)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playFrequency])
+
+  useEffect(() => {
+    biquad.current.type = type
+  }, [type])
+
+  const addParam = () => {
+    setParams([...params, { name: audioParams[0], call: "setValueAtTime", values: [1, 0] }])
+  }
 
   return (
     <Fragment>
-      <Handle type="target" position={Position.Top} style={{ background: "#fff6" }} />
+      <HandleInputs numberOfInputs={biquad.current.numberOfInputs} />
       <Title>Biquad Filter #{id}</Title>
+      <AudioParamDefaults audioNode={biquad.current} keys={audioParams} />
+      {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
       <FormWrapper>
         <Label>Type</Label>
         {types.map(typeVal => (
@@ -31,32 +62,10 @@ export default memo(({ id }: NodeComponentProps) => {
             {typeVal}
           </Label>
         ))}
-        <hr />
-        <Label>
-          Frequency (-24k — 24k)
-          <input
-            disabled={!ready}
-            type="number"
-            min="-24000"
-            max="24000"
-            defaultValue={frequency}
-            onChange={event => setFrequency(event.currentTarget.valueAsNumber)}
-          />
-        </Label>
-        <Hr />
-        <Label>
-          Gain (-40 — 40)
-          <input
-            disabled={!ready}
-            type="number"
-            min={-40}
-            max={40}
-            defaultValue={gain}
-            onChange={event => setGain(event.currentTarget.valueAsNumber)}
-          />
-        </Label>
+        {params.length > 0 && <Hr />}
+        <AudioParams audioNode={biquad.current} params={params} setParams={setParams} />
       </FormWrapper>
-      <Handle type="source" position={Position.Bottom} style={{ background: "#B0BF1A" }} />
+      <HandleOutputs numberOfOutputs={biquad.current.numberOfOutputs} />
     </Fragment>
   )
 })

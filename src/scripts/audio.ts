@@ -24,7 +24,9 @@ export const disconnectNodes = (source: string, target: string) => {
     nodes.get(source)?.disconnect()
   } else {
     const destination = nodes.get(target)
-    if (destination) nodes.get(source)?.disconnect(destination)
+    if (destination) {
+      nodes.get(source)?.disconnect(destination)
+    }
   }
 }
 

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import Analyser, { FFTSize } from "../../components/graph/nodes/Analyser"
 import { RootState } from "../../store"
-import Analyser from "../../components/graph/nodes/Analyser"
-import { FFTSize } from "../../hooks/useAnalyser"
 
 type Analyser = {
   id: string

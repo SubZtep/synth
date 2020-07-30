@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import { Fragment } from "react"
 import { jsx } from "@emotion/core"
-import { Handle, Position } from "react-flow-renderer"
+import { Handle, Position, OnConnectFunc } from "react-flow-renderer"
 
 type Props = {
   numberOfInputs: number
+  onConnect?: OnConnectFunc
 }
 
-export default ({ numberOfInputs }: Props) => (
+export default ({ numberOfInputs, onConnect }: Props) => (
   <Fragment>
     {new Array(numberOfInputs).fill(0).map((_value, index) => (
       <Handle
@@ -15,6 +16,7 @@ export default ({ numberOfInputs }: Props) => (
         type="target"
         position={Position.Top}
         style={{ left: `${(100 / (numberOfInputs + 1)) * (index + 1)}%`, background: "#fff6" }}
+        onConnect={onConnect}
       />
     ))}
   </Fragment>

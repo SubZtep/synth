@@ -2,30 +2,32 @@
 import { jsx } from "@emotion/core"
 import { useSelector } from "react-redux"
 import { memo, useState, useEffect, Fragment, useRef } from "react"
-import { Handle, Position, NodeComponentProps, ElementId } from "react-flow-renderer"
+import { NodeComponentProps, ElementId, useStoreState } from "react-flow-renderer"
 import { audioContext, addNode, connectNodes, applyParams } from "../../../scripts/audio"
 import { selectPlayFrequency } from "../../../features/activeSound/activeSoundSlice"
 import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
 import { Title, FormWrapper, Hr, AddButton } from "../nodeform"
 import AudioParamDefaults from "./AudioParamDefaults"
 import { AudioParamSetting } from "./AudioParamForm"
+import HandleOutputs from "./HandleOutputs"
 import AudioParams from "./AudioParams"
 import { Label } from "../nodeform"
 
 const types: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"]
 
 export default memo(({ id }: NodeComponentProps) => {
+  const fakeOsc = useRef(audioContext.createOscillator())
   const node = useRef<OscillatorNode | null>(null)
   const audioParams = useAudioParamKeys(audioContext.createOscillator())
   const [params, setParams] = useState<AudioParamSetting[]>([])
   const [target, setTarget] = useState<ElementId | null>(null)
   const [type, setType] = useState(types[0])
   const playFrequency = useSelector(selectPlayFrequency)
+  const edges = useStoreState(store => store.edges)
 
-  const oscillatorFactory = (frequency: number) => {
+  const oscillatorFactory = () => {
     const osc = audioContext.createOscillator()
     osc.type = type
-    osc.frequency.setValueAtTime(frequency, audioContext.currentTime)
     osc.onended = () => {
       throw new Error(`Oscillator #{$id} ended.`)
     }
@@ -37,12 +39,20 @@ export default memo(({ id }: NodeComponentProps) => {
   }
 
   useEffect(() => {
+    if (!edges.some(edge => edge.source === id)) {
+      setTarget(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [edges.length])
+
+  useEffect(() => {
     if (node.current !== null) {
-      node.current.disconnect()
+      node.current?.disconnect()
       node.current = null
     }
+    node.current = oscillatorFactory()
     if (playFrequency !== null) {
-      node.current = oscillatorFactory(playFrequency)
+      node.current.frequency.setValueAtTime(playFrequency, audioContext.currentTime)
       applyParams(node.current, params)
       node.current.start()
     }
@@ -56,7 +66,7 @@ export default memo(({ id }: NodeComponentProps) => {
   return (
     <Fragment>
       <Title>Oscillator #{id}</Title>
-      <AudioParamDefaults audioNode={audioContext.createOscillator()} keys={audioParams} />
+      <AudioParamDefaults audioNode={fakeOsc.current} keys={audioParams} />
       {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
       <FormWrapper>
         <Label>Type</Label>
@@ -72,16 +82,11 @@ export default memo(({ id }: NodeComponentProps) => {
           </Label>
         ))}
         {params.length > 0 && <Hr />}
-        <AudioParams
-          audioNode={audioContext.createOscillator()}
-          params={params}
-          setParams={setParams}
-        />
+        <AudioParams audioNode={fakeOsc.current} params={params} setParams={setParams} />
       </FormWrapper>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        style={{ background: "#B0BF1A" }}
+
+      <HandleOutputs
+        numberOfOutputs={fakeOsc.current.numberOfOutputs}
         onConnect={connection => setTarget(connection.target)}
       />
     </Fragment>
