@@ -1,70 +1,64 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { memo, useState, useEffect, Fragment } from "react"
 import { useSelector } from "react-redux"
+import { memo, useState, useEffect, Fragment, useRef } from "react"
 import { Handle, Position, NodeComponentProps, ElementId } from "react-flow-renderer"
+import { audioContext, addNode, connectNodes, applyParams } from "../../../scripts/audio"
 import { selectPlayFrequency } from "../../../features/activeSound/activeSoundSlice"
-import useOscillator from "../../../hooks/useOscillator"
-import { Title, FormWrapper, Hr } from "../nodeform"
+import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
+import { Title, FormWrapper, Hr, AddButton } from "../nodeform"
+import AudioParamDefaults from "./AudioParamDefaults"
+import { AudioParamSetting } from "./AudioParamForm"
+import AudioParams from "./AudioParams"
 import { Label } from "../nodeform"
 
 const types: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"]
 
 export default memo(({ id }: NodeComponentProps) => {
+  const node = useRef<OscillatorNode | null>(null)
+  const audioParams = useAudioParamKeys(audioContext.createOscillator())
+  const [params, setParams] = useState<AudioParamSetting[]>([])
   const [target, setTarget] = useState<ElementId | null>(null)
-  const [active, setActive] = useState(false)
-  const [frequency, setFrequency] = useState(440)
-  const [detune, setDetune] = useState(0)
   const [type, setType] = useState(types[0])
-  const { ready } = useOscillator(id, active, target, frequency, detune, type)
   const playFrequency = useSelector(selectPlayFrequency)
 
-  useEffect(() => {
-    if (playFrequency !== null) {
-      setFrequency(playFrequency)
-      setActive(true)
-    } else {
-      setActive(false)
+  const oscillatorFactory = (frequency: number) => {
+    const osc = audioContext.createOscillator()
+    osc.type = type
+    osc.frequency.setValueAtTime(frequency, audioContext.currentTime)
+    osc.onended = () => {
+      throw new Error(`Oscillator #{$id} ended.`)
     }
+    addNode(id, osc)
+    if (target !== null) {
+      connectNodes(id, target)
+    }
+    return osc
+  }
+
+  useEffect(() => {
+    if (node.current !== null) {
+      node.current.disconnect()
+      node.current = null
+    }
+    if (playFrequency !== null) {
+      node.current = oscillatorFactory(playFrequency)
+      applyParams(node.current, params)
+      node.current.start()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playFrequency])
+
+  const addParam = () => {
+    setParams([...params, { name: audioParams[0], call: "setValueAtTime", values: [1, 0] }])
+  }
 
   return (
     <Fragment>
       <Title>Oscillator #{id}</Title>
+      <AudioParamDefaults audioNode={audioContext.createOscillator()} keys={audioParams} />
+      {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
       <FormWrapper>
-        <Label>
-          <input
-            type="checkbox"
-            checked={active}
-            onChange={event => setActive(event.target.checked)}
-          />
-          Active
-        </Label>
-        <Hr />
-        <Label>
-          Frequency (-24k — 24k)
-          <input
-            disabled={!ready}
-            type="number"
-            min="-24000"
-            max="24000"
-            value={frequency}
-            onChange={event => setFrequency(event.currentTarget.valueAsNumber)}
-          />
-        </Label>
-        <Hr />
-        <Label>
-          Detune (-10k — 10k)
-          <input
-            className="detune"
-            type="number"
-            min={-10000}
-            max={10000}
-            defaultValue={detune}
-            onChange={event => setDetune(event.currentTarget.valueAsNumber)}
-          />
-        </Label>
-        <Hr />
         <Label>Type</Label>
         {types.map(typeVal => (
           <Label key={typeVal}>
@@ -77,6 +71,12 @@ export default memo(({ id }: NodeComponentProps) => {
             {typeVal}
           </Label>
         ))}
+        {params.length > 0 && <Hr />}
+        <AudioParams
+          audioNode={audioContext.createOscillator()}
+          params={params}
+          setParams={setParams}
+        />
       </FormWrapper>
       <Handle
         type="source"

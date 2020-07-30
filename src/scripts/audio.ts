@@ -1,4 +1,5 @@
 import { ElementId } from "react-flow-renderer"
+import { AudioParamSetting } from "../components/graph/nodes/AudioParamForm"
 
 // @ts-ignore
 export const audioContext = new (window.AudioContext || window.webkitAudioContext)()
@@ -35,4 +36,29 @@ export const delNode = (id: string) => {
   const node = nodes.get(id)
   node?.disconnect()
   nodes.delete(id)
+}
+
+export const applyParams = (node: AudioNode, params: AudioParamSetting[]) => {
+  params.forEach(param => {
+    const values = [...param.values]
+    if (
+      [
+        "setValueAtTime",
+        "linearRampToValueAtTime",
+        "exponentialRampToValueAtTime",
+        "setTargetAtTime",
+        "setValueCurveAtTime",
+      ].includes(param.call)
+    ) {
+      // @ts-ignore
+      values[1] += audioContext.currentTime
+    }
+    if (["cancelScheduledValues", "cancelAndHoldAtTime"].includes(param.call)) {
+      // @ts-ignore
+      values[0] += audioContext.currentTime
+    }
+
+    // @ts-ignore
+    node[param.name][param.call](...values)
+  })
 }

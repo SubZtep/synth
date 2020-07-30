@@ -1,10 +1,7 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { useSelector } from "react-redux"
-import { Fragment, useEffect } from "react"
+import { Fragment } from "react"
 import AudioParamForm, { AudioParamSetting, AudioParamUpdate } from "./AudioParamForm"
-import { selectPlayFrequency } from "../../../features/activeSound/activeSoundSlice"
-import { audioContext } from "../../../scripts/audio"
 import { Hr, DelButton } from "../nodeform"
 
 type Props = {
@@ -14,35 +11,6 @@ type Props = {
 }
 
 export default ({ audioNode, params, setParams }: Props) => {
-  const playFrequency = useSelector(selectPlayFrequency)
-
-  useEffect(() => {
-    if (playFrequency !== null) {
-      params.forEach(param => {
-        const values = [...param.values]
-        if (
-          [
-            "setValueAtTime",
-            "linearRampToValueAtTime",
-            "exponentialRampToValueAtTime",
-            "setTargetAtTime",
-            "setValueCurveAtTime",
-          ].includes(param.call)
-        ) {
-          // @ts-ignore
-          values[1] += audioContext.currentTime
-        }
-        if (["cancelScheduledValues", "cancelAndHoldAtTime"].includes(param.call)) {
-          // @ts-ignore
-          values[0] += audioContext.currentTime
-        }
-
-        // @ts-ignore
-        audioNode[param.name][param.call](...values)
-      })
-    }
-  }, [playFrequency, audioNode, params])
-
   const paramChange = (index: number, newParam: AudioParamUpdate) => {
     const currParams = [...params]
     if (newParam.call !== undefined) {

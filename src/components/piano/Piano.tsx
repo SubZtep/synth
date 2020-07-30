@@ -8,7 +8,6 @@ const pianoStyle = css`
   display: flex;
   width: 100%;
   > div {
-    background-color: #aaa;
     flex: 1;
     position: relative;
     height: 240px;
@@ -17,6 +16,13 @@ const pianoStyle = css`
     border-radius: 1px 1px 5px 5px;
     box-shadow: 2px 2px 5px #0006;
     cursor: pointer;
+    background-color: #aaa;
+    &:hover {
+      background-color: #999;
+    }
+    &:active {
+      background-color: #888;
+    }
     &::after {
       position: absolute;
       bottom: 0.8rem;
@@ -33,11 +39,17 @@ const pianoStyle = css`
     left: 70%;
     height: 160px;
     width: calc(60% + 2px);
-    background: #000;
     border-radius: 1px 1px 5px 5px;
     box-shadow: 2px 2px 5px #0006;
     cursor: pointer;
     z-index: 10;
+    background-color: #000;
+    &:hover {
+      background-color: #111;
+    }
+    &:active {
+      background-color: #222;
+    }
   }
 `
 
