@@ -1,6 +1,6 @@
 {
-  "short_name": "Audio Nodes",
-  "name": "Audio Nodes Showcase",
+  "short_name": "Synth",
+  "name": "WAAπSynth",
   "icons": [
     {
       "src": "favicon.ico",
@@ -15,6 +15,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#364156",
   "background_color": "#c0c0c0"
 }
