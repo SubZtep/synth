@@ -9259,10 +9259,10 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.7.tgz#1dcfb459ab671d53f660a991513cb2f0a0553108"
   integrity sha512-TAv1KJFh3RhqxNvhzxj6LeT5NWklP6rDr2a0jaTfsZ5wSZWHOGeqQyejUp3xxLfPt2UpyJEcVQB/zyPcmonNFA==
 
-react-flow-renderer@^4.7.2:
-  version "4.7.2"
-  resolved "https://registry.yarnpkg.com/react-flow-renderer/-/react-flow-renderer-4.7.2.tgz#6dd75fcb01b2c1020fd1c0f089c2267ece0a67e5"
-  integrity sha512-K0Gck7ls2gEis4D1/rhSaX1FPff2ZydFKafQ2Z9aPPRA4QoP0BEvpbAEEoQoYK/05TfP73Otnx7ZhE+mZquGGw==
+react-flow-renderer@^4.8.0:
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/react-flow-renderer/-/react-flow-renderer-4.8.0.tgz#fbf0d5ab7f8e4e37fb8fc83b6de102e93b920284"
+  integrity sha512-/A4B1/rGc3rthDAklOZYDKnQSIebHQiXuR2A0t7S2d9Mu3RGodDUyaaf/E692PQ2YIuw3oRADuXH92sVp2xjeg==
   dependencies:
     "@welldone-software/why-did-you-render" "^4.2.7"
     classcat "^4.1.0"

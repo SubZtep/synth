@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import Analyser, { FFTSize } from "../../components/graph/nodes/Analyser"
 import { RootState } from "../../store"
 
-type Analyser = {
+export type Analyser = {
   id: string
   fftSize: FFTSize
   color: string
@@ -28,13 +28,16 @@ const activeSoundSlice = createSlice({
     setName: (state: ActiveSound, { payload }: PayloadAction<string>) => {
       state.name = payload
     },
-    addAnalyser: (state: ActiveSound, { payload }: PayloadAction<Analyser>) => {
-      state.analysers.push(payload)
+    setAnalysers: (state: ActiveSound, { payload }: PayloadAction<Analyser[]>) => {
+      state.analysers = payload
     },
     setAnalyser: (state: ActiveSound, { payload }: PayloadAction<Analyser>) => {
-      state.analysers = state.analysers.map(analyser =>
-        analyser.id === payload.id ? payload : analyser
-      )
+      const index = state.analysers.findIndex(analyser => analyser.id === payload.id)
+      if (index === -1) {
+        state.analysers.push(payload)
+      } else {
+        state.analysers[index] = payload
+      }
     },
     delAnalyser: (state: ActiveSound, { payload }: PayloadAction<string>) => {
       state.analysers = state.analysers.filter(ananyser => ananyser.id !== payload)
@@ -46,11 +49,13 @@ const activeSoundSlice = createSlice({
 })
 
 export const selectName = ({ activeSound }: RootState) => activeSound.name
+export const selectAnalyser = ({ activeSound }: RootState) => (id: string) =>
+  activeSound.analysers.find(analyser => analyser.id === id)
 export const selectAnalysers = ({ activeSound }: RootState) => activeSound.analysers
 export const selectPlayFrequency = ({ activeSound }: RootState) => activeSound.playFrequency
 export const {
   setName,
-  addAnalyser,
+  setAnalysers,
   setAnalyser,
   delAnalyser,
   setPlayFrequency,

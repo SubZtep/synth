@@ -12,16 +12,16 @@ import ErrorBoundary from "./ErrorBoundary"
 export default function App() {
   return (
     <Main>
-      <Header />
-      <EditorWrapper>
-        <ErrorBoundary>
-          <ReactFlowProvider>
+      <ReactFlowProvider>
+        <Header />
+        <EditorWrapper>
+          <ErrorBoundary>
             <AudioGraph />
-          </ReactFlowProvider>
-          <Visual />
-          <Piano />
-        </ErrorBoundary>
-      </EditorWrapper>
+            <Visual />
+            <Piano />
+          </ErrorBoundary>
+        </EditorWrapper>
+      </ReactFlowProvider>
     </Main>
   )
 }

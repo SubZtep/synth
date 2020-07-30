@@ -1,4 +1,3 @@
-import React, { useState, useRef, useEffect } from "react"
 import ReactFlow, {
   Edge,
   Node,
@@ -11,6 +10,9 @@ import ReactFlow, {
   removeElements,
   BackgroundVariant,
 } from "react-flow-renderer"
+import { useSelector, useDispatch } from "react-redux"
+import React, { useState, useRef, useEffect } from "react"
+import { selectLoadElements, setLoadElements } from "../../features/ux/uxSlice"
 import Oscillator from "./nodes/Oscillator"
 import Gain from "./nodes/Gain"
 import BiquadFilter from "./nodes/BiquadFilter"
@@ -18,6 +20,7 @@ import Analyser from "./nodes/Analyser"
 import { newNodePosition } from "../../scripts/utils"
 import { GraphButtons, GraphButton } from "./buttons"
 import {
+  nodes,
   connectNodes,
   disconnectNodes,
   delNode,
@@ -47,12 +50,23 @@ const defaultNode: Node = {
 const checkSize = (prev: number, next: number) => prev === next
 
 const NodeGraph = () => {
-  // const nodes = useStoreState(store => store.nodes)
+  const dispatch = useDispatch()
+  const loadElements = useSelector(selectLoadElements)
   const width = useStoreState(store => store.width, checkSize)
   const height = useStoreState(store => store.height, checkSize)
   const [elements, setElements] = useState<Elements>([])
   const selected = useRef<Elements | null>(null)
   const nextId = useRef<number>(1)
+
+  useEffect(() => {
+    if (loadElements) {
+      nodes.clear()
+      setElements(loadElements)
+      dispatch(setLoadElements(null))
+      nextId.current = loadElements.length + 1
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadElements])
 
   useEffect(() => {
     if (width > 0 && height > 0 && elements.length === 0) {

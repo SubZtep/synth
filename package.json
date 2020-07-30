@@ -16,7 +16,7 @@
     "@reduxjs/toolkit": "^1.4.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-flow-renderer": "^4.7.2",
+    "react-flow-renderer": "^4.8.0",
     "react-redux": "^7.2.1",
     "react-scripts": "3.4.1"
   },
