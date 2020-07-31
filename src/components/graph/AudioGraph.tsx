@@ -1,6 +1,8 @@
 import ReactFlow, {
   Edge,
   Node,
+  isEdge,
+  isNode,
   addEdge,
   Elements,
   Controls,
@@ -58,12 +60,24 @@ const NodeGraph = () => {
   const selected = useRef<Elements | null>(null)
   const nextId = useRef<number>(1)
 
+  const onConnect = (connection: Edge | Connection) => {
+    if (connection.source !== null && connection.target !== null) {
+      connectNodes(connection.source, connection.target)
+      setElements(els => addEdge(connection, els))
+    }
+  }
+
   useEffect(() => {
     if (loadElements) {
       nodes.clear()
-      setElements(loadElements)
+      const nodeElems = loadElements.filter(el => isNode(el))
+      setElements(nodeElems)
+      setTimeout(() => loadElements.filter(el => isEdge(el)).forEach(el => onConnect(el as Edge)))
+      nextId.current =
+        +nodeElems
+          .filter(el => el.id !== AUDIO_CONTEXT_DESTINATION)
+          .sort((a, b) => +b.id - +a.id)[0]?.id + 1 || 1
       dispatch(setLoadElements(null))
-      nextId.current = loadElements.length + 1
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadElements])
@@ -87,13 +101,6 @@ const NodeGraph = () => {
 
       setElements(removeElements(selected.current, elements))
       selected.current = null
-    }
-  }
-
-  const onConnect = (connection: Edge | Connection) => {
-    if (connection.source !== null && connection.target !== null) {
-      connectNodes(connection.source, connection.target)
-      setElements(els => addEdge(connection, els))
     }
   }
 

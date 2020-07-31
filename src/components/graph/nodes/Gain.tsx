@@ -1,10 +1,16 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
-import { memo, Fragment, useEffect, useRef, useState } from "react"
-import { audioContext, addNode, delNode, applyParams } from "../../../scripts/audio"
-import { selectPlayFrequency } from "../../../features/activeSound/activeSoundSlice"
+import { memo, Fragment, useEffect, useRef } from "react"
+import { audioContext, setNode, delNode, applyParams } from "../../../scripts/audio"
+import {
+  selectPlayFrequency,
+  setGain,
+  delGain,
+  selectGain,
+  Gain,
+} from "../../../features/activeSound/activeSoundSlice"
 import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
 import { Title, FormWrapper, AddButton } from "../nodeform"
 import AudioParamDefaults from "./AudioParamDefaults"
@@ -14,42 +20,54 @@ import HandleInputs from "./HandleInputs"
 import AudioParams from "./AudioParams"
 
 export default memo(({ id }: NodeComponentProps) => {
-  const gain = useRef(audioContext.createGain())
-  const audioParams = useAudioParamKeys(gain.current)
+  const node = useRef(audioContext.createGain())
+  const dispatch = useDispatch()
+  const gain: Gain = useSelector(selectGain)(id) || {
+    id,
+    params: [],
+  }
+  const audioParams = useAudioParamKeys(node.current)
   const playFrequency = useSelector(selectPlayFrequency)
-  const [params, setParams] = useState<AudioParamSetting[]>([
-    { name: "gain", call: "setValueAtTime", values: [1, 0] },
-    { name: "gain", call: "exponentialRampToValueAtTime", values: [0.01, 0.5] },
-  ])
 
   useEffect(() => {
-    addNode(id, gain.current)
-    return () => delNode(id)
-  }, [id])
+    setNode(id, node.current)
+    dispatch(setGain(gain))
+    return () => {
+      dispatch(delGain(id))
+      delNode(id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (playFrequency !== null) {
-      applyParams(gain.current, params)
+      applyParams(node.current, gain.params)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playFrequency])
 
+  const setParams = (params: AudioParamSetting[]) => {
+    dispatch(setGain({ ...gain, params }))
+  }
+
   const addParam = () => {
-    setParams([...params, { name: audioParams[0], call: "setValueAtTime", values: [1, 0] }])
+    const params = [...gain.params]
+    params.push({ name: audioParams[0], call: "setValueAtTime", values: [1, 0] })
+    setParams(params)
   }
 
   return (
     <Fragment>
-      <HandleInputs numberOfInputs={gain.current.numberOfInputs} />
+      <HandleInputs numberOfInputs={node.current.numberOfInputs} />
       <Title>Gain #{id}</Title>
-      <AudioParamDefaults audioNode={gain.current} keys={audioParams} />
+      <AudioParamDefaults audioNode={node.current} keys={audioParams} />
       {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
-      {params.length > 0 && (
+      {gain.params.length > 0 && (
         <FormWrapper>
-          <AudioParams audioNode={gain.current} params={params} setParams={setParams} />
+          <AudioParams audioNode={node.current} params={gain.params} setParams={setParams} />
         </FormWrapper>
       )}
-      <HandleOutputs numberOfOutputs={gain.current.numberOfOutputs} />
+      <HandleOutputs numberOfOutputs={node.current.numberOfOutputs} />
     </Fragment>
   )
 })

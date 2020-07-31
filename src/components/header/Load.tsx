@@ -3,12 +3,16 @@ import { jsx, css } from "@emotion/core"
 import { useDispatch } from "react-redux"
 import { useRef, useState, ChangeEvent } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { setAnalysers } from "../../features/activeSound/activeSoundSlice"
+import {
+  setAnalysers,
+  setGains,
+  setBiquadFilters,
+  setOscillators,
+} from "../../features/activeSound/activeSoundSlice"
 import { setLoadElements } from "../../features/ux/uxSlice"
 
 const validate = (obj: any) => {
-  // const requiredKeys = ["elements", "nodes", "edges", "analysers"]
-  const requiredKeys = ["elements", "analysers"]
+  const requiredKeys = ["elements", "analysers", "gains"]
   return Object.keys(obj).filter(key => requiredKeys.includes(key)).length === requiredKeys.length
 }
 
@@ -16,7 +20,6 @@ export default () => {
   const select = useRef<HTMLSelectElement>(null)
   const dispatch = useDispatch()
   const [names, setNames] = useState<string[]>([])
-  // const setElements = useStoreActions(actions => actions.setElements)
 
   const load = (event: ChangeEvent<HTMLSelectElement>) => {
     const name = event.currentTarget.value
@@ -26,7 +29,9 @@ export default () => {
       const obj = JSON.parse(data)
       if (validate(obj)) {
         dispatch(setAnalysers(obj.analysers))
-        //setElements(obj.elements)
+        dispatch(setGains(obj.gains))
+        dispatch(setBiquadFilters(obj.biquadFilters))
+        dispatch(setOscillators(obj.oscillators))
         dispatch(setLoadElements(obj.elements))
       }
     }

@@ -3,13 +3,17 @@ import { jsx } from "@emotion/core"
 import { useDispatch, useSelector } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
 import { memo, useRef, useEffect, Fragment } from "react"
-import { Label } from "../nodeform"
-import { setAnalyser, delAnalyser, Analyser } from "../../../features/activeSound/activeSoundSlice"
-import { selectAnalyser } from "../../../features/activeSound/activeSoundSlice"
-import { audioContext, addNode, delNode } from "../../../scripts/audio"
+import {
+  setAnalyser,
+  delAnalyser,
+  selectAnalyser,
+  Analyser,
+} from "../../../features/activeSound/activeSoundSlice"
+import { audioContext, setNode, delNode } from "../../../scripts/audio"
 import { Title, FormWrapper } from "../nodeform"
 import HandleOutputs from "./HandleOutputs"
 import HandleInputs from "./HandleInputs"
+import { Label } from "../nodeform"
 
 const fftSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768] as const
 export type FFTSize = typeof fftSizes[number]
@@ -25,7 +29,7 @@ export default memo(({ id }: NodeComponentProps) => {
   }
 
   useEffect(() => {
-    addNode(id, node.current)
+    setNode(id, node.current)
     dispatch(setAnalyser(analyser))
     return () => {
       dispatch(delAnalyser(id))
