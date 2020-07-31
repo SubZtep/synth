@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from "react"
 import ReactFlow, {
   Edge,
   Node,
+  isEdge,
+  isNode,
   addEdge,
   Elements,
   Controls,
@@ -11,6 +12,9 @@ import ReactFlow, {
   removeElements,
   BackgroundVariant,
 } from "react-flow-renderer"
+import { useSelector, useDispatch } from "react-redux"
+import React, { useState, useRef, useEffect } from "react"
+import { selectLoadElements, setLoadElements } from "../../features/ux/uxSlice"
 import Oscillator from "./nodes/Oscillator"
 import Gain from "./nodes/Gain"
 import BiquadFilter from "./nodes/BiquadFilter"
@@ -18,6 +22,7 @@ import Analyser from "./nodes/Analyser"
 import { newNodePosition } from "../../scripts/utils"
 import { GraphButtons, GraphButton } from "./buttons"
 import {
+  nodes,
   connectNodes,
   disconnectNodes,
   delNode,
@@ -47,12 +52,35 @@ const defaultNode: Node = {
 const checkSize = (prev: number, next: number) => prev === next
 
 const NodeGraph = () => {
-  // const nodes = useStoreState(store => store.nodes)
+  const dispatch = useDispatch()
+  const loadElements = useSelector(selectLoadElements)
   const width = useStoreState(store => store.width, checkSize)
   const height = useStoreState(store => store.height, checkSize)
   const [elements, setElements] = useState<Elements>([])
   const selected = useRef<Elements | null>(null)
   const nextId = useRef<number>(1)
+
+  const onConnect = (connection: Edge | Connection) => {
+    if (connection.source !== null && connection.target !== null) {
+      connectNodes(connection.source, connection.target)
+      setElements(els => addEdge(connection, els))
+    }
+  }
+
+  useEffect(() => {
+    if (loadElements) {
+      nodes.clear()
+      const nodeElems = loadElements.filter(el => isNode(el))
+      setElements(nodeElems)
+      setTimeout(() => loadElements.filter(el => isEdge(el)).forEach(el => onConnect(el as Edge)))
+      nextId.current =
+        +nodeElems
+          .filter(el => el.id !== AUDIO_CONTEXT_DESTINATION)
+          .sort((a, b) => +b.id - +a.id)[0]?.id + 1 || 1
+      dispatch(setLoadElements(null))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadElements])
 
   useEffect(() => {
     if (width > 0 && height > 0 && elements.length === 0) {
@@ -73,13 +101,6 @@ const NodeGraph = () => {
 
       setElements(removeElements(selected.current, elements))
       selected.current = null
-    }
-  }
-
-  const onConnect = (connection: Edge | Connection) => {
-    if (connection.source !== null && connection.target !== null) {
-      connectNodes(connection.source, connection.target)
-      setElements(els => addEdge(connection, els))
     }
   }
 

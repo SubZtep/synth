@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { useEffect, useRef } from "react"
 import { jsx, css } from "@emotion/core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { selectName, setName } from "../../features/activeSound/activeSoundSlice"
@@ -7,11 +8,17 @@ import { useSelector, useDispatch } from "react-redux"
 const Name = () => {
   const name = useSelector(selectName)
   const dispatch = useDispatch()
+  const input = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    input.current!.value = name
+  }, [name])
 
   return (
     <div>
-      <FontAwesomeIcon icon={["fal", "file-signature"]} size="lg" />
+      <FontAwesomeIcon icon={["fal", "file-signature"]} size="lg" color="LimeGreen" />
       <input
+        ref={input}
         type="text"
         defaultValue={name}
         onChange={event => dispatch(setName(event.target.value))}

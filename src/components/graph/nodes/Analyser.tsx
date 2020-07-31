@@ -1,32 +1,36 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
-import { memo, useState, useRef, useEffect, Fragment } from "react"
-import { Label } from "../nodeform"
+import { memo, useRef, useEffect, Fragment } from "react"
 import {
-  addAnalyser,
   setAnalyser,
   delAnalyser,
+  selectAnalyser,
+  Analyser,
 } from "../../../features/activeSound/activeSoundSlice"
-import { audioContext, addNode, delNode } from "../../../scripts/audio"
+import { audioContext, setNode, delNode } from "../../../scripts/audio"
 import { Title, FormWrapper } from "../nodeform"
 import HandleOutputs from "./HandleOutputs"
 import HandleInputs from "./HandleInputs"
+import { Label } from "../nodeform"
 
 const fftSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768] as const
 export type FFTSize = typeof fftSizes[number]
 
 export default memo(({ id }: NodeComponentProps) => {
-  const analyser = useRef(audioContext.createAnalyser())
-  const [fftSize, setFftSize] = useState<FFTSize>(fftSizes[6])
-  const [color, setColor] = useState<string>("#d66853")
-  const [lineWidth, setLineWidth] = useState(2)
+  const node = useRef(audioContext.createAnalyser())
   const dispatch = useDispatch()
+  const analyser: Analyser = useSelector(selectAnalyser)(id) || {
+    id,
+    fftSize: fftSizes[6],
+    color: "#d66853",
+    lineWidth: 2,
+  }
 
   useEffect(() => {
-    addNode(id, analyser.current)
-    dispatch(addAnalyser({ id, fftSize, color, lineWidth }))
+    setNode(id, node.current)
+    dispatch(setAnalyser(analyser))
     return () => {
       dispatch(delAnalyser(id))
       delNode(id)
@@ -34,26 +38,19 @@ export default memo(({ id }: NodeComponentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    analyser.current.fftSize = fftSize
-  }, [fftSize])
-
-  useEffect(() => {
-    dispatch(setAnalyser({ id, fftSize, color, lineWidth }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, color, lineWidth])
-
   return (
     <Fragment>
-      <HandleInputs numberOfInputs={analyser.current.numberOfInputs} />
+      <HandleInputs numberOfInputs={node.current.numberOfInputs} />
       <Title>Analyser #{id}</Title>
       <FormWrapper>
         <Label>
           FFT Size
           <select
             css={{ float: "right" }}
-            defaultValue={fftSize}
-            onChange={event => setFftSize(+event.currentTarget.value as FFTSize)}
+            value={analyser.fftSize}
+            onChange={event =>
+              dispatch(setAnalyser({ ...analyser, fftSize: +event.currentTarget.value as FFTSize }))
+            }
           >
             {fftSizes.map(fft => (
               <option key={fft} value={fft}>
@@ -67,8 +64,10 @@ export default memo(({ id }: NodeComponentProps) => {
           <input
             css={{ float: "right" }}
             type="color"
-            onChange={event => setColor(event.currentTarget.value)}
-            defaultValue={color}
+            value={analyser.color}
+            onChange={event =>
+              dispatch(setAnalyser({ ...analyser, color: event.currentTarget.value }))
+            }
           />
         </Label>
         <Label>
@@ -76,12 +75,14 @@ export default memo(({ id }: NodeComponentProps) => {
           <input
             type="number"
             min={1}
-            onChange={event => setLineWidth(event.currentTarget.valueAsNumber)}
-            defaultValue={lineWidth}
+            value={analyser.lineWidth}
+            onChange={event =>
+              dispatch(setAnalyser({ ...analyser, lineWidth: event.currentTarget.valueAsNumber }))
+            }
           />
         </Label>
       </FormWrapper>
-      <HandleOutputs numberOfOutputs={analyser.current.numberOfOutputs} />
+      <HandleOutputs numberOfOutputs={node.current.numberOfOutputs} />
     </Fragment>
   )
 })

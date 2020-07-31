@@ -1,16 +1,16 @@
-import React, { Fragment } from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
-import store from "./store"
-import App from "./App"
-// import * as serviceWorker from "./serviceWorker"
+import React, { Fragment } from "react"
 import { Global, css } from "@emotion/core"
-import { library } from "@fortawesome/fontawesome-svg-core"
+// import * as serviceWorker from "./serviceWorker"
+import { fal } from "@fortawesome/pro-light-svg-icons"
+import { fas } from "@fortawesome/pro-solid-svg-icons"
 import { fab } from "@fortawesome/free-brands-svg-icons"
 import { fad } from "@fortawesome/pro-duotone-svg-icons"
-import { fal } from "@fortawesome/pro-light-svg-icons"
 import { far } from "@fortawesome/pro-regular-svg-icons"
-import { fas } from "@fortawesome/pro-solid-svg-icons"
+import { library } from "@fortawesome/fontawesome-svg-core"
+import store from "./store"
+import App from "./App"
 
 //TODO: collect icons and check sizes https://fontawesome.com/how-to-use/on-the-web/using-with/react#using
 library.add(fab, fad, fal, far, fas)

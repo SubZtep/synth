@@ -1,6 +1,21 @@
 import styled from "@emotion/styled"
 
-const EditorWrapper = styled.div`
+export const Main = styled.div`
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  > div:nth-of-type(1) {
+    flex-grow: 0;
+  }
+  > div:nth-of-type(2) {
+    flex-grow: 1;
+  }
+`
+
+export const EditorWrapper = styled.div`
   height: max-content;
   display: grid;
   grid-template-columns: auto 450px;
@@ -20,5 +35,3 @@ const EditorWrapper = styled.div`
     grid-area: piano;
   }
 `
-
-export default EditorWrapper
