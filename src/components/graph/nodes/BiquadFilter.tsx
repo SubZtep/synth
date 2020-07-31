@@ -20,7 +20,16 @@ import AudioParams from "./AudioParams"
 import { Label } from "../nodeform"
 import { AudioParamSetting } from "./AudioParamForm"
 
-const types: BiquadFilterType[] = ["lowshelf", "highshelf", "peaking"]
+const types: BiquadFilterType[] = [
+  "allpass",
+  "bandpass",
+  "highpass",
+  "highshelf",
+  "lowpass",
+  "lowshelf",
+  "notch",
+  "peaking",
+]
 
 export default memo(({ id }: NodeComponentProps) => {
   const node = useRef(audioContext.createBiquadFilter())
@@ -74,17 +83,19 @@ export default memo(({ id }: NodeComponentProps) => {
       {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
       <FormWrapper>
         <Label>Type</Label>
-        {types.map(typeVal => (
-          <Label key={typeVal}>
-            <input
-              type="radio"
-              defaultValue={typeVal}
-              checked={biquadFilter.type === typeVal}
-              onChange={changeType}
-            />
-            {typeVal}
-          </Label>
-        ))}
+        <div css={{ columnCount: 2 }}>
+          {types.map(typeVal => (
+            <Label key={typeVal}>
+              <input
+                type="radio"
+                defaultValue={typeVal}
+                checked={biquadFilter.type === typeVal}
+                onChange={changeType}
+              />
+              {typeVal}
+            </Label>
+          ))}
+        </div>
         {biquadFilter.params.length > 0 && <Hr />}
         <AudioParams audioNode={node.current} params={biquadFilter.params} setParams={setParams} />
       </FormWrapper>

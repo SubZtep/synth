@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
 import { memo, useState, useEffect, Fragment, useRef, ChangeEvent } from "react"
-import { NodeComponentProps, ElementId, useStoreState, Handle, Edge } from "react-flow-renderer"
+import { NodeComponentProps, ElementId, useStoreState, Edge } from "react-flow-renderer"
 import { audioContext, setNode, connectNodes, applyParams } from "../../../scripts/audio"
 import {
   selectPlayFrequency,
@@ -55,7 +56,6 @@ export default memo(({ id }: NodeComponentProps) => {
   useEffect(() => {
     const edge: Edge | undefined = edges.find(edge => edge.source === id)
     setTarget(edge?.target ?? null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [edges.length])
 
   useEffect(() => {
@@ -69,7 +69,6 @@ export default memo(({ id }: NodeComponentProps) => {
       applyParams(node.current, oscillator.params)
       node.current.start()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playFrequency])
 
   const changeType = (event: ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +110,6 @@ export default memo(({ id }: NodeComponentProps) => {
           setParams={setParams}
         />
       </FormWrapper>
-
       <HandleOutputs numberOfOutputs={fakeOscForData.current.numberOfOutputs} />
     </Fragment>
   )

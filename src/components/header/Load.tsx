@@ -4,8 +4,9 @@ import { useDispatch } from "react-redux"
 import { useRef, useState, ChangeEvent } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-  setAnalysers,
+  setName,
   setGains,
+  setAnalysers,
   setBiquadFilters,
   setOscillators,
 } from "../../features/activeSound/activeSoundSlice"
@@ -33,6 +34,7 @@ export default () => {
         dispatch(setBiquadFilters(obj.biquadFilters))
         dispatch(setOscillators(obj.oscillators))
         dispatch(setLoadElements(obj.elements))
+        dispatch(setName(name))
       }
     }
   }

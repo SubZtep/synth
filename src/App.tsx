@@ -1,12 +1,11 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { ReactFlowProvider } from "react-flow-renderer"
-import EditorWrapper from "./components/misc/EditorWrapper"
+import { Main, EditorWrapper } from "./components/styled"
 import AudioGraph from "./components/graph/AudioGraph"
-import Main from "./components/misc/Main"
-import Visual from "./components/visual/AnalyserView"
-import Piano from "./components/piano/Piano"
+import Visual from "./components/side/AnalyserView"
 import Header from "./components/header/Header"
+import Piano from "./components/side/Piano"
 import ErrorBoundary from "./ErrorBoundary"
 
 export default function App() {
