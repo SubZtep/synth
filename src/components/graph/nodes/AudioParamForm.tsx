@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
 import { Fragment, ChangeEvent } from "react"
-import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
+import { AudioParams } from "../../../hooks/useAudioNodeDefs"
 
 const paramRow = css(css`
   width: 100%;
@@ -43,18 +43,14 @@ export type AudioParamUpdate = {
 }
 
 type Props = {
-  audioNode: AudioNode
-
+  audioParams: AudioParams
   name: string
   call: Call
   values: CallParams
-
   onChange: (param: AudioParamUpdate) => void
 }
 
-export default ({ audioNode, name, call, values, onChange }: Props) => {
-  const audioParams = useAudioParamKeys(audioNode)
-
+export default ({ audioParams, name, call, values, onChange }: Props) => {
   const setNumber = (event: ChangeEvent<HTMLInputElement>) => {
     const nth = +event.currentTarget.getAttribute("data-nth")!
     const val = +event.currentTarget.valueAsNumber
@@ -86,7 +82,7 @@ export default ({ audioNode, name, call, values, onChange }: Props) => {
           Name
           <br />
           <select value={name} onChange={event => onChange({ name: event.currentTarget.value })}>
-            {audioParams.map(key => (
+            {Object.keys(audioParams).map(key => (
               <option key={key} value={key}>
                 {key}
               </option>

@@ -2,15 +2,16 @@
 import { jsx } from "@emotion/core"
 import { Fragment } from "react"
 import AudioParamForm, { AudioParamSetting, AudioParamUpdate } from "./AudioParamForm"
-import { Hr, DelButton } from "../nodeform"
+import { Hr, DelButton } from "./styled"
+import { AudioParams } from "../../../hooks/useAudioNodeDefs"
 
 type Props = {
-  audioNode: AudioNode
+  audioParams: AudioParams
   params: AudioParamSetting[]
   setParams: (params: AudioParamSetting[]) => void
 }
 
-export default ({ audioNode, params, setParams }: Props) => {
+export default ({ audioParams, params, setParams }: Props) => {
   const paramChange = (index: number, newParam: AudioParamUpdate) => {
     const currParams = [...params]
     if (newParam.call !== undefined) {
@@ -47,7 +48,7 @@ export default ({ audioNode, params, setParams }: Props) => {
         <div key={param.name + param.call + index}>
           {index > 0 && <Hr />}
           <AudioParamForm
-            audioNode={audioNode}
+            audioParams={audioParams}
             {...param}
             onChange={newParam => paramChange(index, newParam)}
           />

@@ -1,6 +1,5 @@
-/** @jsx jsx */
-import { jsx, css } from "@emotion/core"
-import HeaderWrapper from "./HeaderWrapper"
+import React from "react"
+import { HeaderWrapper, MenuWrapper } from "./styled"
 import MenuOpener from "./MenuOpener"
 import Brand from "./Brand"
 import Name from "./Name"
@@ -11,23 +10,12 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <Brand />
-      <div
-        css={css`
-          display: flex;
-          gap: 18px;
-          opacity: 0.75;
-          transition: 100ms;
-          &:hover {
-            opacity: 1;
-            transition: 100ms;
-          }
-        `}
-      >
+      <MenuWrapper>
         <Load />
         <Name />
         <Save />
         <MenuOpener />
-      </div>
+      </MenuWrapper>
     </HeaderWrapper>
   )
 }

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 
-const Brand = () => {
+export default () => {
   return (
     <div css={{ display: "flex", alignItems: "flex-end" }}>
       <h1 css={{ margin: 0, color: "#f2f4f7" }}>WAAπSynth</h1>
@@ -9,5 +9,3 @@ const Brand = () => {
     </div>
   )
 }
-
-export default Brand

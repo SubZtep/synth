@@ -20,7 +20,7 @@ ReactDOM.render(
   <Fragment>
     <Global
       styles={css`
-        @import url("https://fonts.googleapis.com/css2?family=Tomorrow&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&family=Tomorrow&display=swap");
         * {
           box-sizing: border-box;
         }
@@ -30,7 +30,7 @@ ReactDOM.render(
           margin: 0;
           width: 100vw;
           height: 100vh;
-          font-family: Tomorrow, sans-serif;
+          font-family: Roboto, sans-serif;
           font-style: normal;
           font-weight: 400;
           font-size: 16px;
@@ -38,34 +38,6 @@ ReactDOM.render(
         }
         button {
           font-family: Tomorrow, sans-serif;
-        }
-        .react-flow__controls-button {
-          width: 25px;
-          height: 25px;
-          opacity: 0.5;
-        }
-        .react-flow__handle {
-          width: 1rem;
-          height: 1rem;
-        }
-        .react-flow__node.audioNode {
-          border: 2px solid #212d40;
-          border-radius: 3px;
-          background-color: #212d40;
-          color: #fff;
-          padding: 10px;
-          &.selected {
-            border-color: #aebdd5;
-          }
-        }
-        .react-flow__edge {
-          .react-flow__edge-path {
-            stroke: #33c;
-          }
-          &.selected .react-flow__edge-path {
-            stroke-width: 2.5;
-            stroke: #aebdd5;
-          }
         }
       `}
     />

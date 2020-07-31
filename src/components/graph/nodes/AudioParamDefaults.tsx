@@ -1,47 +1,68 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core"
 import { Fragment } from "react"
-import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
-
-const defP = css`
-  margin: 4px 8px;
-  font-size: 0.9rem;
-  small {
-    margin-left: 8px;
-    font-size: 0.7rem;
-  }
-`
+import { jsx, css } from "@emotion/core"
+import { AudioParams } from "../../../hooks/useAudioNodeDefs"
+import { numberWithSpaces } from "../../../scripts/utils"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 type Props = {
-  audioNode: AudioNode
-  keys?: string[]
+  audioParams: AudioParams
+  addParam: (name?: string, defaultValue?: number) => void
 }
 
-export default ({ audioNode, keys }: Props) => {
-  const audioParams = keys || useAudioParamKeys(audioNode)
-
+export default ({ audioParams, addParam }: Props) => {
   return (
     <Fragment>
-      {audioParams.map(key => {
-        // @ts-ignore
-        const param = audioNode[key] as AudioParam
+      {Object.entries(audioParams).map(([key, params]) => {
         return (
-          <p css={defP} key={key}>
-            {key}: {param.defaultValue}
-            <small>
-              {param.minValue <= Number.MIN_SAFE_INTEGER
-                ? "∞"
-                : param.minValue % 1 === 0
-                ? param.minValue
-                : param.minValue.toFixed(2)}{" "}
+          <div
+            css={css`
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 6px;
+              font-size: 0.9rem;
+              margin: 0 6px;
+              line-height: 1.35rem;
+            `}
+            key={key}
+          >
+            <div>
+              <FontAwesomeIcon
+                onClick={() => addParam(key, params.defaultValue)}
+                icon={["fal", "layer-plus"]}
+                size="lg"
+                color="LimeGreen"
+                css={css`
+                  cursor: pointer;
+                  &:hover {
+                    transition: 100ms;
+                    transform: scale(1.1);
+                  }
+                `}
+              />
+              <span
+                css={css`
+                  font-weight: 100;
+                  margin-left: 3px;
+                `}
+              >
+                {key}:
+              </span>{" "}
+              {params.defaultValue}
+            </div>
+            <div
+              css={css`
+                font-size: 0.8rem;
+                color: #999;
+                word-spacing: -1px;
+              `}
+            >
+              {params.minValue <= Number.MIN_SAFE_INTEGER ? "∞" : numberWithSpaces(params.minValue)}{" "}
               —{" "}
-              {param.maxValue >= Number.MAX_SAFE_INTEGER
-                ? "∞"
-                : param.maxValue % 1 === 0
-                ? param.maxValue
-                : param.maxValue.toFixed(2)}
-            </small>
-          </p>
+              {params.maxValue >= Number.MAX_SAFE_INTEGER ? "∞" : numberWithSpaces(params.maxValue)}
+            </div>
+          </div>
         )
       })}
     </Fragment>

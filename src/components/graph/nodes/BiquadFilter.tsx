@@ -2,23 +2,19 @@
 import { jsx } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
-import { memo, useRef, useEffect, Fragment, ChangeEvent } from "react"
+import { memo, Fragment, ChangeEvent } from "react"
 import {
-  selectPlayFrequency,
   setBiquadFilter,
-  delBiquadFilter,
   selectBiquadFilter,
   BiquadFilter,
 } from "../../../features/activeSound/activeSoundSlice"
-import { audioContext, applyParams, setNode, delNode } from "../../../scripts/audio"
-import { Title, FormWrapper, Hr, AddButton } from "../nodeform"
-import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
 import AudioParamDefaults from "./AudioParamDefaults"
 import HandleOutputs from "./HandleOutputs"
 import HandleInputs from "./HandleInputs"
 import AudioParams from "./AudioParams"
-import { Label } from "../nodeform"
 import { AudioParamSetting } from "./AudioParamForm"
+import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
+import { FormWrapper, Title, Hr } from "./styled"
 
 const types: BiquadFilterType[] = [
   "allpass",
@@ -32,32 +28,13 @@ const types: BiquadFilterType[] = [
 ]
 
 export default memo(({ id }: NodeComponentProps) => {
-  const node = useRef(audioContext.createBiquadFilter())
+  const defs = useAudioNodeDefs("BiquadFilterNode")
   const dispatch = useDispatch()
   const biquadFilter: BiquadFilter = useSelector(selectBiquadFilter)(id) || {
     id,
     type: types[0],
     params: [],
   }
-  const audioParams = useAudioParamKeys(node.current)
-  const playFrequency = useSelector(selectPlayFrequency)
-
-  useEffect(() => {
-    setNode(id, node.current)
-    dispatch(setBiquadFilter(biquadFilter))
-    return () => {
-      dispatch(delBiquadFilter(id))
-      delNode(id)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (playFrequency !== null) {
-      applyParams(node.current, biquadFilter.params)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playFrequency])
 
   const changeType = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(
@@ -69,23 +46,26 @@ export default memo(({ id }: NodeComponentProps) => {
     dispatch(setBiquadFilter({ ...biquadFilter, params }))
   }
 
-  const addParam = () => {
+  const addParam = (name?: string, defaultValue = 1) => {
     const params = [...biquadFilter.params]
-    params.push({ name: audioParams[0], call: "setValueAtTime", values: [1, 0] })
+    params.push({
+      name: name || Object.keys(defs.audioParams)[0],
+      call: "setValueAtTime",
+      values: [defaultValue, 0],
+    })
     setParams(params)
   }
 
   return (
     <Fragment>
-      <HandleInputs numberOfInputs={node.current.numberOfInputs} />
+      <HandleInputs numberOfInputs={defs.numberOfInputs} />
       <Title>Biquad Filter #{id}</Title>
-      <AudioParamDefaults audioNode={node.current} keys={audioParams} />
-      {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
-      <FormWrapper>
-        <Label>Type</Label>
-        <div css={{ columnCount: 2 }}>
+      <AudioParamDefaults audioParams={defs.audioParams} addParam={addParam} />
+      <FormWrapper css={{ marginTop: 4 }}>
+        <label>Type</label>
+        <div css={{ columnCount: 2, fontWeight: 300 }}>
           {types.map(typeVal => (
-            <Label key={typeVal}>
+            <label key={typeVal} css={{ display: "block" }}>
               <input
                 type="radio"
                 defaultValue={typeVal}
@@ -93,13 +73,17 @@ export default memo(({ id }: NodeComponentProps) => {
                 onChange={changeType}
               />
               {typeVal}
-            </Label>
+            </label>
           ))}
         </div>
         {biquadFilter.params.length > 0 && <Hr />}
-        <AudioParams audioNode={node.current} params={biquadFilter.params} setParams={setParams} />
+        <AudioParams
+          audioParams={defs.audioParams}
+          params={biquadFilter.params}
+          setParams={setParams}
+        />
       </FormWrapper>
-      <HandleOutputs numberOfOutputs={node.current.numberOfOutputs} />
+      <HandleOutputs numberOfOutputs={defs.numberOfOutputs} />
     </Fragment>
   )
 })

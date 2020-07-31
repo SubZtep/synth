@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core"
+import { jsx } from "@emotion/core"
 import { useDispatch } from "react-redux"
 import { useRef, useState, ChangeEvent } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -11,6 +11,7 @@ import {
   setOscillators,
 } from "../../features/activeSound/activeSoundSlice"
 import { setLoadElements } from "../../features/ux/uxSlice"
+import { LoadWrapper } from "./styled"
 
 const validate = (obj: any) => {
   const requiredKeys = ["elements", "analysers", "gains"]
@@ -40,22 +41,8 @@ export default () => {
   }
 
   return (
-    <div
-      css={css`
-        transition: 50ms;
-        display: flex;
-        &:hover {
-          select {
-            display: block;
-          }
-          svg {
-            transition: 50ms;
-            transform: scale(1.05);
-          }
-        }
-      `}
-    >
-      <select ref={select} css={{ display: "none", marginRight: 8 }} onChange={load}>
+    <LoadWrapper>
+      <select ref={select} onChange={load}>
         <option value="">--- Please Select ---</option>
         {names.map(name => (
           <option key={name} value={name}>
@@ -68,6 +55,6 @@ export default () => {
         size="lg"
         onMouseOver={() => setNames(Object.keys(localStorage))}
       />
-    </div>
+    </LoadWrapper>
   )
 }

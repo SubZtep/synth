@@ -54,32 +54,39 @@ export const GraphButtons = styled.div`
   }
 `
 
-export const GraphMutateButton = styled.button<any>`
-  position: absolute;
-  top: ${props => (props.fourth ? "104px" : props.third ? "72px" : props.second ? "40px" : "8px")};
-  right: 10px;
-  width: 160px;
-  height: 28px;
-  z-index: 4;
-  border-radius: 4px;
-  background-color: #212d40;
-  border-color: #212d40;
-  color: #fff;
-  svg {
-    float: left;
-    color: #ccc;
+export const globalGraph = css`
+  .react-flow__node.audioNode {
+    border: 2px solid #212d40;
+    border-radius: 4px;
+    background-color: #212d40;
+    color: #fff;
+    padding: 2px;
+    &.selected {
+      border-color: #aebdd5;
+    }
   }
-`
-
-export const NodeButton = styled.button<any>`
-  width: 100%;
-  height: 28px;
-  border-radius: 4px;
-  background-color: #212d40;
-  border-color: #212d40;
-  color: #fff;
-  svg {
-    float: left;
-    color: #ccc;
+  .react-flow__handle {
+    width: 1rem;
+    height: 1rem;
+    &.react-flow__handle-top {
+      top: -0.5rem;
+    }
+    &.react-flow__handle-bottom {
+      bottom: -0.5rem;
+    }
+  }
+  .react-flow__edge {
+    .react-flow__edge-path {
+      stroke: #33c;
+    }
+    &.selected .react-flow__edge-path {
+      stroke-width: 2.5;
+      stroke: #aebdd5;
+    }
+  }
+  .react-flow__controls-button {
+    width: 25px;
+    height: 25px;
+    opacity: 0.5;
   }
 `
