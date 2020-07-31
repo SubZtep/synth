@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/synth/static/js/main.a558dd72.chunk.js",
-    "main.js.map": "/synth/static/js/main.a558dd72.chunk.js.map",
+    "main.js": "/synth/static/js/main.e83d75d0.chunk.js",
+    "main.js.map": "/synth/static/js/main.e83d75d0.chunk.js.map",
     "runtime-main.js": "/synth/static/js/runtime-main.2ab9fd27.js",
     "runtime-main.js.map": "/synth/static/js/runtime-main.2ab9fd27.js.map",
-    "static/js/2.870674d6.chunk.js": "/synth/static/js/2.870674d6.chunk.js",
-    "static/js/2.870674d6.chunk.js.map": "/synth/static/js/2.870674d6.chunk.js.map",
+    "static/js/2.a433b9e0.chunk.js": "/synth/static/js/2.a433b9e0.chunk.js",
+    "static/js/2.a433b9e0.chunk.js.map": "/synth/static/js/2.a433b9e0.chunk.js.map",
     "index.html": "/synth/index.html",
-    "precache-manifest.ce3002938e62710a0281faf7f542f97a.js": "/synth/precache-manifest.ce3002938e62710a0281faf7f542f97a.js",
+    "precache-manifest.e2e138bd392eecb6fc85d6472550ea43.js": "/synth/precache-manifest.e2e138bd392eecb6fc85d6472550ea43.js",
     "service-worker.js": "/synth/service-worker.js",
-    "static/js/2.870674d6.chunk.js.LICENSE.txt": "/synth/static/js/2.870674d6.chunk.js.LICENSE.txt"
+    "static/js/2.a433b9e0.chunk.js.LICENSE.txt": "/synth/static/js/2.a433b9e0.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.2ab9fd27.js",
-    "static/js/2.870674d6.chunk.js",
-    "static/js/main.a558dd72.chunk.js"
+    "static/js/2.a433b9e0.chunk.js",
+    "static/js/main.e83d75d0.chunk.js"
   ]
 }
