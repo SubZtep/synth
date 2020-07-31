@@ -14,9 +14,13 @@ const MenuOpener = () => {
   return (
     <Fragment>
       <FontAwesomeIcon
+        fixedWidth
         icon={["fas", "bars"]}
         size="lg"
         css={css`
+          position: fixed;
+          top: 6px;
+          right: 8px;
           &:hover {
             transform: rotate(90deg);
             transition: 500ms;

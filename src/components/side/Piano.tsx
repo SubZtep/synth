@@ -10,7 +10,7 @@ const pianoStyle = css`
   > div {
     flex: 1;
     position: relative;
-    height: 240px;
+    height: 150px;
     margin: 0 1px;
     border: 1px solid #999;
     border-radius: 1px 1px 5px 5px;
@@ -25,11 +25,11 @@ const pianoStyle = css`
     }
     &::after {
       position: absolute;
-      bottom: 0.8rem;
+      bottom: 0.3rem;
       width: 100%;
       text-align: center;
       content: attr(data-note);
-      font: 500 1.72rem Candara;
+      font: 500 1.6rem Candara;
       color: #121212;
     }
   }
@@ -37,7 +37,7 @@ const pianoStyle = css`
     position: absolute;
     top: -1px;
     left: 70%;
-    height: 160px;
+    height: 105px;
     width: calc(60% + 2px);
     border-radius: 1px 1px 5px 5px;
     box-shadow: 2px 2px 5px #0006;

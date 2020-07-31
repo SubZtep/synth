@@ -1,10 +1,32 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
+import styled from "@emotion/styled"
 import { useDispatch } from "react-redux"
 import { toggleMenu } from "../../features/ux/uxSlice"
 import HiHat from "../../samples/HiHat.json"
 import Kick from "../../samples/Kick.json"
-import { MenuPopup } from "./styled"
+
+export const MenuPopup = styled.div`
+  top: 0;
+  right: 0;
+  width: 280px;
+  position: fixed;
+  z-index: 200;
+  background-color: #000;
+  padding: 25px;
+  box-shadow: 5px 5px 15px 5px #000000;
+  a {
+    color: #66f;
+  }
+  h2 {
+    text-align: center;
+  }
+  ul {
+    line-height: 28px;
+    font-size: 1.1rem;
+    padding-left: 25px;
+  }
+`
 
 export default () => {
   const dispatch = useDispatch()

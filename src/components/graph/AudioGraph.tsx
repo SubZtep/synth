@@ -127,7 +127,7 @@ export default () => {
         nodesDraggable={!editMode}
         onSelectionChange={els => (selected.current = els)}
         connectionLineStyle={{ stroke: "#006" }}
-        style={{ backgroundColor: "#7d4e57" }}
+        style={{ backgroundColor: "#7d4e57", flexGrow: 1 }}
         snapGrid={[16, 16]}
         snapToGrid={true}
       >

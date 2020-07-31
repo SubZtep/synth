@@ -1,27 +1,38 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { useDispatch } from "react-redux"
-import { useRef, useState, ChangeEvent } from "react"
+import { useRef, useEffect, useState, ChangeEvent } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { SelectNames, btnIconStyle, DataStoreItem } from "./styled"
+import { setLoadElements } from "../../features/ux/uxSlice"
 import {
   setName,
   setGains,
   setAnalysers,
-  setBiquadFilters,
   setOscillators,
+  setBiquadFilters,
 } from "../../features/activeSound/activeSoundSlice"
-import { setLoadElements } from "../../features/ux/uxSlice"
-import { LoadWrapper } from "./styled"
 
-const validate = (obj: any) => {
-  const requiredKeys = ["elements", "analysers", "gains"]
-  return Object.keys(obj).filter(key => requiredKeys.includes(key)).length === requiredKeys.length
-}
+const validate = (obj: any) => Object.keys(obj).some(key => key === "elements")
+const retreiveNames = () =>
+  Object.keys(localStorage).filter(name => {
+    let obj
+    try {
+      obj = JSON.parse(localStorage[name])
+    } catch {
+      return false
+    }
+    return validate(obj)
+  })
 
 export default () => {
-  const select = useRef<HTMLSelectElement>(null)
   const dispatch = useDispatch()
   const [names, setNames] = useState<string[]>([])
+  const select = useRef<HTMLSelectElement>(null)
+
+  useEffect(() => {
+    setNames(retreiveNames())
+  }, [])
 
   const load = (event: ChangeEvent<HTMLSelectElement>) => {
     const name = event.currentTarget.value
@@ -41,20 +52,23 @@ export default () => {
   }
 
   return (
-    <LoadWrapper>
-      <select ref={select} onChange={load}>
+    <DataStoreItem>
+      {/* @ts-ignore */}
+      <SelectNames as="select" ref={select} onChange={load}>
         <option value="">--- Please Select ---</option>
         {names.map(name => (
           <option key={name} value={name}>
             {name}
           </option>
         ))}
-      </select>
+      </SelectNames>
       <FontAwesomeIcon
+        onClick={() => setNames(retreiveNames())}
         icon={["fal", "folder-open"]}
+        fixedWidth
         size="lg"
-        onMouseOver={() => setNames(Object.keys(localStorage))}
+        css={btnIconStyle}
       />
-    </LoadWrapper>
+    </DataStoreItem>
   )
 }

@@ -61,5 +61,5 @@ export default () => {
     ctx.current!.stroke()
   }
 
-  return <canvas ref={canvas} css={{ width: "100%", height: "100%", backgroundColor: "#364156" }} />
+  return <canvas ref={canvas} css={{ width: "100%", height: 120, backgroundColor: "#364156" }} />
 }
