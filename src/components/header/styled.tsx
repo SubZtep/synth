@@ -38,7 +38,7 @@ export const LoadWrapper = styled.div`
   }
 `
 
-export const menuWrapper = styled.div`
+export const MenuPopup = styled.div`
   top: 0;
   right: 0;
   width: 280px;
@@ -54,7 +54,7 @@ export const menuWrapper = styled.div`
     text-align: center;
   }
   ul {
-    line-height: 1.6px;
+    line-height: 28px;
     font-size: 1.1rem;
     padding-left: 25px;
   }

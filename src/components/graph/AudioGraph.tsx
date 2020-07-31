@@ -15,9 +15,20 @@ import ReactFlow, {
 import { jsx, Global } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
 import { useState, useRef, useEffect, Fragment } from "react"
-import { selectLoadElements, setLoadElements } from "../../features/ux/uxSlice"
+import {
+  selectEditMode,
+  toggleEditMode,
+  selectLoadElements,
+  setLoadElements,
+} from "../../features/ux/uxSlice"
 import { connectNodes, AUDIO_CONTEXT_DESTINATION } from "../../scripts/audio"
-import { GraphButtons, GraphButton, globalGraph } from "./styled"
+import {
+  GraphButtons,
+  GraphButton,
+  globalGraph,
+  globalGraphEditMode,
+  globalGraphDraggableMode,
+} from "./styled"
 import { newNodePosition } from "../../scripts/utils"
 import BiquadFilter from "./nodes/BiquadFilter"
 import Oscillator from "./nodes/Oscillator"
@@ -38,6 +49,7 @@ const defaultNode: Node = {
   connectable: true,
   selectable: false,
   position: { x: 0, y: 0 },
+  className: "audioNode",
   style: {
     backgroundColor: "#364156",
     color: "#fff",
@@ -49,6 +61,7 @@ const checkSize = (prev: number, next: number) => prev === next
 export default () => {
   const dispatch = useDispatch()
   const loadElements = useSelector(selectLoadElements)
+  const editMode = useSelector(selectEditMode)
   const width = useStoreState(store => store.width, checkSize)
   const height = useStoreState(store => store.height, checkSize)
   const [elements, setElements] = useState<Elements>([])
@@ -72,7 +85,7 @@ export default () => {
           .sort((a, b) => +b.id - +a.id)[0]?.id + 1 || 1
       dispatch(setLoadElements(null))
     }
-  }, [loadElements])
+  }, [loadElements, dispatch])
 
   useEffect(() => {
     if (width > 0 && height > 0 && elements.length === 0) {
@@ -102,10 +115,16 @@ export default () => {
   return (
     <Fragment>
       <Global styles={globalGraph} />
+      {editMode ? (
+        <Global styles={globalGraphEditMode} />
+      ) : (
+        <Global styles={globalGraphDraggableMode} />
+      )}
       <ReactFlow
         elements={elements}
         onConnect={onConnect}
         nodeTypes={audioNodeTypes}
+        nodesDraggable={!editMode}
         onSelectionChange={els => (selected.current = els)}
         connectionLineStyle={{ stroke: "#006" }}
         style={{ backgroundColor: "#7d4e57" }}
@@ -116,6 +135,13 @@ export default () => {
         <Background variant={BackgroundVariant.Lines} color="#A16873" gap={32} />
 
         <GraphButtons>
+          <GraphButton
+            mode="mode"
+            onClick={() => dispatch(toggleEditMode())}
+            icon={["fas", editMode ? "edit" : "project-diagram"]}
+          >
+            {editMode ? "To View Mode" : "To Edit Mode"}
+          </GraphButton>
           <GraphButton onClick={addAudioNode("oscillator")} icon={["fas", "wave-sine"]}>
             Add Oscillator
           </GraphButton>
@@ -128,7 +154,7 @@ export default () => {
           <GraphButton onClick={addAudioNode("analyser")} icon={["fas", "analytics"]}>
             Add Analyser
           </GraphButton>
-          <GraphButton onClick={removeSelected} icon={["fas", "trash-alt"]}>
+          <GraphButton mode="del" onClick={removeSelected} icon={["fas", "trash-alt"]}>
             Remove Selected
           </GraphButton>
         </GraphButtons>

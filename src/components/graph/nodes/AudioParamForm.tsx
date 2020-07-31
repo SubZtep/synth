@@ -1,19 +1,8 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core"
+import { jsx } from "@emotion/core"
 import { Fragment, ChangeEvent } from "react"
 import { AudioParams } from "../../../hooks/useAudioNodeDefs"
-
-const paramRow = css(css`
-  width: 100%;
-  display: flex;
-  /*justify-content: space-between;*/
-  label {
-    font-size: 0.8rem;
-    input {
-      width: 80px;
-    }
-  }
-`)
+import { FormGrid } from "./styled"
 
 const audioParamCalls = [
   "setValueAtTime",
@@ -76,125 +65,88 @@ export default ({ audioParams, name, call, values, onChange }: Props) => {
   }
 
   return (
-    <Fragment>
-      <div css={paramRow}>
-        <label>
-          Name
-          <br />
-          <select value={name} onChange={event => onChange({ name: event.currentTarget.value })}>
-            {Object.keys(audioParams).map(key => (
-              <option key={key} value={key}>
-                {key}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Call
-          <br />
-          <select
-            value={call}
-            onChange={event => onChange({ call: event.currentTarget.value as Call })}
-            css={{ width: 120 }}
-          >
-            {audioParamCalls.map(call => (
-              <option key={call} value={call}>
-                {call}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+    <FormGrid>
+      <label>Name</label>
+      <select value={name} onChange={event => onChange({ name: event.currentTarget.value })}>
+        {Object.keys(audioParams).map(key => (
+          <option key={key} value={key}>
+            {key}
+          </option>
+        ))}
+      </select>
+
+      <label>Call</label>
+      <select
+        value={call}
+        onChange={event => onChange({ call: event.currentTarget.value as Call })}
+        css={{ width: 120 }}
+      >
+        {audioParamCalls.map(call => (
+          <option key={call} value={call}>
+            {call}
+          </option>
+        ))}
+      </select>
 
       {["setValueAtTime"].includes(call) && (
-        <div css={paramRow}>
-          <label>
-            value
-            <br />
-            <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
-          </label>
-          <label>
-            startTime (t+)
-            <br />
-            <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
-          </label>
-        </div>
+        <Fragment>
+          <label>value</label>
+          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+
+          <label>startTime (t+)</label>
+          <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
+        </Fragment>
       )}
 
       {["linearRampToValueAtTime", "exponentialRampToValueAtTime"].includes(call) && (
-        <div css={paramRow}>
-          <label>
-            value
-            <br />
-            <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
-          </label>
-          <label>
-            endTime (t+)
-            <br />
-            <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
-          </label>
-        </div>
+        <Fragment>
+          <label>value</label>
+          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+
+          <label>endTime (t+)</label>
+          <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
+        </Fragment>
       )}
 
       {["setTargetAtTime"].includes(call) && (
-        <div css={paramRow}>
-          <label>
-            value
-            <br />
-            <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
-          </label>
-          <label>
-            startTime (t+)
-            <br />
-            <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
-          </label>
-          <label>
-            timeConstant
-            <br />
-            <input type="number" value={getNumber(2)} data-nth={2} onChange={setNumber} />
-          </label>
-        </div>
+        <Fragment>
+          <label>value</label>
+          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+
+          <label>startTime (t+)</label>
+          <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
+
+          <label>timeConstant</label>
+          <input type="number" value={getNumber(2)} data-nth={2} onChange={setNumber} />
+        </Fragment>
       )}
 
       {["setValueCurveAtTime"].includes(call) && (
-        <div css={paramRow}>
-          <label>
-            values (, sep)
-            <br />
-            <input type="string" value={getNumbers(0)} data-nth={0} onChange={setNumbers} />
-          </label>
-          <label>
-            startTime (t+)
-            <br />
-            <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
-          </label>
-          <label>
-            duration
-            <br />
-            <input type="number" value={getNumber(2)} data-nth={2} onChange={setNumber} />
-          </label>
-        </div>
+        <Fragment>
+          <label>values (, sep)</label>
+          <input type="text" value={getNumbers(0)} data-nth={0} onChange={setNumbers} />
+
+          <label>startTime (t+)</label>
+          <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
+
+          <label>duration</label>
+          <input type="number" value={getNumber(2)} data-nth={2} onChange={setNumber} />
+        </Fragment>
       )}
 
       {["cancelScheduledValues"].includes(call) && (
-        <div css={paramRow}>
-          <label>
-            startTime (t+)
-            <br />
-            <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
-          </label>
-        </div>
+        <Fragment>
+          <label>startTime (t+)</label>
+          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+        </Fragment>
       )}
 
       {["cancelAndHoldAtTime"].includes(call) && (
-        <div css={paramRow}>
-          <label>
-            cancelTime (t+)
-            <br />
-            <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
-          </label>
-        </div>
+        <Fragment>
+          <label>cancelTime (t+)</label>
+          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+        </Fragment>
       )}
-    </Fragment>
+    </FormGrid>
   )
 }

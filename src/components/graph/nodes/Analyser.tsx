@@ -1,22 +1,24 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
+import { Fragment, ChangeEvent } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
-import { memo, Fragment, ChangeEvent } from "react"
+import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
+import { selectEditMode } from "../../../features/ux/uxSlice"
 import {
   setAnalyser,
   selectAnalyser,
   Analyser,
 } from "../../../features/activeSound/activeSoundSlice"
+import { FormGrid, H1, DataRow, DataKey, NodeBody } from "./styled"
 import HandleOutputs from "./HandleOutputs"
 import HandleInputs from "./HandleInputs"
-import { FormWrapperGrid, Title } from "./styled"
-import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 
 const fftSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768] as const
 export type FFTSize = typeof fftSizes[number]
 
-export default memo(({ id }: NodeComponentProps) => {
+export default ({ id }: NodeComponentProps) => {
+  const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("AnalyserNode")
   const dispatch = useDispatch()
   const analyser: Analyser = useSelector(selectAnalyser)(id) || {
@@ -41,30 +43,46 @@ export default memo(({ id }: NodeComponentProps) => {
   return (
     <Fragment>
       <HandleInputs numberOfInputs={defs.numberOfInputs} />
-      <Title>Analyser #{id}</Title>
+      <H1>Analyser #{id}</H1>
 
-      <FormWrapperGrid>
-        <label htmlFor={`a1${id}`}>FFT Size</label>
-        <select id={`a1${id}`} value={analyser.fftSize} onChange={setFFTSize}>
-          {fftSizes.map(fft => (
-            <option key={fft} value={fft}>
-              {fft}
-            </option>
-          ))}
-        </select>
-        <label htmlFor={`a2{id}`}>Colour</label>
-        <input id={`a2${id}`} type="color" value={analyser.color} onChange={setColor} />
-        <label htmlFor={`a3${id}`}>Line Width</label>
-        <input
-          id={`a3${id}`}
-          type="number"
-          min={1}
-          value={analyser.lineWidth}
-          onChange={setLineWidth}
-        />
-      </FormWrapperGrid>
+      <NodeBody>
+        {editMode ? (
+          <FormGrid>
+            <label htmlFor={`a1${id}`}>FFT Size</label>
+            <select id={`a1${id}`} value={analyser.fftSize} onChange={setFFTSize}>
+              {fftSizes.map(fft => (
+                <option key={fft} value={fft}>
+                  {fft}
+                </option>
+              ))}
+            </select>
+            <label htmlFor={`a2{id}`}>Colour</label>
+            <input id={`a2${id}`} type="color" value={analyser.color} onChange={setColor} />
+            <label htmlFor={`a3${id}`}>Line Width</label>
+            <input
+              id={`a3${id}`}
+              type="number"
+              min={1}
+              value={analyser.lineWidth}
+              onChange={setLineWidth}
+            />
+          </FormGrid>
+        ) : (
+          <Fragment>
+            <DataRow>
+              <DataKey>FFT Size:</DataKey> {analyser.fftSize}
+            </DataRow>
+            <DataRow>
+              <DataKey>Line:</DataKey>
+              <div
+                css={{ height: analyser.lineWidth, backgroundColor: analyser.color, width: "100%" }}
+              ></div>
+            </DataRow>
+          </Fragment>
+        )}
+      </NodeBody>
 
       <HandleOutputs numberOfOutputs={defs.numberOfOutputs} />
     </Fragment>
   )
-})
+}

@@ -20,7 +20,7 @@ ReactDOM.render(
   <Fragment>
     <Global
       styles={css`
-        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&family=Tomorrow&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&family=Tomorrow:wght@400;500&display=swap");
         * {
           box-sizing: border-box;
         }
