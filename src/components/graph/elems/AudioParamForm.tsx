@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core"
 import { Fragment, ChangeEvent } from "react"
 import { AudioParams } from "../../../hooks/useAudioNodeDefs"
-import { FormGrid } from "./styled"
+import { FormGrid } from "../elems/styled"
 
 const audioParamCalls = [
   "setValueAtTime",

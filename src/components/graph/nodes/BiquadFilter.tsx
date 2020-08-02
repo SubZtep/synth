@@ -10,12 +10,13 @@ import {
   selectBiquadFilter,
   BiquadFilter,
 } from "../../../features/activeSound/activeSoundSlice"
-import AudioParamDefaults from "./AudioParamDefaults"
-import { AudioParamSetting } from "./AudioParamForm"
-import { FormWrapper, H1, H2, NodeBody, DataRow, DataKey, DataNote } from "./styled"
-import HandleOutputs from "./HandleOutputs"
-import HandleInputs from "./HandleInputs"
-import AudioParams from "./AudioParams"
+import AudioParamDefaults from "../elems/AudioParamDefaults"
+import { AudioParamSetting } from "../elems/AudioParamForm"
+import { FormWrapper, H1, H2, NodeBody, DataRow, DataKey } from "../elems/styled"
+import HandleOutputs from "../elems/HandleOutputs"
+import HandleInputs from "../elems/HandleInputs"
+import AudioParams from "../elems/AudioParams"
+import AudioParamsView from "../elems/AudioParamsView"
 
 const types: BiquadFilterType[] = [
   "allpass",
@@ -99,14 +100,7 @@ export default ({ id }: NodeComponentProps) => {
             <DataRow css={{ textTransform: "capitalize" }}>
               <DataKey>Type:</DataKey> {biquadFilter.type}
             </DataRow>
-            {biquadFilter.params.map((param, index) => (
-              <DataRow key={JSON.stringify(param) + index.toString()}>
-                <div>
-                  <DataKey>{param.name}:</DataKey> {param.values.join(", ")}
-                </div>
-                <DataNote>{param.call}</DataNote>
-              </DataRow>
-            ))}
+            <AudioParamsView params={biquadFilter.params} />
           </div>
         )}
       </NodeBody>

@@ -11,12 +11,13 @@ import {
   selectOscillator,
   Oscillator,
 } from "../../../features/activeSound/activeSoundSlice"
-import AudioParamDefaults from "./AudioParamDefaults"
-import { AudioParamSetting } from "./AudioParamForm"
-import { H1, FormWrapper, Hr, NodeBody, H2, DataRow, DataKey, DataNote } from "./styled"
-import HandleOutputs from "./HandleOutputs"
-import HandleInputs from "./HandleInputs"
-import AudioParams from "./AudioParams"
+import AudioParamDefaults from "../elems/AudioParamDefaults"
+import { AudioParamSetting } from "../elems/AudioParamForm"
+import { H1, FormWrapper, Hr, NodeBody, H2, DataRow, DataKey } from "../elems/styled"
+import HandleOutputs from "../elems/HandleOutputs"
+import HandleInputs from "../elems/HandleInputs"
+import AudioParams from "../elems/AudioParams"
+import AudioParamsView from "../elems/AudioParamsView"
 
 const types: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"]
 
@@ -85,14 +86,7 @@ export default ({ id }: NodeComponentProps) => {
             <DataRow css={{ textTransform: "capitalize" }}>
               <DataKey>Type:</DataKey> {oscillator.type}
             </DataRow>
-            {oscillator.params.map((param, index) => (
-              <DataRow key={JSON.stringify(param) + index.toString()}>
-                <div>
-                  <DataKey>{param.name}:</DataKey> {param.values.join(", ")}
-                </div>
-                <DataNote>{param.call}</DataNote>
-              </DataRow>
-            ))}
+            <AudioParamsView params={oscillator.params} />
           </div>
         )}
       </NodeBody>

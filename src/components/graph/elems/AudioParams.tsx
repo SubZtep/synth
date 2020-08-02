@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core"
 import { Fragment } from "react"
 import AudioParamForm, { AudioParamSetting, AudioParamUpdate } from "./AudioParamForm"
-import { Hr, DelButton } from "./styled"
+import { Hr, DelButton } from "../elems/styled"
 import { AudioParams } from "../../../hooks/useAudioNodeDefs"
 
 type Props = {

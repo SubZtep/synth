@@ -58,6 +58,12 @@ const defaultNode: Node = {
 
 const checkSize = (prev: number, next: number) => prev === next
 
+const getNextId = (elems: Elements) =>
+  +elems
+    .filter(el => isNode(el))
+    .filter(el => el.id !== AUDIO_CONTEXT_DESTINATION)
+    .sort((a, b) => +b.id - +a.id)[0]?.id + 1 || 1
+
 export default () => {
   const dispatch = useDispatch()
   const loadElements = useSelector(selectLoadElements)
@@ -78,11 +84,7 @@ export default () => {
   useEffect(() => {
     if (loadElements) {
       setElements(loadElements)
-      nextId.current =
-        +loadElements
-          .filter(el => isNode(el))
-          .filter(el => el.id !== AUDIO_CONTEXT_DESTINATION)
-          .sort((a, b) => +b.id - +a.id)[0]?.id + 1 || 1
+      nextId.current = getNextId(loadElements)
       dispatch(setLoadElements(null))
     }
   }, [loadElements, dispatch])
@@ -127,7 +129,6 @@ export default () => {
         nodesDraggable={!editMode}
         onSelectionChange={els => (selected.current = els)}
         connectionLineStyle={{ stroke: "#006" }}
-        style={{ backgroundColor: "#7d4e57", flexGrow: 1 }}
         snapGrid={[16, 16]}
         snapToGrid={true}
       >
@@ -140,7 +141,15 @@ export default () => {
             onClick={() => dispatch(toggleEditMode())}
             icon={["fas", editMode ? "edit" : "project-diagram"]}
           >
-            {editMode ? "To View Mode" : "To Edit Mode"}
+            {editMode ? (
+              <Fragment>
+                To View <u>m</u>ode
+              </Fragment>
+            ) : (
+              <Fragment>
+                To Edit <u>m</u>ode
+              </Fragment>
+            )}
           </GraphButton>
           <GraphButton onClick={addAudioNode("oscillator")} icon={["fas", "wave-sine"]}>
             Add Oscillator

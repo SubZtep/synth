@@ -9070,7 +9070,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.4"
 
-prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -9289,10 +9289,10 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.7.tgz#1dcfb459ab671d53f660a991513cb2f0a0553108"
   integrity sha512-TAv1KJFh3RhqxNvhzxj6LeT5NWklP6rDr2a0jaTfsZ5wSZWHOGeqQyejUp3xxLfPt2UpyJEcVQB/zyPcmonNFA==
 
-react-flow-renderer@^4.8.0:
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/react-flow-renderer/-/react-flow-renderer-4.8.0.tgz#fbf0d5ab7f8e4e37fb8fc83b6de102e93b920284"
-  integrity sha512-/A4B1/rGc3rthDAklOZYDKnQSIebHQiXuR2A0t7S2d9Mu3RGodDUyaaf/E692PQ2YIuw3oRADuXH92sVp2xjeg==
+react-flow-renderer@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/react-flow-renderer/-/react-flow-renderer-4.9.0.tgz#c475215933aa2d8242103b93d989c718e8307c2b"
+  integrity sha512-mikqyl0XgA5czHkrMecoG+c/dakSg84A3ldjOm/3W5kyCVfD1myPdysRi9sJqouThTfJ7kRAFzBe01CNM3VclQ==
   dependencies:
     "@welldone-software/why-did-you-render" "^4.2.7"
     classcat "^4.1.0"
@@ -9302,6 +9302,13 @@ react-flow-renderer@^4.8.0:
     fast-deep-equal "^3.1.3"
     react-draggable "^4.4.3"
     resize-observer "^1.0.0"
+
+react-hotkeys@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-hotkeys/-/react-hotkeys-2.0.0.tgz#a7719c7340cbba888b0e9184f806a9ec0ac2c53f"
+  integrity sha512-3n3OU8vLX/pfcJrR3xJ1zlww6KS1kEJt0Whxc4FiGV+MJrQ1mYSYI3qS/11d2MJDFm8IhOXMTFQirfu6AVOF6Q==
+  dependencies:
+    prop-types "^15.6.1"
 
 react-is@^16.12.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.9.0:
   version "16.13.1"

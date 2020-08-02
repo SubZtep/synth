@@ -10,9 +10,9 @@ import {
   selectAnalyser,
   Analyser,
 } from "../../../features/activeSound/activeSoundSlice"
-import { FormGrid, H1, DataRow, DataKey, NodeBody } from "./styled"
-import HandleOutputs from "./HandleOutputs"
-import HandleInputs from "./HandleInputs"
+import { FormGrid, H1, DataRow, DataKey, NodeBody } from "../elems/styled"
+import HandleOutputs from "../elems/HandleOutputs"
+import HandleInputs from "../elems/HandleInputs"
 
 const fftSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768] as const
 export type FFTSize = typeof fftSizes[number]

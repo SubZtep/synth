@@ -1,5 +1,5 @@
 import { ElementId } from "react-flow-renderer"
-import { AudioParamSetting } from "../components/graph/nodes/AudioParamForm"
+import { AudioParamSetting } from "../components/graph/elems/AudioParamForm"
 
 // @ts-ignore
 export const audioContext = new (window.AudioContext || window.webkitAudioContext)()

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import Analyser, { FFTSize } from "../../components/graph/nodes/Analyser"
 import { RootState } from "../../store"
-import { AudioParamSetting } from "../../components/graph/nodes/AudioParamForm"
+import { AudioParamSetting } from "../../components/graph/elems/AudioParamForm"
 
 export type Analyser = {
   id: string

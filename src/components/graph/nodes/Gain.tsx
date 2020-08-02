@@ -6,12 +6,13 @@ import { NodeComponentProps } from "react-flow-renderer"
 import { setGain, selectGain, Gain } from "../../../features/activeSound/activeSoundSlice"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
-import AudioParamDefaults from "./AudioParamDefaults"
-import { AudioParamSetting } from "./AudioParamForm"
-import { H1, FormWrapper, NodeBody, DataRow, DataKey, DataNote } from "./styled"
-import HandleOutputs from "./HandleOutputs"
-import HandleInputs from "./HandleInputs"
-import AudioParams from "./AudioParams"
+import AudioParamDefaults from "../elems/AudioParamDefaults"
+import { AudioParamSetting } from "../elems/AudioParamForm"
+import { H1, FormWrapper, NodeBody } from "../elems/styled"
+import HandleOutputs from "../elems/HandleOutputs"
+import HandleInputs from "../elems/HandleInputs"
+import AudioParams from "../elems/AudioParams"
+import AudioParamsView from "../elems/AudioParamsView"
 
 export default ({ id }: NodeComponentProps) => {
   const editMode = useSelector(selectEditMode)
@@ -62,14 +63,7 @@ export default ({ id }: NodeComponentProps) => {
             )}
           </Fragment>
         ) : (
-          gain.params.map((param, index) => (
-            <DataRow key={JSON.stringify(param) + index.toString()}>
-              <div>
-                <DataKey>{param.name}:</DataKey> {param.values.join(", ")}
-              </div>
-              <DataNote>{param.call}</DataNote>
-            </DataRow>
-          ))
+          <AudioParamsView params={gain.params} />
         )}
       </NodeBody>
 

@@ -18,7 +18,7 @@ export const DataStore = styled.div`
 `
 
 export const SideBar = styled.div`
-  width: 450px;
+  flex-grow: 1;
 `
 
 export const globalStyles = css`
