@@ -1,16 +1,17 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { Fragment, ChangeEvent } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
+import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
+import { FormGrid, H1, DataRow, DataKey, NodeBody } from "../elems/styled"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
 import {
   setAnalyser,
+  delAnalyser,
   selectAnalyser,
   Analyser,
 } from "../../../features/activeSound/activeSoundSlice"
-import { FormGrid, H1, DataRow, DataKey, NodeBody } from "../elems/styled"
 import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"
 
@@ -18,15 +19,25 @@ const fftSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768] a
 export type FFTSize = typeof fftSizes[number]
 
 export default ({ id }: NodeComponentProps) => {
+  const basic: Analyser = useMemo(
+    () => ({
+      id,
+      fftSize: fftSizes[6],
+      color: "#d66853",
+      lineWidth: 2,
+    }),
+    [id]
+  )
   const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("AnalyserNode")
   const dispatch = useDispatch()
-  const analyser: Analyser = useSelector(selectAnalyser)(id) || {
-    id,
-    fftSize: fftSizes[6],
-    color: "#d66853",
-    lineWidth: 2,
-  }
+  const analyser: Analyser = useSelector(selectAnalyser)(id) || basic
+
+  useEffect(() => {
+    dispatch(setAnalyser(analyser))
+    return () => void dispatch(delAnalyser(id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const setFFTSize = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch(setAnalyser({ ...analyser, fftSize: +event.currentTarget.value as FFTSize }))

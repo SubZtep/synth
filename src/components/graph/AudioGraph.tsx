@@ -2,7 +2,6 @@
 import ReactFlow, {
   Edge,
   Node,
-  isNode,
   addEdge,
   Elements,
   Controls,
@@ -15,24 +14,15 @@ import ReactFlow, {
 import { jsx, Global } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
 import { useState, useRef, useEffect, Fragment } from "react"
-import {
-  selectEditMode,
-  toggleEditMode,
-  selectLoadElements,
-  setLoadElements,
-} from "../../features/ux/uxSlice"
+import { selectEditMode, selectLoadElements, setLoadElements } from "../../features/ux/uxSlice"
+import { globalGraph, globalGraphEditMode, globalGraphDraggableMode } from "./styled"
 import { connectNodes, AUDIO_CONTEXT_DESTINATION } from "../../scripts/audio"
-import {
-  GraphButtons,
-  GraphButton,
-  globalGraph,
-  globalGraphEditMode,
-  globalGraphDraggableMode,
-} from "./styled"
+import { getNextId, checkSize } from "../../scripts/helpers"
 import { newNodePosition } from "../../scripts/utils"
 import BiquadFilter from "./nodes/BiquadFilter"
 import Oscillator from "./nodes/Oscillator"
 import Analyser from "./nodes/Analyser"
+import GraphMenu from "./GraphMenu"
 import Gain from "./nodes/Gain"
 
 export const audioNodeTypes = {
@@ -55,14 +45,6 @@ const defaultNode: Node = {
     color: "#fff",
   },
 }
-
-const checkSize = (prev: number, next: number) => prev === next
-
-const getNextId = (elems: Elements) =>
-  +elems
-    .filter(el => isNode(el))
-    .filter(el => el.id !== AUDIO_CONTEXT_DESTINATION)
-    .sort((a, b) => +b.id - +a.id)[0]?.id + 1 || 1
 
 export default () => {
   const dispatch = useDispatch()
@@ -134,39 +116,7 @@ export default () => {
       >
         <Controls showInteractive={false} />
         <Background variant={BackgroundVariant.Lines} color="#A16873" gap={32} />
-
-        <GraphButtons>
-          <GraphButton
-            mode="mode"
-            onClick={() => dispatch(toggleEditMode())}
-            icon={["fas", editMode ? "edit" : "project-diagram"]}
-          >
-            {editMode ? (
-              <Fragment>
-                To View <u>m</u>ode
-              </Fragment>
-            ) : (
-              <Fragment>
-                To Edit <u>m</u>ode
-              </Fragment>
-            )}
-          </GraphButton>
-          <GraphButton onClick={addAudioNode("oscillator")} icon={["fas", "wave-sine"]}>
-            Add Oscillator
-          </GraphButton>
-          <GraphButton onClick={addAudioNode("gain")} icon={["fas", "volume"]}>
-            Add Gain
-          </GraphButton>
-          <GraphButton onClick={addAudioNode("biquadfilter")} icon={["fas", "filter"]}>
-            Add Biquad Filter
-          </GraphButton>
-          <GraphButton onClick={addAudioNode("analyser")} icon={["fas", "analytics"]}>
-            Add Analyser
-          </GraphButton>
-          <GraphButton mode="del" onClick={removeSelected} icon={["fas", "trash-alt"]}>
-            Remove Selected
-          </GraphButton>
-        </GraphButtons>
+        <GraphMenu addAudioNode={addAudioNode} removeSelected={removeSelected} />
       </ReactFlow>
     </Fragment>
   )

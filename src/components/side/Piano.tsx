@@ -1,12 +1,17 @@
-/** @jsx jsx */
-import { jsx, css } from "@emotion/core"
+import React from "react"
 import styled from "@emotion/styled"
 import { useDispatch } from "react-redux"
 import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
 
-const pianoStyle = css`
+const PianoWrapper = styled.div`
   display: flex;
-  width: 100%;
+  align-items: center;
+  font-size: 3rem;
+  justify-content: center;
+  background-color: #11151c;
+  color: #fff;
+  user-select: none;
+
   > div {
     flex: 1;
     position: relative;
@@ -53,68 +58,57 @@ const pianoStyle = css`
   }
 `
 
-const PianoWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 3rem;
-  justify-content: center;
-  background-color: #11151c;
-  color: #fff;
-`
-
 const Piano = () => {
   const dispatch = useDispatch()
 
+  const play = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (event.buttons === 1) {
+      const data = (event.target as HTMLElement).getAttribute("data-frequency")
+      dispatch(setPlayFrequency(data !== null ? +data : null))
+    }
+  }
+
+  const stop = () => {
+    dispatch(setPlayFrequency(null))
+  }
+
   return (
-    <PianoWrapper>
-      <div
-        css={pianoStyle}
-        onMouseDown={event => {
-          const el = event.target
-          if (el) {
-            dispatch(
-              setPlayFrequency(+((el as HTMLDivElement).getAttribute("data-frequency") as string))
-            )
-          }
-        }}
-        onMouseUp={() => void dispatch(setPlayFrequency(null))}
-      >
-        <div data-frequency="261.626" data-note="C">
-          <div data-frequency="277.18" data-note="C#"></div>
-        </div>
-        <div data-frequency="293.665" data-note="D">
-          <div data-frequency="311.127"></div>
-        </div>
-        <div data-frequency="329.628" data-note="E"></div>
-        <div data-frequency="349.228" data-note="F">
-          <div data-frequency="369.994"></div>
-        </div>
-        <div data-frequency="391.995" data-note="G">
-          <div data-frequency="415.305"></div>
-        </div>
-        <div data-frequency="440.000" data-note="A">
-          <div data-frequency="466.164"></div>
-        </div>
-        <div data-frequency="493.883" data-note="B"></div>
-        <div data-frequency="523.251" data-note="C">
-          <div data-frequency="554.365"></div>
-        </div>
-        <div data-frequency="587.330" data-note="D">
-          <div data-frequency="622.254"></div>
-        </div>
-        <div data-frequency="659.255" data-note="E"></div>
-        <div data-frequency="698.457" data-note="F">
-          <div data-frequency="739.989"></div>
-        </div>
-        <div data-frequency="783.991" data-note="G">
-          <div data-frequency="830.609"></div>
-        </div>
-        <div data-frequency="880.000" data-note="A">
-          <div data-frequency="932.328"></div>
-        </div>
-        <div data-frequency="987.767" data-note="B"></div>
-        <div data-frequency="1046.50" data-note="C"></div>
+    <PianoWrapper onMouseDown={play} onMouseMove={play} onMouseUp={stop} onMouseOut={stop}>
+      <div data-frequency="261.626" data-note="C">
+        <div data-frequency="277.18" data-note="C#"></div>
       </div>
+      <div data-frequency="293.665" data-note="D">
+        <div data-frequency="311.127"></div>
+      </div>
+      <div data-frequency="329.628" data-note="E"></div>
+      <div data-frequency="349.228" data-note="F">
+        <div data-frequency="369.994"></div>
+      </div>
+      <div data-frequency="391.995" data-note="G">
+        <div data-frequency="415.305"></div>
+      </div>
+      <div data-frequency="440.000" data-note="A">
+        <div data-frequency="466.164"></div>
+      </div>
+      <div data-frequency="493.883" data-note="B"></div>
+      <div data-frequency="523.251" data-note="C">
+        <div data-frequency="554.365"></div>
+      </div>
+      <div data-frequency="587.330" data-note="D">
+        <div data-frequency="622.254"></div>
+      </div>
+      <div data-frequency="659.255" data-note="E"></div>
+      <div data-frequency="698.457" data-note="F">
+        <div data-frequency="739.989"></div>
+      </div>
+      <div data-frequency="783.991" data-note="G">
+        <div data-frequency="830.609"></div>
+      </div>
+      <div data-frequency="880.000" data-note="A">
+        <div data-frequency="932.328"></div>
+      </div>
+      <div data-frequency="987.767" data-note="B"></div>
+      <div data-frequency="1046.50" data-note="C"></div>
     </PianoWrapper>
   )
 }

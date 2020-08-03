@@ -1,27 +1,37 @@
 /** @jsx jsx */
-import { Fragment } from "react"
 import { jsx } from "@emotion/core"
+import { useMemo, useEffect, Fragment } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
-import { setGain, selectGain, Gain } from "../../../features/activeSound/activeSoundSlice"
+import { setGain, delGain, selectGain, Gain } from "../../../features/activeSound/activeSoundSlice"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
 import AudioParamDefaults from "../elems/AudioParamDefaults"
 import { AudioParamSetting } from "../elems/AudioParamForm"
 import { H1, FormWrapper, NodeBody } from "../elems/styled"
+import AudioParamsView from "../elems/AudioParamsView"
 import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"
 import AudioParams from "../elems/AudioParams"
-import AudioParamsView from "../elems/AudioParamsView"
 
 export default ({ id }: NodeComponentProps) => {
+  const basic: Gain = useMemo(
+    () => ({
+      id,
+      params: [],
+    }),
+    [id]
+  )
   const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("GainNode")
   const dispatch = useDispatch()
-  const gain: Gain = useSelector(selectGain)(id) || {
-    id,
-    params: [],
-  }
+  const gain: Gain = useSelector(selectGain)(id) || basic
+
+  useEffect(() => {
+    dispatch(setGain(gain))
+    return () => void dispatch(delGain(id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const setParams = (params: AudioParamSetting[]) => {
     dispatch(setGain({ ...gain, params }))

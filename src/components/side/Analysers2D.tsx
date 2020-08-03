@@ -3,7 +3,7 @@
 import { jsx } from "@emotion/core"
 import { useRef, useEffect } from "react"
 import { useSelector } from "react-redux"
-import { nodes } from "../../scripts/audio"
+import { audioNodes } from "../../scripts/audio"
 import { selectAnalysers } from "../../features/activeSound/activeSoundSlice"
 import { dpiFix } from "../../scripts/utils"
 
@@ -25,7 +25,7 @@ export default () => {
   const draw = () => {
     ctx.current!.clearRect(0, 0, width.current, height.current)
     analysers.forEach(analyser => {
-      const node = nodes.get(analyser.id) as AnalyserNode
+      const node = audioNodes.get(analyser.id) as AnalyserNode
       if (node) {
         ctx.current!.lineWidth = analyser.lineWidth
         drawWave(node, analyser.color)
@@ -41,7 +41,7 @@ export default () => {
     }
   }, [analysers])
 
-  const drawWave = (analyser: AnalyserNode, color = "#ff0000") => {
+  const drawWave = (analyser: AnalyserNode, color: string) => {
     const halfHeight = height.current / 2
     ctx.current!.strokeStyle = color
     const bufferLength = analyser.frequencyBinCount
@@ -61,5 +61,9 @@ export default () => {
     ctx.current!.stroke()
   }
 
-  return <canvas ref={canvas} css={{ width: "100%", height: 120, backgroundColor: "#364156" }} />
+  return (
+    <div css={{ height: 120, backgroundColor: "#364156", boxShadow: "inset 0 0 25px #101319" }}>
+      <canvas ref={canvas} css={{ width: "100%", height: "100%" }} />
+    </div>
+  )
 }

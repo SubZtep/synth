@@ -1,35 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { Fragment, ChangeEvent } from "react"
+import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
+import { H1, FormWrapper, Hr, NodeBody, H2, DataRow, DataKey } from "../elems/styled"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
+import AudioParamDefaults from "../elems/AudioParamDefaults"
+import { AudioParamSetting } from "../elems/AudioParamForm"
 import {
   setOscillator,
+  delOscillator,
   selectOscillator,
   Oscillator,
 } from "../../../features/activeSound/activeSoundSlice"
-import AudioParamDefaults from "../elems/AudioParamDefaults"
-import { AudioParamSetting } from "../elems/AudioParamForm"
-import { H1, FormWrapper, Hr, NodeBody, H2, DataRow, DataKey } from "../elems/styled"
+import AudioParamsView from "../elems/AudioParamsView"
 import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"
 import AudioParams from "../elems/AudioParams"
-import AudioParamsView from "../elems/AudioParamsView"
 
 const types: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"]
 
 export default ({ id }: NodeComponentProps) => {
+  const basic: Oscillator = useMemo(
+    () => ({
+      id,
+      type: types[0],
+      params: [],
+    }),
+    [id]
+  )
   const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("OscillatorNode")
   const dispatch = useDispatch()
-  const oscillator: Oscillator = useSelector(selectOscillator)(id) || {
-    id,
-    type: types[0],
-    params: [],
-  }
+  const oscillator: Oscillator = useSelector(selectOscillator)(id) || basic
+
+  useEffect(() => {
+    dispatch(setOscillator(oscillator))
+    return () => void dispatch(delOscillator(id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const changeType = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(setOscillator({ ...oscillator, type: event.currentTarget.value as OscillatorType }))

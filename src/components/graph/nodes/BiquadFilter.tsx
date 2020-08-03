@@ -1,22 +1,23 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { Fragment, ChangeEvent } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
+import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
+import { FormWrapper, H1, H2, NodeBody, DataRow, DataKey } from "../elems/styled"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
 import {
   setBiquadFilter,
+  delBiquadFilter,
   selectBiquadFilter,
   BiquadFilter,
 } from "../../../features/activeSound/activeSoundSlice"
 import AudioParamDefaults from "../elems/AudioParamDefaults"
 import { AudioParamSetting } from "../elems/AudioParamForm"
-import { FormWrapper, H1, H2, NodeBody, DataRow, DataKey } from "../elems/styled"
+import AudioParamsView from "../elems/AudioParamsView"
 import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"
 import AudioParams from "../elems/AudioParams"
-import AudioParamsView from "../elems/AudioParamsView"
 
 const types: BiquadFilterType[] = [
   "allpass",
@@ -30,14 +31,24 @@ const types: BiquadFilterType[] = [
 ]
 
 export default ({ id }: NodeComponentProps) => {
+  const basic: BiquadFilter = useMemo(
+    () => ({
+      id,
+      type: "lowpass",
+      params: [],
+    }),
+    [id]
+  )
   const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("BiquadFilterNode")
   const dispatch = useDispatch()
-  const biquadFilter: BiquadFilter = useSelector(selectBiquadFilter)(id) || {
-    id,
-    type: "lowpass",
-    params: [],
-  }
+  const biquadFilter: BiquadFilter = useSelector(selectBiquadFilter)(id) || basic
+
+  useEffect(() => {
+    dispatch(setBiquadFilter(biquadFilter))
+    return () => void dispatch(delBiquadFilter(id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const changeType = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(

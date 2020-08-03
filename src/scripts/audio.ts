@@ -1,41 +1,51 @@
 import { ElementId } from "react-flow-renderer"
 import { AudioParamSetting } from "../components/graph/elems/AudioParamForm"
 
-// @ts-ignore
-export const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-
-export const destination = audioContext.destination
-
-export const nodes = new Map<string, AudioNode>()
-
 export const AUDIO_CONTEXT_DESTINATION = "destination"
+
+// @ts-ignore
+// eslint-disable-next-line no-native-reassign
+AudioContext = window.AudioContext || window.webkitAudioContext
+export let audioContext = new AudioContext()
+
+/**
+ * AudioNodes holder
+ */
+export const audioNodes = new Map<string, AudioNode>()
+
+export const restartAudioContext = async () => {
+  await audioContext.close()
+  audioNodes.clear()
+  audioContext = new AudioContext()
+  return audioContext
+}
 
 export const connectNodes = (source: ElementId, target: ElementId) => {
   if (target === AUDIO_CONTEXT_DESTINATION) {
-    nodes.get(source)?.connect(audioContext.destination)
+    audioNodes.get(source)?.connect(audioContext.destination)
   } else {
-    const destination = nodes.get(target)
-    if (destination) nodes.get(source)?.connect(destination)
+    const destination = audioNodes.get(target)
+    if (destination) audioNodes.get(source)?.connect(destination)
   }
 }
 
 export const disconnectNodes = (source: string, target: string) => {
   if (target === AUDIO_CONTEXT_DESTINATION) {
-    nodes.get(source)?.disconnect()
+    audioNodes.get(source)?.disconnect()
   } else {
-    const destination = nodes.get(target)
-    if (destination) nodes.get(source)?.disconnect(destination)
+    const destination = audioNodes.get(target)
+    if (destination) audioNodes.get(source)?.disconnect(destination)
   }
 }
 
 export const setNode = (id: string, audioNode: AudioNode) => {
-  nodes.set(id, audioNode)
+  audioNodes.set(id, audioNode)
 }
 
 export const delNode = (id: string) => {
-  const node = nodes.get(id)
+  const node = audioNodes.get(id)
   node?.disconnect()
-  nodes.delete(id)
+  audioNodes.delete(id)
 }
 
 export const applyParams = (node: AudioNode, params: AudioParamSetting[]) => {

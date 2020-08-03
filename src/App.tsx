@@ -6,8 +6,9 @@ import { ReactFlowProvider } from "react-flow-renderer"
 import { toggleEditMode } from "./features/ux/uxSlice"
 import AudioGraph from "./components/graph/AudioGraph"
 import MenuOpener from "./components/side/MenuOpener"
-import Visual from "./components/side/AnalyserView"
+import Analysers2D from "./components/side/Analysers2D"
 import { Main, SideBar, DataStore } from "./styled"
+import Audio from "./components/side/Audio"
 import Piano from "./components/side/Piano"
 import Brand from "./components/side/Brand"
 import Load from "./components/side/Load"
@@ -35,7 +36,8 @@ export default function App() {
               <Load />
               <Save />
             </DataStore>
-            <Visual />
+            <Audio />
+            <Analysers2D />
             <Piano />
           </SideBar>
         </Main>
