@@ -12,8 +12,8 @@ import {
   setOscillators,
   setBiquadFilters,
 } from "../../features/activeSound/activeSoundSlice"
+import { validateSound } from "../../scripts/helpers"
 
-const validate = (obj: any) => Object.keys(obj).some(key => key === "elements")
 const retreiveNames = () =>
   Object.keys(localStorage).filter(name => {
     let obj
@@ -22,7 +22,7 @@ const retreiveNames = () =>
     } catch {
       return false
     }
-    return validate(obj)
+    return validateSound(obj)
   })
 
 export default () => {
@@ -40,7 +40,7 @@ export default () => {
     const data = localStorage.getItem(name)
     if (data) {
       const obj = JSON.parse(data)
-      if (validate(obj)) {
+      if (validateSound(obj)) {
         dispatch(setAnalysers(obj.analysers))
         dispatch(setGains(obj.gains))
         dispatch(setBiquadFilters(obj.biquadFilters))

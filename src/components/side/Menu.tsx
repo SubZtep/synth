@@ -1,10 +1,11 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import styled from "@emotion/styled"
+import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
 import { toggleMenu } from "../../features/ux/uxSlice"
-import HiHat from "../../samples/HiHat.json"
-import Kick from "../../samples/Kick.json"
+import { validateSound } from "../../scripts/helpers"
 
 export const MenuPopup = styled.div`
   top: 0;
@@ -31,9 +32,19 @@ export const MenuPopup = styled.div`
 export default () => {
   const dispatch = useDispatch()
 
-  const loadDefaultSounds = () => {
-    localStorage.setItem("Kick", JSON.stringify(Kick))
-    localStorage.setItem("HiHat", JSON.stringify(HiHat))
+  const loadDefaultSounds = async (name: string) => {
+    try {
+      const res = await fetch(`${window.location.pathname}/samples/${name}.json`)
+      if (res.ok) {
+        const sample = await res.json()
+        if (validateSound(sample)) {
+          localStorage.setItem("Kick", JSON.stringify(sample))
+          toast.success(`${name} Loaded`)
+        }
+      }
+    } catch (e) {
+      toast.error(`${name} failed to load. ${e}`)
+    }
   }
 
   return (
@@ -48,8 +59,9 @@ export default () => {
           .
         </li>
         <li>
-          <button onClick={loadDefaultSounds}>Load default sounds</button>, will overwrite{" "}
-          <em>Kick</em> and <em>HiHat</em> names in local storage.
+          Preload <button onClick={() => loadDefaultSounds("Kick")}>Kick</button> and{" "}
+          <button onClick={() => loadDefaultSounds("HiHat")}>HiHat 🐛</button> sounds to its name in
+          local storage.
         </li>
       </ul>
     </MenuPopup>
