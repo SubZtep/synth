@@ -1,5 +1,5 @@
-import React from "react"
 import styled from "@emotion/styled"
+import React, { useRef } from "react"
 import { useDispatch } from "react-redux"
 import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
 
@@ -60,16 +60,24 @@ const PianoWrapper = styled.div`
 
 const Piano = () => {
   const dispatch = useDispatch()
+  const lastFrequency = useRef<number | null>(null)
 
   const play = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (event.buttons === 1) {
       const data = (event.target as HTMLElement).getAttribute("data-frequency")
-      dispatch(setPlayFrequency(data !== null ? +data : null))
+      const frequency = data !== null ? +data : null
+      if (lastFrequency.current !== frequency) {
+        dispatch(setPlayFrequency(data !== null ? +data : null))
+        lastFrequency.current = frequency
+      }
     }
   }
 
   const stop = () => {
-    dispatch(setPlayFrequency(null))
+    if (lastFrequency.current !== null) {
+      dispatch(setPlayFrequency(null))
+      lastFrequency.current = null
+    }
   }
 
   return (

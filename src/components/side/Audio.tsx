@@ -26,6 +26,10 @@ export default () => {
   const oscillator = useSelector(snd.selectOscillator)
   const analyser = useSelector(snd.selectAnalyser)
   const gain = useSelector(snd.selectGain)
+  const biquadFilters = useSelector(snd.selectBiquadFilters)
+  const oscillators = useSelector(snd.selectOscillators)
+  const analysers = useSelector(snd.selectAnalysers)
+  const gains = useSelector(snd.selectGains)
   const sources = useRef<AudioSource[]>([])
   const latency = useRef(0)
 
@@ -145,7 +149,7 @@ export default () => {
       }
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes, edges.length])
+  }, [biquadFilters, oscillators, analysers, gains, edges.length])
 
   return (
     <div css={{ backgroundColor: "#364156", padding: 8 }}>
