@@ -25,7 +25,7 @@ import {
   setLoadElements,
 } from "../../features/ux/uxSlice"
 import { globalGraph, globalGraphEditMode, globalGraphDraggableMode } from "./styled"
-import { connectNodes, AUDIO_CONTEXT_DESTINATION } from "../../scripts/audio"
+import { AUDIO_CONTEXT_DESTINATION } from "../../scripts/audio"
 import { getNextId, checkSize } from "../../scripts/helpers"
 import { newNodePosition } from "../../scripts/utils"
 import BiquadFilter from "./nodes/BiquadFilter"
@@ -49,10 +49,10 @@ const defaultNode: Node = {
   selectable: false,
   position: { x: 0, y: 0 },
   className: "audioNode",
-  style: {
-    backgroundColor: "#364156",
-    color: "#fff",
-  },
+  // style: {
+  //   backgroundColor: "#364156",
+  //   color: "#fff",
+  // },
 }
 
 export default () => {
@@ -68,7 +68,6 @@ export default () => {
 
   const onConnect = (connection: Edge | Connection) => {
     if (connection.source !== null && connection.target !== null) {
-      connectNodes(connection.source, connection.target)
       setElements(els => addEdge(connection, els))
       dispatch(addConnect({ source: connection.source, target: connection.target }))
     }
@@ -134,13 +133,12 @@ export default () => {
         nodeTypes={audioNodeTypes}
         nodesDraggable={!editMode}
         onSelectionChange={els => (selected.current = els)}
-        connectionLineStyle={{ stroke: "#006" }}
         snapGrid={[16, 16]}
         snapToGrid={true}
         onlyRenderVisibleNodes={false}
       >
         <Controls showInteractive={false} />
-        <Background variant={BackgroundVariant.Lines} color="#A16873" gap={32} />
+        <Background variant={BackgroundVariant.Lines} color="#364156" gap={32} />
         <GraphMenu addAudioNode={addAudioNode} delSelected={delSelected} />
       </ReactFlow>
     </Fragment>

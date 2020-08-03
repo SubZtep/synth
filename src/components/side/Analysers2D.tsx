@@ -81,7 +81,7 @@ export default () => {
   }
 
   return (
-    <div css={{ height: 120, backgroundColor: "#364156", boxShadow: "inset 0 0 25px #101319" }}>
+    <div css={{ height: 120, boxShadow: "inset 0 0 25px #101319" }}>
       <canvas ref={canvas} css={{ width: "100%", height: "100%" }} />
     </div>
   )

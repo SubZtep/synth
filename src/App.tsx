@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { HotKeys } from "react-hotkeys"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { ToastContainer, toast } from "react-toastify"
 import { ReactFlowProvider } from "react-flow-renderer"
-import { toggleEditMode, toggleDelSelected } from "./features/ux/uxSlice"
+import { toggleEditMode, toggleDelSelected, selectSideLeft } from "./features/ux/uxSlice"
 import AudioGraph from "./components/graph/AudioGraph"
 import MenuOpener from "./components/side/MenuOpener"
 import Analysers2D from "./components/side/Analysers2D"
-import { Main, SideBar, DataStore } from "./styled"
+import { Main, SideBar, WidgetRows } from "./styled"
 import Audio from "./components/side/Audio"
 import Piano from "./components/side/Piano"
 import Brand from "./components/side/Brand"
@@ -21,6 +22,7 @@ const keyMap = {
 
 export default function App() {
   const dispatch = useDispatch()
+  const sideLeft = useSelector(selectSideLeft)
   const handlers = {
     TOGGLE_EDIT_MODE: (event?: KeyboardEvent) => dispatch(toggleEditMode()),
     DEL_SELECTED: (event?: KeyboardEvent) => dispatch(toggleDelSelected()),
@@ -29,20 +31,24 @@ export default function App() {
   return (
     <ReactFlowProvider>
       <HotKeys keyMap={keyMap} handlers={handlers}>
-        <Main>
+        <Main className={sideLeft ? "rev" : ""}>
           <AudioGraph />
           <SideBar>
             <Brand />
             <MenuOpener />
-            <DataStore>
+            <WidgetRows>
               <Load />
               <Save />
-            </DataStore>
+            </WidgetRows>
             <Audio />
             <Analysers2D />
             <Piano />
           </SideBar>
         </Main>
+        <ToastContainer
+          position={sideLeft ? toast.POSITION.BOTTOM_RIGHT : toast.POSITION.BOTTOM_LEFT}
+          autoClose={3000}
+        />
       </HotKeys>
     </ReactFlowProvider>
   )

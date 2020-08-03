@@ -2,7 +2,6 @@ import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
 import React, { Fragment } from "react"
 import { Global } from "@emotion/core"
-import { ToastContainer, toast } from "react-toastify"
 // import * as serviceWorker from "./serviceWorker"
 import { fal } from "@fortawesome/pro-light-svg-icons"
 import { fas } from "@fortawesome/pro-solid-svg-icons"
@@ -24,7 +23,6 @@ ReactDOM.render(
     <Global styles={globalStyles} />
     <Provider store={store}>
       <App />
-      <ToastContainer position={toast.POSITION.BOTTOM_RIGHT} autoClose={3000} />
     </Provider>
   </Fragment>,
   // </React.StrictMode>,

@@ -4,7 +4,6 @@ import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
 import { useRef, useEffect, useState, ChangeEvent } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { SelectNames, btnIconStyle, DataStoreItem } from "./styled"
 import { setLoadElements } from "../../features/ux/uxSlice"
 import {
   setName,
@@ -14,6 +13,7 @@ import {
   setBiquadFilters,
 } from "../../features/activeSound/activeSoundSlice"
 import { validateSound } from "../../scripts/helpers"
+import { IconButton } from "../../styled"
 
 const retreiveNames = () =>
   Object.keys(localStorage).filter(name => {
@@ -57,23 +57,19 @@ export default () => {
   }
 
   return (
-    <DataStoreItem>
+    <div>
       {/* @ts-ignore */}
-      <SelectNames as="select" ref={select} onChange={load}>
-        <option value="">--- Please Select ---</option>
+      <select as="select" ref={select} onChange={load}>
+        <option value="">--- Please, Select ---</option>
         {names.map(name => (
           <option key={name} value={name}>
             {name}
           </option>
         ))}
-      </SelectNames>
-      <FontAwesomeIcon
-        onClick={() => setNames(retreiveNames())}
-        icon={["fal", "folder-open"]}
-        fixedWidth
-        size="lg"
-        css={btnIconStyle}
-      />
-    </DataStoreItem>
+      </select>
+      <IconButton onClick={() => setNames(retreiveNames())}>
+        <FontAwesomeIcon icon={["fad", "folder-open"]} fixedWidth size="lg" />
+      </IconButton>
+    </div>
   )
 }

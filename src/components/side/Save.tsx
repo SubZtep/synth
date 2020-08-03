@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from "react-redux"
 import { useStoreState, Elements } from "react-flow-renderer"
 import { useRef, useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { btnIconStyle, InputName, DataStoreItem } from "./styled"
 import { setName, selectName, selectAudioNodes } from "../../features/activeSound/activeSoundSlice"
+import { IconButton } from "../../styled"
 
 export default () => {
   const dispatch = useDispatch()
@@ -38,21 +38,17 @@ export default () => {
   }
 
   return (
-    <DataStoreItem>
-      <InputName
+    <div>
+      <input
         ref={input}
         type="text"
         defaultValue={name}
         onChange={event => dispatch(setName(event.target.value))}
         onFocus={event => event.target.select()}
       />
-      <FontAwesomeIcon
-        onClick={save}
-        icon={["fal", "save"]}
-        fixedWidth
-        size="lg"
-        css={btnIconStyle}
-      />
-    </DataStoreItem>
+      <IconButton onClick={save}>
+        <FontAwesomeIcon icon={["fad", "save"]} fixedWidth size="lg" />
+      </IconButton>
+    </div>
   )
 }

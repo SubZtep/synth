@@ -1,33 +1,11 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import styled from "@emotion/styled"
 import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
-import { toggleMenu } from "../../features/ux/uxSlice"
+import { toggleMenu, togglesideLeft } from "../../features/ux/uxSlice"
 import { validateSound } from "../../scripts/helpers"
-
-export const MenuPopup = styled.div`
-  top: 0;
-  right: 0;
-  width: 280px;
-  position: fixed;
-  z-index: 200;
-  background-color: #000;
-  padding: 25px;
-  box-shadow: 5px 5px 15px 5px #000000;
-  a {
-    color: #66f;
-  }
-  h2 {
-    text-align: center;
-  }
-  ul {
-    line-height: 28px;
-    font-size: 1.1rem;
-    padding-left: 25px;
-  }
-`
+import { MenuPopup } from "../../styled"
 
 export default () => {
   const dispatch = useDispatch()
@@ -48,7 +26,7 @@ export default () => {
   }
 
   return (
-    <MenuPopup onMouseLeave={() => dispatch(toggleMenu())}>
+    <MenuPopup className="menu" onMouseLeave={() => dispatch(toggleMenu())}>
       <h2>MENU</h2>
       <ul>
         <li>
@@ -62,6 +40,10 @@ export default () => {
           Preload <button onClick={() => loadDefaultSounds("Kick")}>Kick</button> and{" "}
           <button onClick={() => loadDefaultSounds("HiHat")}>HiHat 🐛</button> sounds to its name in
           local storage.
+        </li>
+        <li>
+          <button onClick={() => dispatch(togglesideLeft())}>Switch</button> sidebar position
+          between left and right.
         </li>
       </ul>
     </MenuPopup>

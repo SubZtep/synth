@@ -96,10 +96,10 @@ export const GraphButtons = styled.div`
 
 export const globalGraph = css`
   .react-flow {
-    background-color: #7d4e57;
+    background-color: var(--graph-bg);
     resize: horizontal;
     min-width: 80px;
-    width: calc(100% - 350px);
+    width: calc(100% - var(--side-default-width));
   }
   .react-flow__node.audioNode {
     min-width: 165px;

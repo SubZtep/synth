@@ -13,6 +13,8 @@ type UX = {
   loadElements: Elements | null
   /** Set to true to del selected in AudioGraph component */
   delSelected: boolean
+  /** Sidebar on the left */
+  sideLeft: boolean
 }
 
 const initialState: UX = {
@@ -20,6 +22,7 @@ const initialState: UX = {
   editMode: true,
   loadElements: null,
   delSelected: false,
+  sideLeft: false,
 }
 
 const uxSlice = createSlice({
@@ -35,6 +38,9 @@ const uxSlice = createSlice({
     toggleDelSelected: state => {
       state.delSelected = !state.delSelected
     },
+    togglesideLeft: state => {
+      state.sideLeft = !state.sideLeft
+    },
     setLoadElements: (state: UX, { payload }: PayloadAction<Elements | null>) => {
       state.loadElements = payload
     },
@@ -44,6 +50,13 @@ const uxSlice = createSlice({
 export const selectMenu = ({ ux }: RootState) => ux.menu
 export const selectEditMode = ({ ux }: RootState) => ux.editMode
 export const selectDelSelected = ({ ux }: RootState) => ux.delSelected
+export const selectSideLeft = ({ ux }: RootState) => ux.sideLeft
 export const selectLoadElements = ({ ux }: RootState) => ux.loadElements
-export const { toggleMenu, toggleEditMode, toggleDelSelected, setLoadElements } = uxSlice.actions
+export const {
+  toggleMenu,
+  toggleEditMode,
+  toggleDelSelected,
+  togglesideLeft,
+  setLoadElements,
+} = uxSlice.actions
 export default uxSlice.reducer

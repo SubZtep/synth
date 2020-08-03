@@ -8,9 +8,8 @@ const PianoWrapper = styled.div`
   align-items: center;
   font-size: 3rem;
   justify-content: center;
-  background-color: #11151c;
-  color: #fff;
   user-select: none;
+  padding-bottom: 0.5rem;
 
   > div {
     flex: 1;
@@ -38,6 +37,7 @@ const PianoWrapper = styled.div`
       color: #121212;
     }
   }
+
   > div > div {
     position: absolute;
     top: -1px;

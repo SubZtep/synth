@@ -29,25 +29,6 @@ export const connectNodes = (source: ElementId, target: ElementId) => {
   }
 }
 
-export const disconnectNodes = (source: string, target: string) => {
-  if (target === AUDIO_CONTEXT_DESTINATION) {
-    audioNodes.get(source)?.disconnect()
-  } else {
-    const destination = audioNodes.get(target)
-    if (destination) audioNodes.get(source)?.disconnect(destination)
-  }
-}
-
-export const setNode = (id: string, audioNode: AudioNode) => {
-  audioNodes.set(id, audioNode)
-}
-
-export const delNode = (id: string) => {
-  const node = audioNodes.get(id)
-  node?.disconnect()
-  audioNodes.delete(id)
-}
-
 export const applyParams = (node: AudioNode, params: AudioParamSetting[], time?: number) => {
   if (time === undefined) {
     time = audioContext.currentTime

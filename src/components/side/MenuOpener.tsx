@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core"
+import { jsx } from "@emotion/core"
 import { Fragment, useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { selectMenu, toggleMenu } from "../../features/ux/uxSlice"
@@ -14,18 +14,10 @@ const MenuOpener = () => {
   return (
     <Fragment>
       <FontAwesomeIcon
+        className="menuOpener"
         fixedWidth
-        icon={["fas", "bars"]}
-        size="lg"
-        css={css`
-          position: fixed;
-          top: 6px;
-          right: 8px;
-          &:hover {
-            transform: rotate(90deg);
-            transition: 500ms;
-          }
-        `}
+        icon={["fad", "bars"]}
+        size="2x"
         onMouseEnter={() => {
           if (timer.current === null) {
             timer.current = setTimeout(() => {

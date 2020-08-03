@@ -12,6 +12,8 @@ import {
   applyParams,
   audioContext,
 } from "../../scripts/audio"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { WidgetRows } from "../../styled"
 
 type AudioSource = {
   sourceId: string
@@ -166,31 +168,35 @@ export default () => {
   }, [biquadFilters, oscillators, analysers, gains])
 
   return (
-    <div css={{ backgroundColor: "#364156", padding: 8 }}>
-      <div
-        css={{
-          fontFamily: "Tomorrow",
-          fontSize: "0.8rem",
-          fontWeight: 500,
-          color: "#D66853",
-          backgroundColor: "#000",
-          opacity: 0.3,
-        }}
-      >
-        Holding Audio Player
+    <WidgetRows>
+      <button onClick={() => reloadAudio()}>
+        <FontAwesomeIcon fixedWidth icon={["fas", "sync"]} size="lg" />
+        Force Reload Audio Context
+      </button>
+
+      <div>
+        <div>
+          <label htmlFor="playDelayInput">Play delay:</label>
+          <output name="pd" htmlFor="playDelayInput"></output>
+        </div>
+        <input
+          id="playDelayInput"
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          defaultValue={playDelay.current}
+          onChange={event => {
+            playDelay.current = event.currentTarget.valueAsNumber
+          }}
+        />
       </div>
-      <button onClick={() => reloadAudio()}>Force Reload Audio Context</button>
-      <br />
-      Play delay:
-      <input
-        type="number"
-        defaultValue={playDelay.current}
-        onChange={event => {
-          playDelay.current = event.currentTarget.valueAsNumber
-        }}
-      />
-      <br />
-      Setup for Play: <strong>{latency.current}ms</strong>.
-    </div>
+      <div>
+        <div>Setup for Play:</div>
+        <div>
+          <strong>{latency.current}ms</strong>.
+        </div>
+      </div>
+    </WidgetRows>
   )
 }
