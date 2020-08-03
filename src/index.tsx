@@ -24,7 +24,7 @@ ReactDOM.render(
     <Global styles={globalStyles} />
     <Provider store={store}>
       <App />
-      <ToastContainer position={toast.POSITION.BOTTOM_RIGHT} />
+      <ToastContainer position={toast.POSITION.BOTTOM_RIGHT} autoClose={3000} />
     </Provider>
   </Fragment>,
   // </React.StrictMode>,

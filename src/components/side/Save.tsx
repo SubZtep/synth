@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
+import { toast } from "react-toastify"
 import { useSelector, useDispatch } from "react-redux"
 import { useStoreState, Elements } from "react-flow-renderer"
 import { useRef, useEffect } from "react"
@@ -19,21 +20,21 @@ export default () => {
   }, [name])
 
   const save = () => {
-    localStorage.setItem(
-      name,
-      JSON.stringify({
-        elements: elements.map((element: any) => {
-          if (element.__rf !== undefined) {
-            if (element.__rf.position !== undefined) {
-              element.position = element.__rf.position
-            }
-            delete element.__rf
-          }
-          return element
-        }) as Elements,
-        ...audioNodes,
-      })
-    )
+    const elems = elements.map((element: any) => {
+      if (element.__rf !== undefined) {
+        if (element.__rf.position !== undefined) {
+          element.position = element.__rf.position
+        }
+        delete element.__rf
+      }
+      return element
+    }) as Elements
+    try {
+      localStorage.setItem(name, JSON.stringify({ elements: elems, ...audioNodes }))
+      toast.success(`Sound "${name}" saved`)
+    } catch (e) {
+      toast.error(e.message)
+    }
   }
 
   return (

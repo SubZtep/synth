@@ -34,6 +34,7 @@ export default ({ id }: NodeComponentProps) => {
   const basic: BiquadFilter = useMemo(
     () => ({
       id,
+      connectIds: [],
       type: "lowpass",
       params: [],
     }),

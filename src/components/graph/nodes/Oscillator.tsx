@@ -26,6 +26,7 @@ export default ({ id }: NodeComponentProps) => {
   const basic: Oscillator = useMemo(
     () => ({
       id,
+      connectIds: [],
       type: types[0],
       params: [],
     }),

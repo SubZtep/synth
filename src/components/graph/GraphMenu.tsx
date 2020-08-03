@@ -8,10 +8,10 @@ import { audioNodeTypes } from "./AudioGraph"
 
 type Props = {
   addAudioNode: (type: keyof typeof audioNodeTypes) => () => void
-  removeSelected: () => void
+  delSelected: () => void
 }
 
-export default ({ addAudioNode, removeSelected }: Props) => {
+export default ({ addAudioNode, delSelected }: Props) => {
   const dispatch = useDispatch()
   const editMode = useSelector(selectEditMode)
 
@@ -44,7 +44,7 @@ export default ({ addAudioNode, removeSelected }: Props) => {
       <GraphButton onClick={addAudioNode("analyser")} icon={["fas", "analytics"]}>
         Add Analyser
       </GraphButton>
-      <GraphButton mode="del" onClick={removeSelected} icon={["fas", "trash-alt"]}>
+      <GraphButton mode="del" onClick={delSelected} icon={["fas", "trash-alt"]}>
         Remove Selected
       </GraphButton>
     </GraphButtons>

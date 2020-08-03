@@ -18,6 +18,7 @@ export default ({ id }: NodeComponentProps) => {
   const basic: Gain = useMemo(
     () => ({
       id,
+      connectIds: [],
       params: [],
     }),
     [id]

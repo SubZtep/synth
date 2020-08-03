@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
+import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
 import { useRef, useEffect, useState, ChangeEvent } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -41,14 +42,18 @@ export default () => {
     if (data) {
       const obj = JSON.parse(data)
       if (validateSound(obj)) {
+        console.log("!ANAL", obj.analysers)
         dispatch(setAnalysers(obj.analysers))
         dispatch(setGains(obj.gains))
         dispatch(setBiquadFilters(obj.biquadFilters))
         dispatch(setOscillators(obj.oscillators))
         dispatch(setLoadElements(obj.elements))
         dispatch(setName(name))
+        toast.success(`Sound "${name}" loaded`)
+        return
       }
     }
+    toast.error(`Error loading "${name}" sound`)
   }
 
   return (

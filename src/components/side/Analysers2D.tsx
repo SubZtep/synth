@@ -1,6 +1,7 @@
 /** @jsx jsx */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { jsx } from "@emotion/core"
+import { toast } from "react-toastify"
 import { useRef, useEffect } from "react"
 import { useSelector } from "react-redux"
 import { audioNodes } from "../../scripts/audio"
@@ -13,6 +14,7 @@ export default () => {
   const ctx = useRef<CanvasRenderingContext2D>()
   const width = useRef<number>(0)
   const height = useRef<number>(0)
+  const timer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     ctx.current = canvas.current!.getContext("2d") as CanvasRenderingContext2D
@@ -20,24 +22,41 @@ export default () => {
     const dimensions = dpiFix(canvas.current!)
     width.current = dimensions.width
     height.current = dimensions.height
+
+    return () => {
+      if (timer.current !== null) {
+        clearTimeout(timer.current)
+      }
+    }
   }, [])
 
   const draw = () => {
+    timer.current = null
     ctx.current!.clearRect(0, 0, width.current, height.current)
     analysers.forEach(analyser => {
       const node = audioNodes.get(analyser.id) as AnalyserNode
       if (node) {
         ctx.current!.lineWidth = analyser.lineWidth
-        drawWave(node, analyser.color)
+        try {
+          drawWave(node, analyser.color)
+        } catch (e) {
+          toast.error(e.message)
+        }
       }
     })
 
-    requestAnimationFrame(draw)
+    // requestAnimationFrame(draw)
+    timer.current = setTimeout(draw, 100)
   }
 
   useEffect(() => {
+    if (timer.current !== null) {
+      clearTimeout(timer.current)
+    }
     if (analysers.length > 0) {
       draw()
+    } else {
+      ctx.current!.clearRect(0, 0, width.current, height.current)
     }
   }, [analysers])
 

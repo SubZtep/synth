@@ -38,7 +38,7 @@ export default () => {
       if (res.ok) {
         const sample = await res.json()
         if (validateSound(sample)) {
-          localStorage.setItem("Kick", JSON.stringify(sample))
+          localStorage.setItem(name, JSON.stringify(sample))
           toast.success(`${name} Loaded`)
         }
       }

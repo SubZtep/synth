@@ -48,7 +48,10 @@ export const delNode = (id: string) => {
   audioNodes.delete(id)
 }
 
-export const applyParams = (node: AudioNode, params: AudioParamSetting[]) => {
+export const applyParams = (node: AudioNode, params: AudioParamSetting[], time?: number) => {
+  if (time === undefined) {
+    time = audioContext.currentTime
+  }
   params.forEach(param => {
     const values = [...param.values]
     if (
@@ -61,11 +64,11 @@ export const applyParams = (node: AudioNode, params: AudioParamSetting[]) => {
       ].includes(param.call)
     ) {
       // @ts-ignore
-      values[1] += audioContext.currentTime
+      values[1] += time
     }
     if (["cancelScheduledValues", "cancelAndHoldAtTime"].includes(param.call)) {
       // @ts-ignore
-      values[0] += audioContext.currentTime
+      values[0] += time
     }
 
     // @ts-ignore

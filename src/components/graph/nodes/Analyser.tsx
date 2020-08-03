@@ -22,6 +22,7 @@ export default ({ id }: NodeComponentProps) => {
   const basic: Analyser = useMemo(
     () => ({
       id,
+      connectIds: [],
       fftSize: fftSizes[6],
       color: "#d66853",
       lineWidth: 2,

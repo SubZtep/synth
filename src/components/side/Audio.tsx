@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
+import { toast } from "react-toastify"
 import { useEffect, useRef } from "react"
 import { useSelector } from "react-redux"
-import { useStoreState, Node, Edge } from "react-flow-renderer"
 import * as snd from "../../features/activeSound/activeSoundSlice"
 import {
   restartAudioContext,
@@ -19,8 +20,6 @@ type AudioSource = {
 }
 
 export default () => {
-  const nodes: Node[] = useStoreState(store => store.nodes)
-  const edges: Edge[] = useStoreState(store => store.edges)
   const playFrequency = useSelector(snd.selectPlayFrequency)
   const biquadFilter = useSelector(snd.selectBiquadFilter)
   const oscillator = useSelector(snd.selectOscillator)
@@ -30,126 +29,141 @@ export default () => {
   const oscillators = useSelector(snd.selectOscillators)
   const analysers = useSelector(snd.selectAnalysers)
   const gains = useSelector(snd.selectGains)
-  const sources = useRef<AudioSource[]>([])
+  const playDelay = useRef(0.1)
+  const restarting = useRef(false)
   const latency = useRef(0)
 
   const play = (frequency: number) => {
-    nodes.forEach(node => {
-      let produced
-      let audioNode
-      switch (node.type) {
-        case "oscillator":
-          produced = oscillator(node.id) as snd.Oscillator
-          audioNode = audioContext.createOscillator() as OscillatorNode
-          audioNode.type = produced.type
-          audioNode.frequency.setValueAtTime(frequency, 0)
-          applyParams(audioNode, produced.params)
-          audioNodes.set(node.id, audioNode)
-          break
-        case "gain":
-          produced = gain(node.id) as snd.Gain
-          audioNode = audioNodes.get(node.id) as GainNode
-          applyParams(audioNode, produced.params)
-          break
-        case "biquadfilter":
-          produced = biquadFilter(node.id) as snd.BiquadFilter
-          audioNode = audioNodes.get(node.id) as BiquadFilterNode
-          applyParams(audioNode, produced.params)
-          break
-      }
+    const t = audioContext.currentTime + playDelay.current
+    let audioNode
+    let produced
+
+    gains.forEach(node => {
+      audioNode = audioNodes.get(node.id)
+      if (audioNode === undefined) throw new Error("No Gain (for apply params)")
+      produced = gain(node.id) as snd.Gain
+      if (produced === undefined) throw new Error("No produced Gain (for apply params)")
+      applyParams(audioNode, produced.params, t)
     })
 
-    sources.current.forEach(source => {
-      const sourceNode = audioNodes.get(source.sourceId) as AudioScheduledSourceNode
-      sourceNode.connect(source.targetAudioNode)
-      sourceNode.start()
+    biquadFilters.forEach(node => {
+      audioNode = audioNodes.get(node.id)
+      if (audioNode === undefined) throw new Error("No BiquadFilter (for apply params)")
+      produced = biquadFilter(node.id) as snd.BiquadFilter
+      if (produced === undefined) throw new Error("No produced BiquadFilter (for apply params)")
+      applyParams(audioNode, produced.params, t)
+    })
+
+    oscillators.forEach(node => {
+      const produced = oscillator(node.id) as snd.Oscillator
+      if (produced === undefined) throw new Error("No Oscillator (play error!)")
+      const audioNode = audioContext.createOscillator() as OscillatorNode
+      audioNode.type = produced.type
+      audioNode.frequency.setValueAtTime(frequency, 0)
+      applyParams(audioNode, produced.params, t)
+      node.connectIds.forEach(
+        toId =>
+          void audioNode.connect(
+            toId === AUDIO_CONTEXT_DESTINATION ? audioContext.destination : audioNodes.get(toId)!
+          )
+      )
+      audioNodes.set(node.id, audioNode)
+      audioNode.start(t)
     })
   }
 
   const stop = () => {
-    sources.current.forEach(source => {
-      const sourceNode = audioNodes.get(source.sourceId) as AudioScheduledSourceNode
-      sourceNode.stop()
-      sourceNode.disconnect()
-      audioNodes.delete(source.sourceId)
+    oscillators.forEach(node => {
+      const audioNode = audioNodes.get(node.id) as AudioScheduledSourceNode
+      if (audioNode === undefined) {
+        toast.error(`${node.id} source node is missing for stop`)
+        return
+      }
+      audioNode.stop()
+      audioNode.disconnect()
+      audioNodes.delete(node.id)
     })
   }
 
   useEffect(() => {
     if (playFrequency !== null) {
-      const t = audioContext.currentTime
-      play(playFrequency)
-      latency.current = audioContext.currentTime - t
-
-      return () => {
-        stop()
+      console.time("play")
+      const t = Date.now()
+      try {
+        play(playFrequency)
+      } catch (e) {
+        toast.error(e.message)
       }
-    }
+      console.timeEnd("play")
+      latency.current = Date.now() - t
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      return () => stop()
+    }
   }, [playFrequency])
 
   const reloadAudio = async () => {
-    const ctx = await restartAudioContext()
-    const sourceIds: string[] = []
-    sources.current = []
+    toast.info("Restart Audio Context")
+    await restartAudioContext()
+    audioNodes.clear()
+    let produced
+    let audioNode
 
-    nodes.forEach(node => {
-      let produced
-      let audioNode
-      switch (node.type) {
-        case "oscillator":
-          produced = oscillator(node.id) as snd.Oscillator
-          if (produced === undefined) throw new Error("Not Produced Oscillator (reload)")
-          sourceIds.push(node.id)
-          break
-        case "gain":
-          produced = gain(node.id) as snd.Gain
-          if (produced === undefined) throw new Error("Not Produced Gain (reload)")
-          audioNodes.set(node.id, ctx.createGain())
-          break
-        case "analyser":
-          produced = analyser(node.id) as snd.Analyser
-          if (produced === undefined) throw new Error("Not Produced Analyser (reload)")
-          audioNode = ctx.createAnalyser()
-          audioNode.fftSize = produced.fftSize
-          audioNodes.set(node.id, audioNode)
-          break
-        case "biquadfilter":
-          produced = biquadFilter(node.id) as snd.BiquadFilter
-          if (produced === undefined) throw new Error("Not Produced BiquadFilter (reload)")
-          audioNode = ctx.createBiquadFilter()
-          audioNode.type = produced.type
-          audioNodes.set(node.id, audioNode)
-          break
-      }
+    // Create AudioNodes
+    gains.forEach(node => {
+      produced = gain(node.id) as snd.Gain
+      if (produced === undefined) throw new Error("No Gain (waiting for audio graph)")
+      audioNode = audioContext.createGain()
+      audioNodes.set(node.id, audioNode)
+    })
+    analysers.forEach(node => {
+      produced = analyser(node.id) as snd.Analyser
+      if (produced === undefined) throw new Error("No Analyser (waiting for audio graph)")
+      audioNode = audioContext.createAnalyser()
+      audioNode.fftSize = produced.fftSize
+      audioNodes.set(node.id, audioNode)
+    })
+    biquadFilters.forEach(node => {
+      produced = biquadFilter(node.id) as snd.BiquadFilter
+      if (produced === undefined) throw new Error("No BiquadFilter (waiting for audio graph)")
+      audioNode = audioContext.createBiquadFilter()
+      audioNode.type = produced.type
+      audioNodes.set(node.id, audioNode)
     })
 
-    edges.forEach(edge => {
-      const target =
-        edge.target === AUDIO_CONTEXT_DESTINATION ? ctx.destination : audioNodes.get(edge.target)!
-
-      if (sourceIds.includes(edge.source)) {
-        sources.current.push({
-          sourceId: edge.source,
-          targetAudioNode: target,
-        })
-      } else {
-        audioNodes.get(edge.source)!.connect(target)
-      }
+    // Connect AudioNodes
+    ;[...gains, ...analysers, ...biquadFilters].forEach(({ id, connectIds }) => {
+      connectIds.forEach(toId => {
+        const fromNode = audioNodes.get(id)
+        if (!fromNode) {
+          toast.error(`${id} audio node not found for from connect`)
+          return
+        }
+        const toNode =
+          toId === AUDIO_CONTEXT_DESTINATION ? audioContext.destination : audioNodes.get(toId)
+        if (!toNode) {
+          toast.error(`${toId} audio node not found for to connect`)
+          return
+        }
+        fromNode.connect(
+          toId === AUDIO_CONTEXT_DESTINATION ? audioContext.destination : audioNodes.get(toId)!
+        )
+      })
     })
   }
 
   useEffect(() => {
-    ;(async () => {
-      try {
-        await reloadAudio()
-      } catch (e) {
-        console.error(e)
-      }
-    })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [biquadFilters, oscillators, analysers, gains, edges.length])
+    if (!restarting.current) {
+      restarting.current = true
+      ;(async () => {
+        try {
+          await reloadAudio()
+          restarting.current = false
+        } catch (e) {
+          toast.error(e.message)
+        }
+      })()
+    }
+  }, [biquadFilters, oscillators, analysers, gains])
 
   return (
     <div css={{ backgroundColor: "#364156", padding: 8 }}>
@@ -165,7 +179,18 @@ export default () => {
       >
         Holding Audio Player
       </div>
-      Latency of oscillators: <strong>{latency.current}ms</strong>.
+      <button onClick={() => reloadAudio()}>Force Reload Audio Context</button>
+      <br />
+      Play delay:
+      <input
+        type="number"
+        defaultValue={playDelay.current}
+        onChange={event => {
+          playDelay.current = event.currentTarget.valueAsNumber
+        }}
+      />
+      <br />
+      Setup for Play: <strong>{latency.current}ms</strong>.
     </div>
   )
 }

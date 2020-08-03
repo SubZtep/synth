@@ -42,10 +42,12 @@ type Props = {
 export default ({ audioParams, name, call, values, onChange }: Props) => {
   const setNumber = (event: ChangeEvent<HTMLInputElement>) => {
     const nth = +event.currentTarget.getAttribute("data-nth")!
-    const val = +event.currentTarget.valueAsNumber
-    const currValues = [...values]
-    currValues[nth] = val
-    onChange({ values: currValues })
+    const val = event.currentTarget.valueAsNumber
+    if (!Number.isNaN(val)) {
+      const currValues = [...values]
+      currValues[nth] = val
+      onChange({ values: currValues })
+    }
   }
 
   const setNumbers = (event: ChangeEvent<HTMLInputElement>) => {

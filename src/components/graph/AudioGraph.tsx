@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import ReactFlow, {
   Edge,
   Node,
+  isEdge,
   addEdge,
   Elements,
   Controls,
@@ -14,7 +16,14 @@ import ReactFlow, {
 import { jsx, Global } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
 import { useState, useRef, useEffect, Fragment } from "react"
-import { selectEditMode, selectLoadElements, setLoadElements } from "../../features/ux/uxSlice"
+import { addConnect, delConnect } from "../../features/activeSound/activeSoundSlice"
+import {
+  selectEditMode,
+  selectLoadElements,
+  selectDelSelected,
+  toggleDelSelected,
+  setLoadElements,
+} from "../../features/ux/uxSlice"
 import { globalGraph, globalGraphEditMode, globalGraphDraggableMode } from "./styled"
 import { connectNodes, AUDIO_CONTEXT_DESTINATION } from "../../scripts/audio"
 import { getNextId, checkSize } from "../../scripts/helpers"
@@ -50,6 +59,7 @@ export default () => {
   const dispatch = useDispatch()
   const loadElements = useSelector(selectLoadElements)
   const editMode = useSelector(selectEditMode)
+  const isDelSelected = useSelector(selectDelSelected)
   const width = useStoreState(store => store.width, checkSize)
   const height = useStoreState(store => store.height, checkSize)
   const [elements, setElements] = useState<Elements>([])
@@ -60,6 +70,7 @@ export default () => {
     if (connection.source !== null && connection.target !== null) {
       connectNodes(connection.source, connection.target)
       setElements(els => addEdge(connection, els))
+      dispatch(addConnect({ source: connection.source, target: connection.target }))
     }
   }
 
@@ -78,9 +89,22 @@ export default () => {
     }
   }, [width, height, elements])
 
-  const removeSelected = () => {
+  useEffect(() => {
+    if (isDelSelected) {
+      delSelected()
+      dispatch(toggleDelSelected())
+    }
+  }, [isDelSelected])
+
+  const delSelected = () => {
     if (selected.current !== null) {
       setElements(removeElements(selected.current, elements))
+      selected.current
+        .filter(el => isEdge(el))
+        .forEach(
+          el =>
+            void dispatch(delConnect({ source: (el as Edge).source, target: (el as Edge).target }))
+        )
       selected.current = null
     }
   }
@@ -113,10 +137,11 @@ export default () => {
         connectionLineStyle={{ stroke: "#006" }}
         snapGrid={[16, 16]}
         snapToGrid={true}
+        onlyRenderVisibleNodes={false}
       >
         <Controls showInteractive={false} />
         <Background variant={BackgroundVariant.Lines} color="#A16873" gap={32} />
-        <GraphMenu addAudioNode={addAudioNode} removeSelected={removeSelected} />
+        <GraphMenu addAudioNode={addAudioNode} delSelected={delSelected} />
       </ReactFlow>
     </Fragment>
   )
