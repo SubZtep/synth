@@ -85,12 +85,16 @@ export default ({ id }: NodeComponentProps) => {
                   </label>
                 ))}
               </div>
-              {oscillator.params.length > 0 && <Hr />}
-              <AudioParams
-                audioParams={defs.audioParams}
-                params={oscillator.params}
-                setParams={setParams}
-              />
+              {oscillator.params.length > 0 && (
+                <Fragment>
+                  <Hr />
+                  <AudioParams
+                    audioParams={defs.audioParams}
+                    params={oscillator.params}
+                    setParams={setParams}
+                  />
+                </Fragment>
+              )}
             </FormWrapper>
           </Fragment>
         ) : (

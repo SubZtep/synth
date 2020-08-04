@@ -48,11 +48,7 @@ const defaultNode: Node = {
   connectable: true,
   selectable: false,
   position: { x: 0, y: 0 },
-  className: "audioNode",
-  // style: {
-  //   backgroundColor: "#364156",
-  //   color: "#fff",
-  // },
+  className: "audioNode output",
 }
 
 export default () => {
@@ -136,9 +132,14 @@ export default () => {
         snapGrid={[16, 16]}
         snapToGrid={true}
         onlyRenderVisibleNodes={false}
+        connectionLineStyle={{ stroke: "#71474e" }}
       >
         <Controls showInteractive={false} />
-        <Background variant={BackgroundVariant.Lines} color="#364156" gap={32} />
+        <Background
+          variant={editMode ? BackgroundVariant.Dots : BackgroundVariant.Lines}
+          color="#364156"
+          gap={32}
+        />
         <GraphMenu addAudioNode={addAudioNode} delSelected={delSelected} />
       </ReactFlow>
     </Fragment>

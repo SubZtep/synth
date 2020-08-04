@@ -3,7 +3,7 @@ import { jsx } from "@emotion/core"
 import { useDispatch, useSelector } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
 import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
-import { FormGrid, H1, DataRow, DataKey, NodeBody } from "../elems/styled"
+import { H1, DataRow, DataKey, NodeBody } from "../elems/styled"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
 import {
@@ -14,6 +14,7 @@ import {
 } from "../../../features/activeSound/activeSoundSlice"
 import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"
+import { WidgetRows } from "../../../styled"
 
 const fftSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768] as const
 export type FFTSize = typeof fftSizes[number]
@@ -59,26 +60,39 @@ export default ({ id }: NodeComponentProps) => {
 
       <NodeBody>
         {editMode ? (
-          <FormGrid>
-            <label htmlFor={`a1${id}`}>FFT Size</label>
-            <select id={`a1${id}`} value={analyser.fftSize} onChange={setFFTSize}>
-              {fftSizes.map(fft => (
-                <option key={fft} value={fft}>
-                  {fft}
-                </option>
-              ))}
-            </select>
-            <label htmlFor={`a2{id}`}>Colour</label>
-            <input id={`a2${id}`} type="color" value={analyser.color} onChange={setColor} />
-            <label htmlFor={`a3${id}`}>Line Width</label>
-            <input
-              id={`a3${id}`}
-              type="number"
-              min={1}
-              value={analyser.lineWidth}
-              onChange={setLineWidth}
-            />
-          </FormGrid>
+          <WidgetRows>
+            <div>
+              <label htmlFor={`a1${id}`} css={{ flexGrow: 1 }}>
+                FFT Size
+              </label>
+              <select id={`a1${id}`} value={analyser.fftSize} onChange={setFFTSize}>
+                {fftSizes.map(fft => (
+                  <option key={fft} value={fft}>
+                    {fft}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor={`a2{id}`} css={{ flexGrow: 1 }}>
+                Colour
+              </label>
+              <input id={`a2${id}`} type="color" value={analyser.color} onChange={setColor} />
+            </div>
+            <div>
+              <label htmlFor={`a3${id}`} css={{ flexGrow: 1 }}>
+                Line Width
+              </label>
+              <input
+                id={`a3${id}`}
+                type="range"
+                min={1}
+                max={50}
+                value={analyser.lineWidth}
+                onChange={setLineWidth}
+              />
+            </div>
+          </WidgetRows>
         ) : (
           <Fragment>
             <DataRow>

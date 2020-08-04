@@ -2,7 +2,6 @@
 import { jsx } from "@emotion/core"
 import { Fragment, ChangeEvent } from "react"
 import { AudioParams } from "../../../hooks/useAudioNodeDefs"
-import { FormGrid } from "../elems/styled"
 
 const audioParamCalls = [
   "setValueAtTime",
@@ -67,88 +66,149 @@ export default ({ audioParams, name, call, values, onChange }: Props) => {
   }
 
   return (
-    <FormGrid>
-      <label>Name</label>
-      <select value={name} onChange={event => onChange({ name: event.currentTarget.value })}>
-        {Object.keys(audioParams).map(key => (
-          <option key={key} value={key}>
-            {key}
-          </option>
-        ))}
-      </select>
+    <Fragment>
+      <td>
+        <select value={name} onChange={event => onChange({ name: event.currentTarget.value })}>
+          {Object.keys(audioParams).map(key => (
+            <option key={key} value={key}>
+              {key}
+            </option>
+          ))}
+        </select>
+      </td>
 
-      <label>Call</label>
-      <select
-        value={call}
-        onChange={event => onChange({ call: event.currentTarget.value as Call })}
-        css={{ width: 120 }}
-      >
-        {audioParamCalls.map(call => (
-          <option key={call} value={call}>
-            {call}
-          </option>
-        ))}
-      </select>
+      <td>
+        <select
+          value={call}
+          onChange={event => onChange({ call: event.currentTarget.value as Call })}
+        >
+          {audioParamCalls.map(call => (
+            <option key={call} value={call}>
+              {call}
+            </option>
+          ))}
+        </select>
+      </td>
 
       {["setValueAtTime"].includes(call) && (
         <Fragment>
-          <label>value</label>
-          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+          <td>
+            <input
+              type="number"
+              value={getNumber(0)}
+              step={0.1}
+              data-nth={0}
+              onChange={setNumber}
+            />
+          </td>
 
-          <label>startTime (t+)</label>
-          <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
+          <td>
+            <input
+              type="number"
+              value={getNumber(1)}
+              step={0.1}
+              data-nth={1}
+              onChange={setNumber}
+            />
+          </td>
         </Fragment>
       )}
 
       {["linearRampToValueAtTime", "exponentialRampToValueAtTime"].includes(call) && (
         <Fragment>
-          <label>value</label>
-          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
-
-          <label>endTime (t+)</label>
-          <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
+          <td>
+            <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+          </td>
+          <td>
+            <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
+          </td>
         </Fragment>
       )}
 
       {["setTargetAtTime"].includes(call) && (
         <Fragment>
-          <label>value</label>
-          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
-
-          <label>startTime (t+)</label>
-          <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
-
-          <label>timeConstant</label>
-          <input type="number" value={getNumber(2)} data-nth={2} onChange={setNumber} />
+          <td>
+            <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+          </td>
+          <td>
+            <label></label>
+            <input
+              type="number"
+              value={getNumber(1)}
+              data-nth={1}
+              onChange={setNumber}
+              title="startTime (t+)"
+            />
+            <input
+              type="number"
+              value={getNumber(2)}
+              data-nth={2}
+              onChange={setNumber}
+              title="timeConstant"
+            />
+          </td>
         </Fragment>
       )}
 
       {["setValueCurveAtTime"].includes(call) && (
         <Fragment>
-          <label>values (, sep)</label>
-          <input type="text" value={getNumbers(0)} data-nth={0} onChange={setNumbers} />
-
-          <label>startTime (t+)</label>
-          <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
-
-          <label>duration</label>
-          <input type="number" value={getNumber(2)} data-nth={2} onChange={setNumber} />
+          <td>
+            <input
+              type="text"
+              value={getNumbers(0)}
+              data-nth={0}
+              onChange={setNumbers}
+              title="values (comma separated)"
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              value={getNumber(1)}
+              data-nth={1}
+              onChange={setNumber}
+              title="startTime (t+)"
+            />
+            <input
+              type="number"
+              value={getNumber(2)}
+              data-nth={2}
+              onChange={setNumber}
+              title="duration"
+            />
+          </td>
         </Fragment>
       )}
 
       {["cancelScheduledValues"].includes(call) && (
         <Fragment>
-          <label>startTime (t+)</label>
-          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+          <td>-</td>
+          <td>
+            <input
+              type="number"
+              value={getNumber(0)}
+              data-nth={0}
+              onChange={setNumber}
+              title="startTime (t+)"
+            />
+          </td>
         </Fragment>
       )}
 
       {["cancelAndHoldAtTime"].includes(call) && (
         <Fragment>
-          <label>cancelTime (t+)</label>
-          <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
+          <td>-</td>
+          <td>
+            <input
+              type="number"
+              value={getNumber(0)}
+              data-nth={0}
+              onChange={setNumber}
+              title="cancelTime (t+)"
+            />
+          </td>
         </Fragment>
       )}
-    </FormGrid>
+    </Fragment>
   )
 }

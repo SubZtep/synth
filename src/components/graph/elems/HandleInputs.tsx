@@ -12,7 +12,7 @@ export default memo(({ numberOfInputs }: Props) => (
         key={`input${index}`}
         type="target"
         position={Position.Top}
-        style={{ left: `${(100 / (numberOfInputs + 1)) * (index + 1)}%`, background: "#fff6" }}
+        style={{ left: `${(100 / (numberOfInputs + 1)) * (index + 1)}%` }}
       />
     ))}
   </Fragment>

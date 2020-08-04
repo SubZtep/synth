@@ -11,6 +11,8 @@ export const globalStyles = css`
     --input-border: #7d4e57;
     --input-border-focus: #d66853;
     --button-bg: #4f5f7d;
+    --node-bg: #11151c;
+    --node-selected-border: #d66853;
   }
 
   @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&family=Tomorrow:wght@400;500&display=swap");
@@ -27,6 +29,7 @@ export const globalStyles = css`
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
+    overflow: hidden;
   }
 `
 

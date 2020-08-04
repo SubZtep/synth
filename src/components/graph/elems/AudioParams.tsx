@@ -2,8 +2,9 @@
 import { jsx } from "@emotion/core"
 import { Fragment } from "react"
 import AudioParamForm, { AudioParamSetting, AudioParamUpdate } from "./AudioParamForm"
-import { Hr, DelButton } from "../elems/styled"
 import { AudioParams } from "../../../hooks/useAudioNodeDefs"
+import { IconButton } from "../../../styled"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 type Props = {
   audioParams: AudioParams
@@ -44,17 +45,37 @@ export default ({ audioParams, params, setParams }: Props) => {
 
   return (
     <Fragment>
-      {params.map((param, index) => (
-        <div key={param.name + param.call + index}>
-          {index > 0 && <Hr />}
-          <AudioParamForm
-            audioParams={audioParams}
-            {...param}
-            onChange={newParam => paramChange(index, newParam)}
-          />
-          <DelButton onClick={() => delParam(index)}>- Remove Param Update</DelButton>
-        </div>
-      ))}
+      <table>
+        <tr>
+          <th>
+            <FontAwesomeIcon icon={["fad", "piano-keyboard"]} title="Param Name" />
+          </th>
+          <th>
+            <FontAwesomeIcon icon={["fad", "waveform-path"]} title="Call Type" />
+          </th>
+          <th>
+            <FontAwesomeIcon icon={["fad", "sliders-h"]} title="Value" />
+          </th>
+          <th>
+            <FontAwesomeIcon icon={["fad", "hourglass-start"]} title="Start (time+)" />
+          </th>
+          <th></th>
+        </tr>
+        {params.map((param, index) => (
+          <tr key={param.name + param.call + index}>
+            <AudioParamForm
+              audioParams={audioParams}
+              {...param}
+              onChange={newParam => paramChange(index, newParam)}
+            />
+            <td>
+              <IconButton onClick={() => delParam(index)}>
+                <FontAwesomeIcon icon={["fad", "trash"]} />
+              </IconButton>
+            </td>
+          </tr>
+        ))}
+      </table>
     </Fragment>
   )
 }

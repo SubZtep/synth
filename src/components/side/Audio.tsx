@@ -169,8 +169,13 @@ export default () => {
 
   return (
     <WidgetRows>
-      <button onClick={() => reloadAudio()}>
-        <FontAwesomeIcon fixedWidth icon={["fas", "sync"]} size="lg" />
+      <button onClick={() => reloadAudio()} css={{ position: "relative" }}>
+        <FontAwesomeIcon
+          fixedWidth
+          icon={["fad", "sync"]}
+          size="lg"
+          css={{ position: "absolute", top: 4, right: 6 }}
+        />
         Force Reload Audio Context
       </button>
 
@@ -181,7 +186,7 @@ export default () => {
         </div>
         <input
           id="playDelayInput"
-          type="range"
+          type="number"
           min={0}
           max={1}
           step={0.01}

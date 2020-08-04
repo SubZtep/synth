@@ -1,43 +1,55 @@
 import styled from "@emotion/styled"
 
 export const NodeBody = styled.div`
-  padding: 4px;
-  border-radius: 3px;
+  padding: 4px 6px;
+  border-radius: 3px 3px 2px 2px;
   background-color: #364156;
   // font-weight: 300;
-`
 
-export const FormGrid = styled.div`
-  display: grid;
-  gap: 3px;
-  grid-template-columns: 0.8fr 1fr;
-  align-items: center;
-  font-size: 0.95rem;
-  input[type="text"],
-  input[type="number"],
-  input[type="color"],
-  select {
-    width: 120px;
+  input,
+  select,
+  button {
+    font-size: 0.95rem;
+    flex-grow: 1;
+    border-radius: 3px;
     background-color: transparent;
-    border: 1px solid #d66853;
-    border-radius: 2px;
-    color: #f7e2de;
+    border: 1px solid var(--input-border);
     font-family: Roboto;
-    font-size: 0.85rem;
-    padding: 2px 4px;
+    padding: 6px;
+    color: #fff;
     &:focus {
-      border-color: #e8a99c;
+      border-color: var(--input-border-focus);
+      border-width: 2px;
+      padding: 5px;
     }
   }
-  option {
-    background-color: #212d40;
+
+  select option {
+    background-color: var(--widget-bg);
+  }
+
+  button {
+    width: 100%;
+    background-color: var(--button-bg);
+    border-width: 2px;
+    border-style: outset;
+    cursor: pointer;
+    &:focus {
+      padding: 6px;
+    }
   }
 `
 
 export const FormWrapper = styled.div`
-  // padding: 4px;
-  // background-color: #364156;
-  // font-weight: 300;
+  table {
+    select, input {
+      padding: 2px;
+      width: 60px;
+      &:focus {
+        padding: 1px;
+      }
+    }
+  }
 }
 `
 
@@ -55,7 +67,7 @@ export const H1 = styled.div`
   font-weight: 400;
   text-align: center;
   font-size: 1.2rem;
-  margin: 1px 0 4px;
+  margin: 2px 0 5px;
 `
 
 export const H2 = styled.div`
@@ -70,9 +82,9 @@ export const H2 = styled.div`
 `
 
 export const Hr = styled.hr`
-  margin: 10px 0 6px 0;
+  margin: 15px 0 10px 0;
   border: 0;
-  border-bottom: 2px ridge #374c6c;
+  border-bottom: 1px dashed var(--node-bg);
 `
 
 export const DelButton = styled.button`
@@ -89,7 +101,6 @@ export const DataRow = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 0.95rem;
-  // margin: 0 6px;
   line-height: 1.35rem;
 `
 
@@ -101,4 +112,8 @@ export const DataNote = styled.div`
   font-size: 0.8rem;
   color: #999;
   word-spacing: -1px;
+
+  button {
+    margin-left: 6px;
+  }
 `

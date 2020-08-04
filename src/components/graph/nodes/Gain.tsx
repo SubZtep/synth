@@ -8,7 +8,7 @@ import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
 import AudioParamDefaults from "../elems/AudioParamDefaults"
 import { AudioParamSetting } from "../elems/AudioParamForm"
-import { H1, FormWrapper, NodeBody } from "../elems/styled"
+import { H1, FormWrapper, NodeBody, Hr } from "../elems/styled"
 import AudioParamsView from "../elems/AudioParamsView"
 import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"
@@ -65,6 +65,7 @@ export default ({ id }: NodeComponentProps) => {
           <Fragment>
             {gain.params.length > 0 && (
               <FormWrapper>
+                <Hr />
                 <AudioParams
                   audioParams={defs.audioParams}
                   params={gain.params}

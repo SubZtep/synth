@@ -32,19 +32,19 @@ export default ({ addAudioNode, delSelected }: Props) => {
           </Fragment>
         )}
       </GraphButton>
-      <GraphButton onClick={addAudioNode("oscillator")} icon={["fas", "wave-sine"]}>
+      <GraphButton onClick={addAudioNode("oscillator")} icon={["fad", "wave-sine"]}>
         Add Oscillator
       </GraphButton>
-      <GraphButton onClick={addAudioNode("gain")} icon={["fas", "volume"]}>
+      <GraphButton onClick={addAudioNode("gain")} icon={["fad", "volume"]}>
         Add Gain
       </GraphButton>
-      <GraphButton onClick={addAudioNode("biquadfilter")} icon={["fas", "filter"]}>
+      <GraphButton onClick={addAudioNode("biquadfilter")} icon={["fad", "filter"]}>
         Add Biquad Filter
       </GraphButton>
-      <GraphButton onClick={addAudioNode("analyser")} icon={["fas", "analytics"]}>
+      <GraphButton onClick={addAudioNode("analyser")} icon={["fad", "analytics"]}>
         Add Analyser
       </GraphButton>
-      <GraphButton mode="del" onClick={delSelected} icon={["fas", "trash-alt"]}>
+      <GraphButton mode="del" onClick={delSelected} icon={["fad", "trash-alt"]}>
         Remove Selected
       </GraphButton>
     </GraphButtons>

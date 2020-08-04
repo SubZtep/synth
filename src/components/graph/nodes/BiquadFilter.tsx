@@ -3,7 +3,7 @@ import { jsx } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
 import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
-import { FormWrapper, H1, H2, NodeBody, DataRow, DataKey } from "../elems/styled"
+import { FormWrapper, H1, H2, NodeBody, DataRow, DataKey, Hr } from "../elems/styled"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
 import {
@@ -97,7 +97,7 @@ export default ({ id }: NodeComponentProps) => {
               </div>
               {biquadFilter.params.length > 0 && (
                 <Fragment>
-                  <H2>Params</H2>
+                  <Hr />
                   <AudioParams
                     audioParams={defs.audioParams}
                     params={biquadFilter.params}
