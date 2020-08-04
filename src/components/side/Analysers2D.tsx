@@ -12,8 +12,9 @@ export default () => {
   const analysers = useSelector(selectAnalysers)
   const canvas = useRef<HTMLCanvasElement>(null)
   const ctx = useRef<CanvasRenderingContext2D>()
-  const width = useRef<number>(0)
-  const height = useRef<number>(0)
+  const width = useRef(0)
+  const height = useRef(0)
+  const halfHeight = useRef(0)
   const timer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export default () => {
     const dimensions = dpiFix(canvas.current!)
     width.current = dimensions.width
     height.current = dimensions.height
+    halfHeight.current = height.current / 2
 
     return () => {
       if (timer.current !== null) {
@@ -45,8 +47,8 @@ export default () => {
       }
     })
 
-    // requestAnimationFrame(draw)
-    timer.current = setTimeout(draw, 100)
+    requestAnimationFrame(draw)
+    // timer.current = setTimeout(draw, 100)
   }
 
   useEffect(() => {
@@ -54,14 +56,15 @@ export default () => {
       clearTimeout(timer.current)
     }
     if (analysers.length > 0) {
+      console.time("draw")
       draw()
+      console.timeEnd("draw")
     } else {
       ctx.current!.clearRect(0, 0, width.current, height.current)
     }
   }, [analysers])
 
   const drawWave = (analyser: AnalyserNode, color: string) => {
-    const halfHeight = height.current / 2
     ctx.current!.strokeStyle = color
     const bufferLength = analyser.frequencyBinCount
     const data = new Float32Array(bufferLength)
@@ -69,14 +72,15 @@ export default () => {
     let sliceWidth = width.current / bufferLength
     let x = 0
     let y
+    let i
     ctx.current!.beginPath()
-    ctx.current!.moveTo(0, halfHeight)
-    for (let i = 0; i < bufferLength; i++) {
-      y = halfHeight + data[i] * halfHeight
+    ctx.current!.moveTo(0, halfHeight.current)
+    for (i = 0; i < bufferLength; i++) {
+      y = halfHeight.current + data[i] * halfHeight.current
       ctx.current!.lineTo(x, y)
       x += sliceWidth
     }
-    ctx.current!.lineTo(width.current, halfHeight)
+    ctx.current!.lineTo(width.current, halfHeight.current)
     ctx.current!.stroke()
   }
 

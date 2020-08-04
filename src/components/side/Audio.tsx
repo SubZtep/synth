@@ -3,7 +3,8 @@
 import { jsx } from "@emotion/core"
 import { toast } from "react-toastify"
 import { useEffect, useRef } from "react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import { selectReloadAudio, toggleReloadAudio } from "../../features/ux/uxSlice"
 import * as snd from "../../features/activeSound/activeSoundSlice"
 import {
   restartAudioContext,
@@ -11,6 +12,7 @@ import {
   AUDIO_CONTEXT_DESTINATION,
   applyParams,
   audioContext,
+  destroyAudioNodes,
 } from "../../scripts/audio"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { WidgetRows } from "../../styled"
@@ -22,6 +24,8 @@ type AudioSource = {
 }
 
 export default () => {
+  const dispatch = useDispatch()
+  const reloadAudio = useSelector(selectReloadAudio)
   const playFrequency = useSelector(snd.selectPlayFrequency)
   const biquadFilter = useSelector(snd.selectBiquadFilter)
   const oscillator = useSelector(snd.selectOscillator)
@@ -103,10 +107,10 @@ export default () => {
     }
   }, [playFrequency])
 
-  const reloadAudio = async () => {
+  const reloadAudioNodes = async () => {
     toast.info("Restart Audio Context")
+    destroyAudioNodes()
     await restartAudioContext()
-    audioNodes.clear()
     let produced
     let audioNode
 
@@ -154,22 +158,25 @@ export default () => {
   }
 
   useEffect(() => {
-    if (!restarting.current) {
-      restarting.current = true
-      ;(async () => {
-        try {
-          await reloadAudio()
-          restarting.current = false
-        } catch (e) {
-          toast.error(e.message)
-        }
-      })()
+    if (reloadAudio) {
+      dispatch(toggleReloadAudio())
+      if (!restarting.current) {
+        restarting.current = true
+        ;(async () => {
+          try {
+            await reloadAudioNodes()
+            restarting.current = false
+          } catch (e) {
+            toast.error(e.message)
+          }
+        })()
+      }
     }
-  }, [biquadFilters, oscillators, analysers, gains])
+  }, [reloadAudio])
 
   return (
     <WidgetRows>
-      <button onClick={() => reloadAudio()} css={{ position: "relative" }}>
+      <button onClick={() => reloadAudioNodes()} css={{ position: "relative" }}>
         <FontAwesomeIcon
           fixedWidth
           icon={["fad", "sync"]}
@@ -178,29 +185,38 @@ export default () => {
         />
         Force Reload Audio Context
       </button>
-
-      <div>
-        <div>
-          <label htmlFor="playDelayInput">Play delay:</label>
-          <output name="pd" htmlFor="playDelayInput"></output>
-        </div>
-        <input
-          id="playDelayInput"
-          type="number"
-          min={0}
-          max={1}
-          step={0.01}
-          defaultValue={playDelay.current}
-          onChange={event => {
-            playDelay.current = event.currentTarget.valueAsNumber
-          }}
+      <button onClick={() => toast.clearWaitingQueue()} css={{ position: "relative" }}>
+        <FontAwesomeIcon
+          fixedWidth
+          icon={["fad", "comment-alt-slash"]}
+          size="lg"
+          css={{ position: "absolute", top: 4, right: 6 }}
         />
-      </div>
-      <div>
-        <div>Setup for Play:</div>
-        <div>
-          <strong>{latency.current}ms</strong>.
+        Clear Notification Queue
+      </button>
+
+      <div css={{ display: "flex" }}>
+        <div css={{ width: "50%" }}>
+          <label htmlFor="playDelayInput">Play delay:</label>{" "}
+          <input
+            id="playDelayInput"
+            type="number"
+            min={0}
+            max={1}
+            step={0.01}
+            defaultValue={playDelay.current}
+            onChange={event => {
+              playDelay.current = event.currentTarget.valueAsNumber
+            }}
+          />
         </div>
+        <div css={{ width: "50%" }}>
+          Setup time: <strong>{latency.current}ms</strong>.
+        </div>
+      </div>
+
+      <div css={{ fontSize: "0.58rem", color: "limegreen", textDecoration: "underline" }}>
+        Save works but kill the app, probably for the good coz memory leak suspected!
       </div>
     </WidgetRows>
   )

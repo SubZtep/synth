@@ -59,7 +59,7 @@ export default ({ params, showCoord }: Props) => {
     )
 
     setCoordParams(cps)
-  }, [params])
+  }, [params, showCoord])
 
   if (params.length === 0) {
     return <Fragment />
@@ -73,13 +73,19 @@ export default ({ params, showCoord }: Props) => {
         <div>
           <svg
             viewBox={`0 0 ${maxTime} ${minValue + maxValue}`}
-            css={{ width: "100%", height: 100, boxShadow: "inset 0 0 25px red" }}
+            css={{ width: "100%", height: 50, boxShadow: "inset 0 0 25px red" }}
           >
             {coordParams.map(cp => (
-              <circle cx={cp.time} cy={cp.value} r={(minValue + maxValue) / 10} fill="#11151c" />
+              <circle
+                key={JSON.stringify(cp)}
+                cx={cp.time}
+                cy={cp.value}
+                r={(minValue + maxValue) / 10}
+                fill="#11151c"
+              />
             ))}
           </svg>
-          <div css={{ fontSize: "0.8rem", color: "#11151c", marginBottom: 8 }}>
+          <div css={{ fontSize: "0.8rem", color: "#D66853", marginTop: -18 }}>
             maxTime: {maxTime}, minValue: {minValue}, maxValue: {maxValue}
           </div>
         </div>

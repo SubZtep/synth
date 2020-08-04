@@ -3,18 +3,37 @@ import { Elements } from "react-flow-renderer"
 import { RootState } from "../../store"
 
 type UX = {
+  /**
+   * Tells if popup menu visible
+   */
   menu: boolean
+
+  /**
+   * All audio node on graph become editable
+   */
   editMode: boolean
+
   /**
    * Load _**React-Flow** Elements_ from local storage,
    * `const setElements = useStoreActions(actions => actions.setElements)`
    * in Load component somehow doesn't work.
    */
   loadElements: Elements | null
-  /** Set to true to del selected in AudioGraph component */
+
+  /**
+   * Set to true to del selected in AudioGraph component
+   * */
   delSelected: boolean
-  /** Sidebar on the left */
+
+  /**
+   * Sidebar on the left
+   */
   sideLeft: boolean
+
+  /**
+   * Set to true to reload audio nodes in `Audio` component
+   */
+  reloadAudio: boolean
 }
 
 const initialState: UX = {
@@ -23,6 +42,7 @@ const initialState: UX = {
   loadElements: null,
   delSelected: false,
   sideLeft: false,
+  reloadAudio: false,
 }
 
 const uxSlice = createSlice({
@@ -38,8 +58,11 @@ const uxSlice = createSlice({
     toggleDelSelected: state => {
       state.delSelected = !state.delSelected
     },
-    togglesideLeft: state => {
+    toggleSideLeft: state => {
       state.sideLeft = !state.sideLeft
+    },
+    toggleReloadAudio: state => {
+      state.reloadAudio = !state.reloadAudio
     },
     setLoadElements: (state: UX, { payload }: PayloadAction<Elements | null>) => {
       state.loadElements = payload
@@ -52,11 +75,13 @@ export const selectEditMode = ({ ux }: RootState) => ux.editMode
 export const selectDelSelected = ({ ux }: RootState) => ux.delSelected
 export const selectSideLeft = ({ ux }: RootState) => ux.sideLeft
 export const selectLoadElements = ({ ux }: RootState) => ux.loadElements
+export const selectReloadAudio = ({ ux }: RootState) => ux.reloadAudio
 export const {
   toggleMenu,
   toggleEditMode,
   toggleDelSelected,
-  togglesideLeft,
+  toggleSideLeft,
+  toggleReloadAudio,
   setLoadElements,
 } = uxSlice.actions
 export default uxSlice.reducer

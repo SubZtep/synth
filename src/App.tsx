@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core"
 import { HotKeys } from "react-hotkeys"
 import { useDispatch, useSelector } from "react-redux"
-import { ToastContainer, toast } from "react-toastify"
+import { ToastContainer, toast, Slide } from "react-toastify"
 import { ReactFlowProvider } from "react-flow-renderer"
 import { toggleEditMode, toggleDelSelected, selectSideLeft } from "./features/ux/uxSlice"
 import AudioGraph from "./components/graph/AudioGraph"
@@ -47,8 +47,9 @@ export default function App() {
         </Main>
         <ToastContainer
           position={sideLeft ? toast.POSITION.BOTTOM_LEFT : toast.POSITION.BOTTOM_RIGHT}
-          limit={1}
-          autoClose={3000}
+          transition={Slide}
+          limit={2}
+          autoClose={2200}
         />
       </HotKeys>
     </ReactFlowProvider>

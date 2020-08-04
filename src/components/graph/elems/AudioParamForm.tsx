@@ -74,7 +74,6 @@ export default ({ audioParams, name, call, values, onChange }: Props) => {
           ))}
         </select>
       </td>
-
       <td>
         <select
           value={call}
@@ -88,7 +87,9 @@ export default ({ audioParams, name, call, values, onChange }: Props) => {
         </select>
       </td>
 
-      {["setValueAtTime"].includes(call) && (
+      {["setValueAtTime", "linearRampToValueAtTime", "exponentialRampToValueAtTime"].includes(
+        call
+      ) && (
         <Fragment>
           <td>
             <input
@@ -99,26 +100,15 @@ export default ({ audioParams, name, call, values, onChange }: Props) => {
               onChange={setNumber}
             />
           </td>
-
           <td>
             <input
               type="number"
               value={getNumber(1)}
               step={0.1}
+              min={0}
               data-nth={1}
               onChange={setNumber}
             />
-          </td>
-        </Fragment>
-      )}
-
-      {["linearRampToValueAtTime", "exponentialRampToValueAtTime"].includes(call) && (
-        <Fragment>
-          <td>
-            <input type="number" value={getNumber(0)} data-nth={0} onChange={setNumber} />
-          </td>
-          <td>
-            <input type="number" value={getNumber(1)} data-nth={1} onChange={setNumber} />
           </td>
         </Fragment>
       )}

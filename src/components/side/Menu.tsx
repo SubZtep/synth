@@ -3,7 +3,7 @@
 import { jsx } from "@emotion/core"
 import { toast } from "react-toastify"
 import { useDispatch } from "react-redux"
-import { toggleMenu, togglesideLeft } from "../../features/ux/uxSlice"
+import { toggleMenu, toggleSideLeft } from "../../features/ux/uxSlice"
 import { validateSound } from "../../scripts/helpers"
 import { MenuPopup } from "../../styled"
 
@@ -30,6 +30,11 @@ export default () => {
       <h2>MENU</h2>
       <ul>
         <li>
+          Refresh often because something is not right yet. Load samples below with the buttons and
+          select from the dropdown to have a look. Crash and Refresh. =] (This version only deployed
+          for testing purposes.)
+        </li>
+        <li>
           Open poorly managed{" "}
           <a href="https://github.com/SubZtep/synth/wiki" target="_blank" rel="noopener noreferrer">
             Wiki page
@@ -42,7 +47,7 @@ export default () => {
           local storage.
         </li>
         <li>
-          <button onClick={() => dispatch(togglesideLeft())}>Switch</button> sidebar position
+          <button onClick={() => dispatch(toggleSideLeft())}>Switch</button> sidebar position
           between left and right.
         </li>
       </ul>

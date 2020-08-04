@@ -1,6 +1,4 @@
-import { ElementId } from "react-flow-renderer"
 import { AudioParamSetting } from "../components/graph/elems/AudioParamForm"
-
 export const AUDIO_CONTEXT_DESTINATION = "destination"
 
 // @ts-ignore
@@ -13,20 +11,22 @@ export let audioContext = new AudioContext()
  */
 export const audioNodes = new Map<string, AudioNode>()
 
+export const destroyAudioNodes = () => {
+  audioNodes.forEach(node => {
+    try {
+      node.disconnect()
+    } catch (e) {
+      console.error("Disconnect before reload failed", [node, e])
+    }
+  })
+  audioNodes.clear()
+}
+
 export const restartAudioContext = async () => {
   await audioContext.close()
   audioNodes.clear()
   audioContext = new AudioContext()
   return audioContext
-}
-
-export const connectNodes = (source: ElementId, target: ElementId) => {
-  if (target === AUDIO_CONTEXT_DESTINATION) {
-    audioNodes.get(source)?.connect(audioContext.destination)
-  } else {
-    const destination = audioNodes.get(target)
-    if (destination) audioNodes.get(source)?.connect(destination)
-  }
 }
 
 export const applyParams = (node: AudioNode, params: AudioParamSetting[], time?: number) => {
