@@ -1,0 +1,140 @@
+{
+	"elements": [
+		{
+			"id": "destination",
+			"data": {
+				"label": "Audio Output"
+			},
+			"type": "output",
+			"connectable": true,
+			"selectable": false,
+			"position": {
+				"x": 704,
+				"y": 544
+			},
+			"className": "audioNode",
+			"style": {
+				"backgroundColor": "#364156",
+				"color": "#fff"
+			}
+		},
+		{
+			"id": "1",
+			"type": "oscillator",
+			"className": "audioNode",
+			"position": {
+				"x": 384,
+				"y": -32
+			}
+		},
+		{
+			"id": "2",
+			"type": "gain",
+			"className": "audioNode",
+			"position": {
+				"x": 800,
+				"y": -32
+			}
+		},
+		{
+			"id": "3",
+			"type": "analyser",
+			"className": "audioNode",
+			"position": {
+				"x": 896,
+				"y": 368
+			}
+		},
+		{
+			"source": "1",
+			"target": "2",
+			"id": "reactflow__edge-1-2",
+			"type": "default"
+		},
+		{
+			"source": "2",
+			"target": "3",
+			"id": "reactflow__edge-2-3",
+			"type": "default"
+		},
+		{
+			"source": "3",
+			"target": "destination",
+			"id": "reactflow__edge-3-destination",
+			"type": "default"
+		}
+	],
+	"analysers": [
+		{
+			"id": "3",
+			"connectIds": [
+				"destination"
+			],
+			"fftSize": 2048,
+			"color": "#962813",
+			"lineWidth": 4
+		}
+	],
+	"gains": [
+		{
+			"id": "2",
+			"connectIds": [
+				"3"
+			],
+			"params": [
+				{
+					"name": "gain",
+					"call": "setValueAtTime",
+					"values": [
+						1,
+						0
+					]
+				},
+				{
+					"name": "gain",
+					"call": "exponentialRampToValueAtTime",
+					"values": [
+						0.01,
+						0.5
+					]
+				}
+			]
+		}
+	],
+	"biquadFilters": [],
+	"oscillators": [
+		{
+			"id": "1",
+			"connectIds": [
+				"2"
+			],
+			"type": "sine",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						150,
+						0
+					]
+				},
+				{
+					"name": "frequency",
+					"call": "exponentialRampToValueAtTime",
+					"values": [
+						0.01,
+						0.5
+					]
+				},
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						0,
+						0.5
+					]
+				}
+			]
+		}
+	]
+}
