@@ -9,8 +9,6 @@ const audioParamCalls = [
   "exponentialRampToValueAtTime",
   "setTargetAtTime",
   "setValueCurveAtTime",
-  "cancelScheduledValues",
-  "cancelAndHoldAtTime",
 ] as const
 
 type Call = typeof audioParamCalls[number]
@@ -175,36 +173,6 @@ export default ({ audioParams, name, call, values, onChange }: Props) => {
               data-nth={2}
               onChange={setNumber}
               title="duration"
-            />
-          </td>
-        </Fragment>
-      )}
-
-      {["cancelScheduledValues"].includes(call) && (
-        <Fragment>
-          <td>-</td>
-          <td>
-            <input
-              type="number"
-              value={getNumber(0)}
-              data-nth={0}
-              onChange={setNumber}
-              title="startTime (t+)"
-            />
-          </td>
-        </Fragment>
-      )}
-
-      {["cancelAndHoldAtTime"].includes(call) && (
-        <Fragment>
-          <td>-</td>
-          <td>
-            <input
-              type="number"
-              value={getNumber(0)}
-              data-nth={0}
-              onChange={setNumber}
-              title="cancelTime (t+)"
             />
           </td>
         </Fragment>

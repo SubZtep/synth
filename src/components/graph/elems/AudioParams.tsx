@@ -46,35 +46,39 @@ export default ({ audioParams, params, setParams }: Props) => {
   return (
     <Fragment>
       <table>
-        <tr>
-          <th>
-            <FontAwesomeIcon icon={["fad", "piano-keyboard"]} title="Param Name" />
-          </th>
-          <th>
-            <FontAwesomeIcon icon={["fad", "waveform-path"]} title="Call Type" />
-          </th>
-          <th>
-            <FontAwesomeIcon icon={["fad", "sliders-h"]} title="Value" />
-          </th>
-          <th>
-            <FontAwesomeIcon icon={["fad", "hourglass-start"]} title="Start (time+)" />
-          </th>
-          <th></th>
-        </tr>
-        {params.map((param, index) => (
-          <tr key={param.name + param.call + index}>
-            <AudioParamForm
-              audioParams={audioParams}
-              {...param}
-              onChange={newParam => paramChange(index, newParam)}
-            />
-            <td>
-              <IconButton onClick={() => delParam(index)}>
-                <FontAwesomeIcon icon={["fad", "trash"]} />
-              </IconButton>
-            </td>
+        <thead>
+          <tr>
+            <th>
+              <FontAwesomeIcon icon={["fad", "piano-keyboard"]} title="Param Name" />
+            </th>
+            <th>
+              <FontAwesomeIcon icon={["fad", "waveform-path"]} title="Call Type" />
+            </th>
+            <th>
+              <FontAwesomeIcon icon={["fad", "sliders-h"]} title="Value" />
+            </th>
+            <th>
+              <FontAwesomeIcon icon={["fad", "hourglass-start"]} title="Start (time+)" />
+            </th>
+            <th></th>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {params.map((param, index) => (
+            <tr key={param.name + param.call + index}>
+              <AudioParamForm
+                audioParams={audioParams}
+                {...param}
+                onChange={newParam => paramChange(index, newParam)}
+              />
+              <td>
+                <IconButton onClick={() => delParam(index)}>
+                  <FontAwesomeIcon icon={["fad", "trash"]} />
+                </IconButton>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </Fragment>
   )

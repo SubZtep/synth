@@ -46,7 +46,8 @@ export default function App() {
           </SideBar>
         </Main>
         <ToastContainer
-          position={sideLeft ? toast.POSITION.TOP_RIGHT : toast.POSITION.TOP_LEFT}
+          position={sideLeft ? toast.POSITION.BOTTOM_LEFT : toast.POSITION.BOTTOM_RIGHT}
+          limit={1}
           autoClose={3000}
         />
       </HotKeys>
