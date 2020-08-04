@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { AudioParamSetting } from "../../components/graph/elems/AudioParamForm"
 import Analyser, { FFTSize } from "../../components/graph/nodes/Analyser"
 import { RootState } from "../../store"
-import { AudioParamSetting } from "../../components/graph/nodes/AudioParamForm"
+
+type Connect = {
+  source: string
+  target: string
+}
 
 export type Analyser = {
   id: string
+  connectIds: string[]
   fftSize: FFTSize
   color: string
   lineWidth: number
@@ -12,17 +18,20 @@ export type Analyser = {
 
 export type Gain = {
   id: string
+  connectIds: string[]
   params: AudioParamSetting[]
 }
 
 export type BiquadFilter = {
   id: string
+  connectIds: string[]
   type: BiquadFilterType
   params: AudioParamSetting[]
 }
 
 export type Oscillator = {
   id: string
+  connectIds: string[]
   type: OscillatorType
   params: AudioParamSetting[]
 }
@@ -54,6 +63,20 @@ const activeSoundSlice = createSlice({
     },
     setPlayFrequency: (state: ActiveSound, { payload }: PayloadAction<number | null>) => {
       state.playFrequency = payload
+    },
+    addConnect: (state: ActiveSound, { payload }: PayloadAction<Connect>) => {
+      ;[state.analysers, state.gains, state.biquadFilters, state.oscillators]
+        .flat()
+        .find(el => el.id === payload.source)
+        ?.connectIds.push(payload.target)
+    },
+    delConnect: (state: ActiveSound, { payload }: PayloadAction<Connect>) => {
+      const node = [state.analysers, state.gains, state.biquadFilters, state.oscillators]
+        .flat()
+        .find(el => el.id === payload.source)
+      if (node !== undefined) {
+        node.connectIds = node.connectIds.filter(id => id !== payload.target)
+      }
     },
 
     setAnalysers: (state: ActiveSound, { payload }: PayloadAction<Analyser[]>) => {
@@ -146,6 +169,8 @@ export const selectOscillators = ({ activeSound }: RootState) => activeSound.osc
 export const {
   setName,
   setPlayFrequency,
+  addConnect,
+  delConnect,
   setAnalysers,
   setAnalyser,
   delAnalyser,

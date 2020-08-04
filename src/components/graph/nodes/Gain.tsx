@@ -1,73 +1,85 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
+import { useMemo, useEffect, Fragment } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
-import { memo, Fragment, useEffect, useRef } from "react"
-import { audioContext, setNode, delNode, applyParams } from "../../../scripts/audio"
-import {
-  selectPlayFrequency,
-  setGain,
-  delGain,
-  selectGain,
-  Gain,
-} from "../../../features/activeSound/activeSoundSlice"
-import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
-import { Title, FormWrapper, AddButton } from "../nodeform"
-import AudioParamDefaults from "./AudioParamDefaults"
-import { AudioParamSetting } from "./AudioParamForm"
-import HandleOutputs from "./HandleOutputs"
-import HandleInputs from "./HandleInputs"
-import AudioParams from "./AudioParams"
+import { setGain, delGain, selectGain, Gain } from "../../../features/activeSound/activeSoundSlice"
+import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
+import { selectEditMode } from "../../../features/ux/uxSlice"
+import AudioParamDefaults from "../elems/AudioParamDefaults"
+import { AudioParamSetting } from "../elems/AudioParamForm"
+import { H1, FormWrapper, NodeBody, Hr } from "../elems/styled"
+import AudioParamsView from "../elems/AudioParamsView"
+import HandleOutputs from "../elems/HandleOutputs"
+import HandleInputs from "../elems/HandleInputs"
+import AudioParams from "../elems/AudioParams"
 
-export default memo(({ id }: NodeComponentProps) => {
-  const node = useRef(audioContext.createGain())
+export default ({ id }: NodeComponentProps) => {
+  const basic: Gain = useMemo(
+    () => ({
+      id,
+      connectIds: [],
+      params: [],
+    }),
+    [id]
+  )
+  const editMode = useSelector(selectEditMode)
+  const defs = useAudioNodeDefs("GainNode")
   const dispatch = useDispatch()
-  const gain: Gain = useSelector(selectGain)(id) || {
-    id,
-    params: [],
-  }
-  const audioParams = useAudioParamKeys(node.current)
-  const playFrequency = useSelector(selectPlayFrequency)
+  const gain: Gain = useSelector(selectGain)(id) || basic
 
   useEffect(() => {
-    setNode(id, node.current)
     dispatch(setGain(gain))
-    return () => {
-      dispatch(delGain(id))
-      delNode(id)
-    }
+    return () => void dispatch(delGain(id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (playFrequency !== null) {
-      applyParams(node.current, gain.params)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playFrequency])
 
   const setParams = (params: AudioParamSetting[]) => {
     dispatch(setGain({ ...gain, params }))
   }
 
-  const addParam = () => {
+  const addParam = (name?: string, defaultValue = 1) => {
     const params = [...gain.params]
-    params.push({ name: audioParams[0], call: "setValueAtTime", values: [1, 0] })
+    params.push({
+      name: name || Object.keys(defs.audioParams)[0],
+      call: "setValueAtTime",
+      values: [defaultValue, 0],
+    })
     setParams(params)
   }
 
   return (
     <Fragment>
-      <HandleInputs numberOfInputs={node.current.numberOfInputs} />
-      <Title>Gain #{id}</Title>
-      <AudioParamDefaults audioNode={node.current} keys={audioParams} />
-      {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
-      {gain.params.length > 0 && (
-        <FormWrapper>
-          <AudioParams audioNode={node.current} params={gain.params} setParams={setParams} />
-        </FormWrapper>
-      )}
-      <HandleOutputs numberOfOutputs={node.current.numberOfOutputs} />
+      <HandleInputs numberOfInputs={defs.numberOfInputs} />
+      <H1>Gain #{id}</H1>
+
+      <NodeBody>
+        {(editMode || gain.params.length === 0) && (
+          <AudioParamDefaults
+            audioParams={defs.audioParams}
+            addParam={addParam}
+            hideButton={!editMode}
+          />
+        )}
+        {editMode ? (
+          <Fragment>
+            {gain.params.length > 0 && (
+              <FormWrapper>
+                <Hr />
+                <AudioParams
+                  audioParams={defs.audioParams}
+                  params={gain.params}
+                  setParams={setParams}
+                />
+              </FormWrapper>
+            )}
+          </Fragment>
+        ) : (
+          <AudioParamsView params={gain.params} />
+        )}
+      </NodeBody>
+
+      <HandleOutputs numberOfOutputs={defs.numberOfOutputs} />
     </Fragment>
   )
-})
+}

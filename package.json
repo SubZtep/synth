@@ -16,17 +16,19 @@
     "@reduxjs/toolkit": "^1.4.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-flow-renderer": "^4.8.0",
+    "react-flow-renderer": "^4.9.2",
+    "react-hotkeys": "^2.0.0",
     "react-redux": "^7.2.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-toastify": "^6.0.8"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.2",
     "@testing-library/react": "^10.4.7",
-    "@testing-library/user-event": "^12.0.17",
-    "@types/jest": "^26.0.7",
+    "@testing-library/user-event": "^12.1.0",
+    "@types/jest": "^26.0.8",
     "@types/node": "^14.0.27",
-    "@types/react": "^16.9.43",
+    "@types/react": "^16.9.44",
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "cross-env": "^7.0.2",
@@ -36,7 +38,7 @@
     "typescript": "~3.9.7"
   },
   "scripts": {
-    "start": "cross-env REACT_APP_VERSION=$npm_package_version react-scripts start",
+    "start": "cross-env REACT_APP_VERSION=$npm_package_version PORT=3333 react-scripts start",
     "build": "cross-env REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

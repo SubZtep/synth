@@ -38,3 +38,14 @@ export const dpiFix = (canvas: HTMLCanvasElement) => {
   canvas.setAttribute("height", (height * dpi).toString())
   return { width, height }
 }
+
+/**
+ * Format large number with spaces
+ * @param num Float or integer number
+ * @return Formatted number
+ */
+export const formatNumber = (num: number) => {
+  var parts = num.toString().split(".")
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+  return parts.join(".")
+}

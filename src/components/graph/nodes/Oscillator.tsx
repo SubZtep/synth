@@ -1,75 +1,47 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
+import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { memo, useState, useEffect, Fragment, useRef, ChangeEvent } from "react"
-import { NodeComponentProps, ElementId, useStoreState, Edge } from "react-flow-renderer"
-import { audioContext, setNode, connectNodes, applyParams } from "../../../scripts/audio"
+import { NodeComponentProps } from "react-flow-renderer"
+import { H1, FormWrapper, Hr, NodeBody, H2, DataRow, DataKey } from "../elems/styled"
+import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
+import { selectEditMode } from "../../../features/ux/uxSlice"
+import AudioParamDefaults from "../elems/AudioParamDefaults"
+import { AudioParamSetting } from "../elems/AudioParamForm"
 import {
-  selectPlayFrequency,
   setOscillator,
   delOscillator,
   selectOscillator,
   Oscillator,
 } from "../../../features/activeSound/activeSoundSlice"
-import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
-import { Title, FormWrapper, Hr, AddButton } from "../nodeform"
-import AudioParamDefaults from "./AudioParamDefaults"
-import { AudioParamSetting } from "./AudioParamForm"
-import HandleOutputs from "./HandleOutputs"
-import AudioParams from "./AudioParams"
-import { Label } from "../nodeform"
+import AudioParamsView from "../elems/AudioParamsView"
+import HandleOutputs from "../elems/HandleOutputs"
+import HandleInputs from "../elems/HandleInputs"
+import AudioParams from "../elems/AudioParams"
 
 const types: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"]
 
-export default memo(({ id }: NodeComponentProps) => {
-  const fakeOscForData = useRef(audioContext.createOscillator())
-  const node = useRef<OscillatorNode | null>(null)
+export default ({ id }: NodeComponentProps) => {
+  const basic: Oscillator = useMemo(
+    () => ({
+      id,
+      connectIds: [],
+      type: types[0],
+      params: [],
+    }),
+    [id]
+  )
+  const editMode = useSelector(selectEditMode)
+  const defs = useAudioNodeDefs("OscillatorNode")
   const dispatch = useDispatch()
-  const oscillator: Oscillator = useSelector(selectOscillator)(id) || {
-    id,
-    type: types[0],
-    params: [],
-  }
-  const audioParams = useAudioParamKeys(audioContext.createOscillator())
-  const [target, setTarget] = useState<ElementId | null>(null)
-  const playFrequency = useSelector(selectPlayFrequency)
-  const edges = useStoreState(store => store.edges)
-
-  const oscillatorFactory = () => {
-    const osc = audioContext.createOscillator()
-    osc.type = oscillator.type
-    osc.onended = () => {
-      throw new Error(`Oscillator #{$id} ended.`)
-    }
-    setNode(id, osc)
-    if (target !== null) {
-      connectNodes(id, target)
-    }
-    return osc
-  }
+  const oscillator: Oscillator = useSelector(selectOscillator)(id) || basic
 
   useEffect(() => {
+    dispatch(setOscillator(oscillator))
     return () => void dispatch(delOscillator(id))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    const edge: Edge | undefined = edges.find(edge => edge.source === id)
-    setTarget(edge?.target ?? null)
-  }, [edges.length])
-
-  useEffect(() => {
-    if (node.current !== null) {
-      node.current?.disconnect()
-      node.current = null
-    }
-    node.current = oscillatorFactory()
-    if (playFrequency !== null) {
-      node.current.frequency.setValueAtTime(playFrequency, audioContext.currentTime)
-      applyParams(node.current, oscillator.params)
-      node.current.start()
-    }
-  }, [playFrequency])
 
   const changeType = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(setOscillator({ ...oscillator, type: event.currentTarget.value as OscillatorType }))
@@ -79,38 +51,63 @@ export default memo(({ id }: NodeComponentProps) => {
     dispatch(setOscillator({ ...oscillator, params }))
   }
 
-  const addParam = () => {
+  const addParam = (name?: string, defaultValue = 1) => {
     const params = [...oscillator.params]
-    params.push({ name: audioParams[0], call: "setValueAtTime", values: [1, 0] })
+    params.push({
+      name: name || Object.keys(defs.audioParams)[0],
+      call: "setValueAtTime",
+      values: [defaultValue, 0],
+    })
     setParams(params)
   }
 
   return (
     <Fragment>
-      <Title>Oscillator #{id}</Title>
-      <AudioParamDefaults audioNode={fakeOscForData.current} keys={audioParams} />
-      {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
-      <FormWrapper>
-        <Label>Type</Label>
-        {types.map(typeVal => (
-          <Label key={typeVal}>
-            <input
-              type="radio"
-              defaultValue={typeVal}
-              checked={oscillator.type === typeVal}
-              onChange={changeType}
-            />
-            {typeVal}
-          </Label>
-        ))}
-        {oscillator.params.length > 0 && <Hr />}
-        <AudioParams
-          audioNode={fakeOscForData.current}
-          params={oscillator.params}
-          setParams={setParams}
-        />
-      </FormWrapper>
-      <HandleOutputs numberOfOutputs={fakeOscForData.current.numberOfOutputs} />
+      {defs.numberOfInputs > 0 && <HandleInputs numberOfInputs={defs.numberOfInputs} />}
+      <H1>Oscillator #{id}</H1>
+
+      <NodeBody>
+        {editMode ? (
+          <Fragment>
+            <AudioParamDefaults audioParams={defs.audioParams} addParam={addParam} />
+            <H2>Type</H2>
+            <FormWrapper css={{ marginTop: 4 }}>
+              <div css={{ columnCount: 2, fontWeight: 300 }}>
+                {types.map(typeVal => (
+                  <label key={typeVal} css={{ display: "block" }}>
+                    <input
+                      type="radio"
+                      defaultValue={typeVal}
+                      checked={oscillator.type === typeVal}
+                      onChange={changeType}
+                    />
+                    {typeVal}
+                  </label>
+                ))}
+              </div>
+              {oscillator.params.length > 0 && (
+                <Fragment>
+                  <Hr />
+                  <AudioParams
+                    audioParams={defs.audioParams}
+                    params={oscillator.params}
+                    setParams={setParams}
+                  />
+                </Fragment>
+              )}
+            </FormWrapper>
+          </Fragment>
+        ) : (
+          <div>
+            <DataRow css={{ textTransform: "capitalize" }}>
+              <DataKey>Type:</DataKey> {oscillator.type}
+            </DataRow>
+            <AudioParamsView params={oscillator.params} />
+          </div>
+        )}
+      </NodeBody>
+
+      <HandleOutputs numberOfOutputs={defs.numberOfOutputs} />
     </Fragment>
   )
-})
+}

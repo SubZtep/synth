@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/** @jsx jsx */
 import ReactFlow, {
   Edge,
   Node,
   isEdge,
-  isNode,
   addEdge,
   Elements,
   Controls,
@@ -12,48 +13,49 @@ import ReactFlow, {
   removeElements,
   BackgroundVariant,
 } from "react-flow-renderer"
+import { jsx, Global } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
-import React, { useState, useRef, useEffect } from "react"
-import { selectLoadElements, setLoadElements } from "../../features/ux/uxSlice"
-import Oscillator from "./nodes/Oscillator"
-import Gain from "./nodes/Gain"
-import BiquadFilter from "./nodes/BiquadFilter"
-import Analyser from "./nodes/Analyser"
-import { newNodePosition } from "../../scripts/utils"
-import { GraphButtons, GraphButton } from "./buttons"
+import { useState, useRef, useEffect, Fragment } from "react"
+import { addConnect, delConnect } from "../../features/activeSound/activeSoundSlice"
 import {
-  nodes,
-  connectNodes,
-  disconnectNodes,
-  delNode,
-  AUDIO_CONTEXT_DESTINATION,
-} from "../../scripts/audio"
+  selectEditMode,
+  selectLoadElements,
+  selectDelSelected,
+  toggleDelSelected,
+  setLoadElements,
+} from "../../features/ux/uxSlice"
+import { globalGraph, globalGraphEditMode, globalGraphDraggableMode } from "./styled"
+import { AUDIO_CONTEXT_DESTINATION } from "../../scripts/audio"
+import { getNextId, checkSize } from "../../scripts/helpers"
+import { newNodePosition } from "../../scripts/utils"
+import BiquadFilter from "./nodes/BiquadFilter"
+import Oscillator from "./nodes/Oscillator"
+import Analyser from "./nodes/Analyser"
+import GraphMenu from "./GraphMenu"
+import Gain from "./nodes/Gain"
 
 export const audioNodeTypes = {
-  oscillator: Oscillator,
-  gain: Gain,
   biquadfilter: BiquadFilter,
+  oscillator: Oscillator,
   analyser: Analyser,
+  gain: Gain,
 }
 
 const defaultNode: Node = {
   id: AUDIO_CONTEXT_DESTINATION,
-  type: "output",
-  selectable: false,
-  connectable: true,
   data: { label: "Audio Output" },
-  style: {
-    backgroundColor: "#364156",
-    color: "#fff",
-  },
+  type: "output",
+  connectable: true,
+  selectable: false,
   position: { x: 0, y: 0 },
+  className: "audioNode output",
 }
 
-const checkSize = (prev: number, next: number) => prev === next
-
-const NodeGraph = () => {
+export default () => {
   const dispatch = useDispatch()
   const loadElements = useSelector(selectLoadElements)
+  const editMode = useSelector(selectEditMode)
+  const isDelSelected = useSelector(selectDelSelected)
   const width = useStoreState(store => store.width, checkSize)
   const height = useStoreState(store => store.height, checkSize)
   const [elements, setElements] = useState<Elements>([])
@@ -62,25 +64,18 @@ const NodeGraph = () => {
 
   const onConnect = (connection: Edge | Connection) => {
     if (connection.source !== null && connection.target !== null) {
-      connectNodes(connection.source, connection.target)
       setElements(els => addEdge(connection, els))
+      dispatch(addConnect({ source: connection.source, target: connection.target }))
     }
   }
 
   useEffect(() => {
     if (loadElements) {
-      nodes.clear()
-      const nodeElems = loadElements.filter(el => isNode(el))
-      setElements(nodeElems)
-      setTimeout(() => loadElements.filter(el => isEdge(el)).forEach(el => onConnect(el as Edge)))
-      nextId.current =
-        +nodeElems
-          .filter(el => el.id !== AUDIO_CONTEXT_DESTINATION)
-          .sort((a, b) => +b.id - +a.id)[0]?.id + 1 || 1
+      setElements(loadElements)
+      nextId.current = getNextId(loadElements)
       dispatch(setLoadElements(null))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadElements])
+  }, [loadElements, dispatch])
 
   useEffect(() => {
     if (width > 0 && height > 0 && elements.length === 0) {
@@ -89,17 +84,22 @@ const NodeGraph = () => {
     }
   }, [width, height, elements])
 
-  const removeSelected = () => {
-    if (selected.current !== null) {
-      selected.current.forEach(el => {
-        if (el.type !== undefined) {
-          delNode(el.id)
-        } else {
-          disconnectNodes((el as Edge).source, (el as Edge).target)
-        }
-      })
+  useEffect(() => {
+    if (isDelSelected) {
+      delSelected()
+      dispatch(toggleDelSelected())
+    }
+  }, [isDelSelected])
 
+  const delSelected = () => {
+    if (selected.current !== null) {
       setElements(removeElements(selected.current, elements))
+      selected.current
+        .filter(el => isEdge(el))
+        .forEach(
+          el =>
+            void dispatch(delConnect({ source: (el as Edge).source, target: (el as Edge).target }))
+        )
       selected.current = null
     }
   }
@@ -116,38 +116,32 @@ const NodeGraph = () => {
     ])
 
   return (
-    <ReactFlow
-      elements={elements}
-      onConnect={onConnect}
-      nodeTypes={audioNodeTypes}
-      onSelectionChange={els => (selected.current = els)}
-      connectionLineStyle={{ stroke: "#006" }}
-      style={{ backgroundColor: "#7d4e57" }}
-      snapToGrid={true}
-      snapGrid={[16, 16]}
-    >
-      <Controls showInteractive={false} />
-      <Background variant={BackgroundVariant.Lines} color="#A16873" gap={32} />
-
-      <GraphButtons>
-        <GraphButton onClick={addAudioNode("oscillator")} icon={["fas", "wave-sine"]}>
-          Add Oscillator
-        </GraphButton>
-        <GraphButton onClick={addAudioNode("gain")} icon={["fas", "volume"]}>
-          Add Gain
-        </GraphButton>
-        <GraphButton onClick={addAudioNode("biquadfilter")} icon={["fas", "filter"]}>
-          Add Biquad Filter
-        </GraphButton>
-        <GraphButton onClick={addAudioNode("analyser")} icon={["fas", "analytics"]}>
-          Add Analyser
-        </GraphButton>
-        <GraphButton onClick={removeSelected} icon={["fas", "trash-alt"]}>
-          Remove Selected
-        </GraphButton>
-      </GraphButtons>
-    </ReactFlow>
+    <Fragment>
+      <Global styles={globalGraph} />
+      {editMode ? (
+        <Global styles={globalGraphEditMode} />
+      ) : (
+        <Global styles={globalGraphDraggableMode} />
+      )}
+      <ReactFlow
+        elements={elements}
+        onConnect={onConnect}
+        nodeTypes={audioNodeTypes}
+        nodesDraggable={!editMode}
+        onSelectionChange={els => (selected.current = els)}
+        snapGrid={[16, 16]}
+        snapToGrid={true}
+        onlyRenderVisibleNodes={false}
+        connectionLineStyle={{ stroke: "#71474e" }}
+      >
+        <Controls showInteractive={false} />
+        <Background
+          variant={editMode ? BackgroundVariant.Dots : BackgroundVariant.Lines}
+          color="#364156"
+          gap={32}
+        />
+        <GraphMenu addAudioNode={addAudioNode} delSelected={delSelected} />
+      </ReactFlow>
+    </Fragment>
   )
 }
-
-export default NodeGraph

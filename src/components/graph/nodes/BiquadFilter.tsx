@@ -2,23 +2,22 @@
 import { jsx } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
-import { memo, useRef, useEffect, Fragment, ChangeEvent } from "react"
+import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
+import { FormWrapper, H1, H2, NodeBody, DataRow, DataKey, Hr } from "../elems/styled"
+import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
+import { selectEditMode } from "../../../features/ux/uxSlice"
 import {
-  selectPlayFrequency,
   setBiquadFilter,
   delBiquadFilter,
   selectBiquadFilter,
   BiquadFilter,
 } from "../../../features/activeSound/activeSoundSlice"
-import { audioContext, applyParams, setNode, delNode } from "../../../scripts/audio"
-import { Title, FormWrapper, Hr, AddButton } from "../nodeform"
-import useAudioParamKeys from "../../../hooks/useAudioParamKeys"
-import AudioParamDefaults from "./AudioParamDefaults"
-import HandleOutputs from "./HandleOutputs"
-import HandleInputs from "./HandleInputs"
-import AudioParams from "./AudioParams"
-import { Label } from "../nodeform"
-import { AudioParamSetting } from "./AudioParamForm"
+import AudioParamDefaults from "../elems/AudioParamDefaults"
+import { AudioParamSetting } from "../elems/AudioParamForm"
+import AudioParamsView from "../elems/AudioParamsView"
+import HandleOutputs from "../elems/HandleOutputs"
+import HandleInputs from "../elems/HandleInputs"
+import AudioParams from "../elems/AudioParams"
 
 const types: BiquadFilterType[] = [
   "allpass",
@@ -31,33 +30,26 @@ const types: BiquadFilterType[] = [
   "peaking",
 ]
 
-export default memo(({ id }: NodeComponentProps) => {
-  const node = useRef(audioContext.createBiquadFilter())
+export default ({ id }: NodeComponentProps) => {
+  const basic: BiquadFilter = useMemo(
+    () => ({
+      id,
+      connectIds: [],
+      type: "lowpass",
+      params: [],
+    }),
+    [id]
+  )
+  const editMode = useSelector(selectEditMode)
+  const defs = useAudioNodeDefs("BiquadFilterNode")
   const dispatch = useDispatch()
-  const biquadFilter: BiquadFilter = useSelector(selectBiquadFilter)(id) || {
-    id,
-    type: types[0],
-    params: [],
-  }
-  const audioParams = useAudioParamKeys(node.current)
-  const playFrequency = useSelector(selectPlayFrequency)
+  const biquadFilter: BiquadFilter = useSelector(selectBiquadFilter)(id) || basic
 
   useEffect(() => {
-    setNode(id, node.current)
     dispatch(setBiquadFilter(biquadFilter))
-    return () => {
-      dispatch(delBiquadFilter(id))
-      delNode(id)
-    }
+    return () => void dispatch(delBiquadFilter(id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (playFrequency !== null) {
-      applyParams(node.current, biquadFilter.params)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playFrequency])
 
   const changeType = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(
@@ -69,37 +61,62 @@ export default memo(({ id }: NodeComponentProps) => {
     dispatch(setBiquadFilter({ ...biquadFilter, params }))
   }
 
-  const addParam = () => {
+  const addParam = (name?: string, defaultValue = 1) => {
     const params = [...biquadFilter.params]
-    params.push({ name: audioParams[0], call: "setValueAtTime", values: [1, 0] })
+    params.push({
+      name: name || Object.keys(defs.audioParams)[0],
+      call: "setValueAtTime",
+      values: [defaultValue, 0],
+    })
     setParams(params)
   }
 
   return (
     <Fragment>
-      <HandleInputs numberOfInputs={node.current.numberOfInputs} />
-      <Title>Biquad Filter #{id}</Title>
-      <AudioParamDefaults audioNode={node.current} keys={audioParams} />
-      {audioParams.length > 0 && <AddButton onClick={addParam}>+ Add Param Update</AddButton>}
-      <FormWrapper>
-        <Label>Type</Label>
-        <div css={{ columnCount: 2 }}>
-          {types.map(typeVal => (
-            <Label key={typeVal}>
-              <input
-                type="radio"
-                defaultValue={typeVal}
-                checked={biquadFilter.type === typeVal}
-                onChange={changeType}
-              />
-              {typeVal}
-            </Label>
-          ))}
-        </div>
-        {biquadFilter.params.length > 0 && <Hr />}
-        <AudioParams audioNode={node.current} params={biquadFilter.params} setParams={setParams} />
-      </FormWrapper>
-      <HandleOutputs numberOfOutputs={node.current.numberOfOutputs} />
+      <HandleInputs numberOfInputs={defs.numberOfInputs} />
+      <H1>Biquad Filter #{id}</H1>
+
+      <NodeBody>
+        {editMode ? (
+          <Fragment>
+            <AudioParamDefaults audioParams={defs.audioParams} addParam={addParam} />
+            <H2>Type</H2>
+            <FormWrapper>
+              <div css={{ columnCount: 2, fontWeight: 300, textTransform: "capitalize" }}>
+                {types.map(typeVal => (
+                  <label key={typeVal} css={{ display: "block" }}>
+                    <input
+                      type="radio"
+                      defaultValue={typeVal}
+                      checked={biquadFilter.type === typeVal}
+                      onChange={changeType}
+                    />
+                    {typeVal}
+                  </label>
+                ))}
+              </div>
+              {biquadFilter.params.length > 0 && (
+                <Fragment>
+                  <Hr />
+                  <AudioParams
+                    audioParams={defs.audioParams}
+                    params={biquadFilter.params}
+                    setParams={setParams}
+                  />
+                </Fragment>
+              )}
+            </FormWrapper>
+          </Fragment>
+        ) : (
+          <div>
+            <DataRow css={{ textTransform: "capitalize" }}>
+              <DataKey>Type:</DataKey> {biquadFilter.type}
+            </DataRow>
+            <AudioParamsView params={biquadFilter.params} />
+          </div>
+        )}
+      </NodeBody>
+      <HandleOutputs numberOfOutputs={defs.numberOfOutputs} />
     </Fragment>
   )
-})
+}

@@ -1,9 +1,10 @@
 /** @jsx jsx */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { jsx } from "@emotion/core"
+import { toast } from "react-toastify"
 import { useRef, useEffect } from "react"
 import { useSelector } from "react-redux"
-import { nodes } from "../../scripts/audio"
+import { audioNodes } from "../../scripts/audio"
 import { selectAnalysers } from "../../features/activeSound/activeSoundSlice"
 import { dpiFix } from "../../scripts/utils"
 
@@ -13,6 +14,7 @@ export default () => {
   const ctx = useRef<CanvasRenderingContext2D>()
   const width = useRef<number>(0)
   const height = useRef<number>(0)
+  const timer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     ctx.current = canvas.current!.getContext("2d") as CanvasRenderingContext2D
@@ -20,28 +22,45 @@ export default () => {
     const dimensions = dpiFix(canvas.current!)
     width.current = dimensions.width
     height.current = dimensions.height
+
+    return () => {
+      if (timer.current !== null) {
+        clearTimeout(timer.current)
+      }
+    }
   }, [])
 
   const draw = () => {
+    timer.current = null
     ctx.current!.clearRect(0, 0, width.current, height.current)
     analysers.forEach(analyser => {
-      const node = nodes.get(analyser.id) as AnalyserNode
+      const node = audioNodes.get(analyser.id) as AnalyserNode
       if (node) {
         ctx.current!.lineWidth = analyser.lineWidth
-        drawWave(node, analyser.color)
+        try {
+          drawWave(node, analyser.color)
+        } catch (e) {
+          toast.error(e.message)
+        }
       }
     })
 
-    requestAnimationFrame(draw)
+    // requestAnimationFrame(draw)
+    timer.current = setTimeout(draw, 100)
   }
 
   useEffect(() => {
+    if (timer.current !== null) {
+      clearTimeout(timer.current)
+    }
     if (analysers.length > 0) {
       draw()
+    } else {
+      ctx.current!.clearRect(0, 0, width.current, height.current)
     }
   }, [analysers])
 
-  const drawWave = (analyser: AnalyserNode, color = "#ff0000") => {
+  const drawWave = (analyser: AnalyserNode, color: string) => {
     const halfHeight = height.current / 2
     ctx.current!.strokeStyle = color
     const bufferLength = analyser.frequencyBinCount
@@ -61,5 +80,9 @@ export default () => {
     ctx.current!.stroke()
   }
 
-  return <canvas ref={canvas} css={{ width: "100%", height: "100%", backgroundColor: "#364156" }} />
+  return (
+    <div css={{ height: 120, boxShadow: "inset 0 0 25px #101319" }}>
+      <canvas ref={canvas} css={{ width: "100%", height: "100%" }} />
+    </div>
+  )
 }

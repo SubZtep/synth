@@ -1,0 +1,388 @@
+{
+	"elements": [
+		{
+			"id": "destination",
+			"data": {
+				"label": "Audio Output"
+			},
+			"type": "output",
+			"connectable": true,
+			"selectable": false,
+			"position": {
+				"x": 1104,
+				"y": 336
+			},
+			"className": "audioNode",
+			"style": {
+				"backgroundColor": "#364156",
+				"color": "#fff"
+			}
+		},
+		{
+			"id": "2",
+			"type": "biquadfilter",
+			"className": "audioNode",
+			"position": {
+				"x": 160,
+				"y": 288
+			}
+		},
+		{
+			"id": "3",
+			"type": "biquadfilter",
+			"className": "audioNode",
+			"position": {
+				"x": 448,
+				"y": 288
+			}
+		},
+		{
+			"id": "4",
+			"type": "oscillator",
+			"className": "audioNode",
+			"position": {
+				"x": -96,
+				"y": -224
+			}
+		},
+		{
+			"id": "5",
+			"type": "oscillator",
+			"className": "audioNode",
+			"position": {
+				"x": 160,
+				"y": -224
+			}
+		},
+		{
+			"id": "6",
+			"type": "oscillator",
+			"className": "audioNode",
+			"position": {
+				"x": 448,
+				"y": -224
+			}
+		},
+		{
+			"id": "7",
+			"type": "oscillator",
+			"className": "audioNode",
+			"position": {
+				"x": 736,
+				"y": -224
+			}
+		},
+		{
+			"id": "8",
+			"type": "oscillator",
+			"className": "audioNode",
+			"position": {
+				"x": 1024,
+				"y": -224
+			}
+		},
+		{
+			"id": "9",
+			"type": "oscillator",
+			"className": "audioNode",
+			"position": {
+				"x": 1312,
+				"y": -224
+			}
+		},
+		{
+			"source": "4",
+			"target": "2",
+			"id": "reactflow__edge-4-2",
+			"type": "default"
+		},
+		{
+			"source": "5",
+			"target": "2",
+			"id": "reactflow__edge-5-2",
+			"type": "default"
+		},
+		{
+			"source": "6",
+			"target": "2",
+			"id": "reactflow__edge-6-2",
+			"type": "default"
+		},
+		{
+			"source": "7",
+			"target": "2",
+			"id": "reactflow__edge-7-2",
+			"type": "default"
+		},
+		{
+			"source": "8",
+			"target": "2",
+			"id": "reactflow__edge-8-2",
+			"type": "default"
+		},
+		{
+			"source": "9",
+			"target": "2",
+			"id": "reactflow__edge-9-2",
+			"type": "default"
+		},
+		{
+			"id": "10",
+			"type": "gain",
+			"className": "audioNode",
+			"position": {
+				"x": 736,
+				"y": 272
+			}
+		},
+		{
+			"source": "2",
+			"target": "3",
+			"id": "reactflow__edge-2-3",
+			"type": "default"
+		},
+		{
+			"source": "3",
+			"target": "10",
+			"id": "reactflow__edge-3-10",
+			"type": "default"
+		},
+		{
+			"source": "10",
+			"target": "destination",
+			"id": "reactflow__edge-10-destination",
+			"type": "default"
+		}
+	],
+	"analysers": [],
+	"gains": [
+		{
+			"id": "10",
+			"connectIds": [
+				"destination"
+			],
+			"params": [
+				{
+					"name": "gain",
+					"call": "setValueAtTime",
+					"values": [
+						0.00001,
+						0
+					]
+				},
+				{
+					"name": "gain",
+					"call": "exponentialRampToValueAtTime",
+					"values": [
+						1,
+						0.02
+					]
+				},
+				{
+					"name": "gain",
+					"call": "exponentialRampToValueAtTime",
+					"values": [
+						0.3,
+						0.03
+					]
+				},
+				{
+					"name": "gain",
+					"call": "exponentialRampToValueAtTime",
+					"values": [
+						0.00001,
+						0.3
+					]
+				}
+			]
+		}
+	],
+	"biquadFilters": [
+		{
+			"id": "2",
+			"connectIds": [
+				"3"
+			],
+			"type": "bandpass",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						10000,
+						0
+					]
+				}
+			]
+		},
+		{
+			"id": "3",
+			"connectIds": [
+				"10"
+			],
+			"type": "highpass",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						7000,
+						0
+					]
+				}
+			]
+		}
+	],
+	"oscillators": [
+		{
+			"id": "4",
+			"connectIds": [
+				"2"
+			],
+			"type": "square",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						80,
+						0
+					]
+				},
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						0,
+						0.2
+					]
+				}
+			]
+		},
+		{
+			"id": "5",
+			"connectIds": [
+				"2"
+			],
+			"type": "square",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						120,
+						0
+					]
+				},
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						0,
+						0.2
+					]
+				}
+			]
+		},
+		{
+			"id": "6",
+			"connectIds": [
+				"2"
+			],
+			"type": "square",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						166.4,
+						0
+					]
+				},
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						0,
+						0.2
+					]
+				}
+			]
+		},
+		{
+			"id": "7",
+			"connectIds": [
+				"2"
+			],
+			"type": "square",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						217.2,
+						0
+					]
+				},
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						0,
+						0.2
+					]
+				}
+			]
+		},
+		{
+			"id": "8",
+			"connectIds": [
+				"2"
+			],
+			"type": "square",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						271.6,
+						0
+					]
+				},
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						0,
+						0.2
+					]
+				}
+			]
+		},
+		{
+			"id": "9",
+			"connectIds": [
+				"2"
+			],
+			"type": "square",
+			"params": [
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						328.4,
+						0
+					]
+				},
+				{
+					"name": "frequency",
+					"call": "setValueAtTime",
+					"values": [
+						0,
+						0.2
+					]
+				}
+			]
+		}
+	]
+}
