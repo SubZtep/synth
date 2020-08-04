@@ -42,7 +42,6 @@ export default () => {
     if (data) {
       const obj = JSON.parse(data)
       if (validateSound(obj)) {
-        console.log("!ANAL", obj.analysers)
         dispatch(setAnalysers(obj.analysers))
         dispatch(setGains(obj.gains))
         dispatch(setBiquadFilters(obj.biquadFilters))

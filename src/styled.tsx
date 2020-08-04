@@ -122,7 +122,7 @@ export const SideBar = styled.div`
 export const MenuPopup = styled.div`
   top: 0;
   right: 0;
-  width: 280px;
+  width: 380px;
   position: fixed;
   z-index: 200;
   background-color: #000;
@@ -142,6 +142,9 @@ export const MenuPopup = styled.div`
     line-height: 28px;
     font-size: 1.1rem;
     padding-left: 25px;
+  }
+  li {
+    margin-top: 12px;
   }
 `
 

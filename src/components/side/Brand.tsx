@@ -21,7 +21,13 @@ export default () => {
       <h1 css={{ fontSize: "2rem", margin: 0, color: "#f2f4f7" }}>
         WAA
         <span
-          css={{ fontFamily: "Roboto", fontSize: "2.2rem", position: "relative", lineHeight: 0 }}
+          css={{
+            fontFamily: "Roboto",
+            fontSize: "2.6rem",
+            fontWeight: 600,
+            position: "relative",
+            lineHeight: 0,
+          }}
         >
           π
         </span>

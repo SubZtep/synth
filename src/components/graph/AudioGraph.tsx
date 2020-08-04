@@ -139,6 +139,7 @@ export default () => {
           variant={editMode ? BackgroundVariant.Dots : BackgroundVariant.Lines}
           color="#364156"
           gap={32}
+          size={1}
         />
         <GraphMenu addAudioNode={addAudioNode} delSelected={delSelected} />
       </ReactFlow>

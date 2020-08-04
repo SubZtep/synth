@@ -61,7 +61,10 @@ export default ({ id }: NodeComponentProps) => {
             hideButton={!editMode}
           />
         )}
-        {editMode ? (
+
+        <AudioParamsView params={gain.params} showCoord={true} />
+
+        {editMode && (
           <Fragment>
             {gain.params.length > 0 && (
               <FormWrapper>
@@ -74,8 +77,6 @@ export default ({ id }: NodeComponentProps) => {
               </FormWrapper>
             )}
           </Fragment>
-        ) : (
-          <AudioParamsView params={gain.params} />
         )}
       </NodeBody>
 

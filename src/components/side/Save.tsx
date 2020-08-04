@@ -20,6 +20,7 @@ export default () => {
   }, [name])
 
   const save = () => {
+    //FIXME: after succesful save it kills the app
     const elems = elements.map((element: any) => {
       if (element.__rf !== undefined) {
         if (element.__rf.position !== undefined) {
@@ -29,6 +30,7 @@ export default () => {
       }
       return element
     }) as Elements
+
     try {
       localStorage.setItem(name, JSON.stringify({ elements: elems, ...audioNodes }))
       toast.success(`Sound "${name}" saved`)
