@@ -2,7 +2,13 @@
 import { jsx, css } from "@emotion/core"
 
 const fontStyle = css`
-  font-size: 0.8rem !important  ;
+  font-size: 0.8rem !important;
+`
+
+const selectStyle = css`
+  font-size: 0.8rem !important;
+  padding: 1px 2px !important;
+  margin-left: 2px;
 `
 
 type Props = {
@@ -24,29 +30,29 @@ export default ({
 }: Props) => {
   return (
     <div css={fontStyle}>
-      <span>
+      <span css={{ marginLeft: 4 }}>
         BPM:
         <input
-          css={[fontStyle, { width: 60 }]}
+          css={[selectStyle, { width: 60 }]}
           type="number"
           defaultValue={BPM}
           onChange={event => setBPM(event.currentTarget.valueAsNumber)}
         />
       </span>
-      <span>
+      <span css={{ marginLeft: 4 }}>
         Beats:
         <input
-          css={[fontStyle, { width: 50 }]}
+          css={[selectStyle, { width: 40 }]}
           type="number"
           min={1}
           defaultValue={beatsPerBar}
           onChange={event => setBeatsPerBar(event.currentTarget.valueAsNumber)}
         />
       </span>
-      <span>
+      <span css={{ marginLeft: 4 }}>
         Notes/Beat:
         <input
-          css={[fontStyle, { width: 50 }]}
+          css={[selectStyle, { width: 40 }]}
           type="number"
           min={1}
           defaultValue={notesPerBeat}

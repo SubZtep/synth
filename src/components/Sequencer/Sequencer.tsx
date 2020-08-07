@@ -1,8 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
-import { useDispatch } from "react-redux"
 import { useState, useEffect, useMemo } from "react"
-import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
 import PlaybackControls from "./PlaybackControls"
 import BarSettings from "./BarSettings"
 import Bar from "./Bar"
@@ -11,9 +9,7 @@ import useTimer from "../../hooks/useTimer"
 export type StepValue = number | null
 
 export default () => {
-  const dispatch = useDispatch()
   const baseBPMPerOneSecond = 60
-
   const barsPerSequence = 1
   const [notesPerBeat, setNotesPerBeat] = useState(4)
   const [beatsPerBar, setBeatsPerBar] = useState(4)
@@ -27,17 +23,12 @@ export default () => {
     totalBeats,
   ])
   const timePerStep = useMemo(() => timePerSequence / totalSteps, [timePerSequence, totalSteps])
-
-  const [steps, setSteps] = useState<StepValue[]>(new Array(stepsPerBar).fill(null))
-
   const [cursor, setCursor] = useState(0)
   const [playing, setPlaying] = useState(false)
 
   useTimer(
     () => {
-      const nextCursor = cursor < totalSteps - 1 ? cursor + 1 : 0
-      dispatch(setPlayFrequency(steps[nextCursor]))
-      setCursor(nextCursor)
+      setCursor(cursor < totalSteps - 1 ? cursor + 1 : 0)
     },
     playing ? timePerStep : null
   )
@@ -46,26 +37,19 @@ export default () => {
     if (cursor > stepsPerBar) {
       setCursor(0)
     }
-    const s = [...steps]
-    const oldLength = s.length
-    s.length = stepsPerBar
-    if (stepsPerBar > oldLength) {
-      s.fill(null, oldLength)
-    }
-    setSteps(s)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepsPerBar])
 
   return (
     <div>
-      <div css={{ display: "flex", justifyContent: "space-between" }}>
+      <div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <PlaybackControls {...{ playing, setPlaying }} />
         <BarSettings
           {...{ BPM, setBPM, notesPerBeat, setNotesPerBeat, beatsPerBar, setBeatsPerBar }}
         />
       </div>
       <div>
-        <Bar {...{ steps, setSteps, cursor, beatsPerBar }} />
+        <Bar {...{ cursor, beatsPerBar, stepsPerBar }} />
       </div>
     </div>
   )

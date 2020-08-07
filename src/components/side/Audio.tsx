@@ -17,12 +17,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { WidgetRows } from "../../styled"
 
-type AudioSource = {
-  sourceId: string
-  audioNode?: AudioScheduledSourceNode
-  targetAudioNode: AudioNode
-}
-
 export default () => {
   const dispatch = useDispatch()
   const reloadAudio = useSelector(selectReloadAudio)
@@ -79,6 +73,7 @@ export default () => {
   }
 
   const stop = () => {
+    //FIXME: Stop without click noise https://webaudiotech.com/2017/02/27/stopping-a-web-audio-oscillator-at-cycle-completion/
     oscillators.forEach(node => {
       const audioNode = audioNodes.get(node.id) as AudioScheduledSourceNode
       if (audioNode === undefined) {

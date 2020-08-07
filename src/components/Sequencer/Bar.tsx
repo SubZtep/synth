@@ -1,5 +1,8 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
+import { useDispatch } from "react-redux"
+import { useState, useEffect } from "react"
+import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
 import { StepValue } from "./Sequencer"
 import Step from "./Step"
 
@@ -13,12 +16,34 @@ const sequenceStyle = css`
 
 type Props = {
   beatsPerBar: number
-  steps: StepValue[]
-  setSteps: (steps: StepValue[]) => void
+  stepsPerBar: number
   cursor: number
 }
 
-export default ({ beatsPerBar, steps, setSteps, cursor }: Props) => {
+export default ({ beatsPerBar, stepsPerBar, cursor }: Props) => {
+  const [steps, setSteps] = useState<StepValue[]>(new Array(stepsPerBar).fill(null))
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const s = [...steps]
+    const oldLength = s.length
+    s.length = stepsPerBar
+    if (stepsPerBar > oldLength) {
+      s.fill(null, oldLength)
+    }
+    setSteps(s)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepsPerBar])
+
+  useEffect(() => {
+    const freq = steps[cursor]
+    if (freq !== null) {
+      //FIXME: Use proper timing
+      dispatch(setPlayFrequency(null))
+      setTimeout(() => void dispatch(setPlayFrequency(freq)))
+    }
+  }, [cursor])
+
   return (
     <div css={sequenceStyle}>
       {steps.map((step, index) => (

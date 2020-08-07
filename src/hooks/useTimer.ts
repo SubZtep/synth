@@ -20,7 +20,11 @@ const useTimer = (callback: () => void, ms: number | null) => {
     }
   }, [ms])
 
-  useEffect(callback, [time])
+  useEffect(() => {
+    if (ms !== null) {
+      callback()
+    }
+  }, [time])
 }
 
 export default useTimer
