@@ -53,6 +53,7 @@ export default () => {
       s.fill(null, oldLength)
     }
     setSteps(s)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepsPerBar])
 
   return (
