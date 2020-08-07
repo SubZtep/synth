@@ -167,12 +167,18 @@ export const IconButton = styled.button`
   flex-shrink: 1 !important;
   flex-grow: 0 !important;
   border-width: 1px !important;
+  opacity: 0.5;
+  cursor: not-allowed !important;
 
-  svg {
-    transition: 50ms;
-    &:hover {
+  &:not([disabled]) {
+    cursor: pointer !important;
+    opacity: 1;
+    svg {
       transition: 50ms;
-      transform: scale(1.25);
+      &:hover {
+        transition: 50ms;
+        transform: scale(1.25);
+      }
     }
   }
 `
