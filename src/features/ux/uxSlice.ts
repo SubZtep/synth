@@ -29,11 +29,6 @@ type UX = {
    * Sidebar on the left
    */
   sideLeft: boolean
-
-  /**
-   * Set to true to reload audio nodes in `Audio` component
-   */
-  reloadAudio: boolean
 }
 
 const initialState: UX = {
@@ -42,7 +37,6 @@ const initialState: UX = {
   loadElements: null,
   delSelected: false,
   sideLeft: false,
-  reloadAudio: false,
 }
 
 const uxSlice = createSlice({
@@ -61,9 +55,6 @@ const uxSlice = createSlice({
     toggleSideLeft: state => {
       state.sideLeft = !state.sideLeft
     },
-    toggleReloadAudio: state => {
-      state.reloadAudio = !state.reloadAudio
-    },
     setLoadElements: (state: UX, { payload }: PayloadAction<Elements | null>) => {
       state.loadElements = payload
     },
@@ -75,13 +66,11 @@ export const selectEditMode = ({ ux }: RootState) => ux.editMode
 export const selectDelSelected = ({ ux }: RootState) => ux.delSelected
 export const selectSideLeft = ({ ux }: RootState) => ux.sideLeft
 export const selectLoadElements = ({ ux }: RootState) => ux.loadElements
-export const selectReloadAudio = ({ ux }: RootState) => ux.reloadAudio
 export const {
   toggleMenu,
   toggleEditMode,
   toggleDelSelected,
   toggleSideLeft,
-  toggleReloadAudio,
   setLoadElements,
 } = uxSlice.actions
 export default uxSlice.reducer

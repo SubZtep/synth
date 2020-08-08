@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { AudioNodeType } from "../scripts/Sound"
 
 export type AudioParams = {
   [key: string]: {
@@ -9,7 +10,7 @@ export type AudioParams = {
   }
 }
 
-export default (type: "AnalyserNode" | "BiquadFilterNode" | "GainNode" | "OscillatorNode") => {
+export default (type: AudioNodeType) => {
   const [numberOfInputs] = useState(type === "OscillatorNode" ? 0 : 1)
   const [numberOfOutputs] = useState(1)
   const [audioParams] = useState<AudioParams>(

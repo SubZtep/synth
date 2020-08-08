@@ -30,15 +30,15 @@ const types: BiquadFilterType[] = [
   "peaking",
 ]
 
-export default ({ id }: NodeComponentProps) => {
+export default ({ id, data }: NodeComponentProps) => {
   const basic: BiquadFilter = useMemo(
     () => ({
       id,
-      connectIds: [],
-      type: "lowpass",
-      params: [],
+      connectIds: data?.connectIds ?? [],
+      type: data?.type ?? "lowpass",
+      params: data?.params ?? [],
     }),
-    [id]
+    [id, data]
   )
   const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("BiquadFilterNode")

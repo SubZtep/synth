@@ -22,15 +22,15 @@ import AudioParams from "../elems/AudioParams"
 
 const types: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"]
 
-export default ({ id }: NodeComponentProps) => {
+export default ({ id, data }: NodeComponentProps) => {
   const basic: Oscillator = useMemo(
     () => ({
       id,
-      connectIds: [],
-      type: types[0],
-      params: [],
+      connectIds: data?.connectIds ?? [],
+      type: data?.type ?? types[0],
+      params: data?.params ?? [],
     }),
-    [id]
+    [id, data]
   )
   const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("OscillatorNode")

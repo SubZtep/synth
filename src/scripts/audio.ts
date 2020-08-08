@@ -1,4 +1,7 @@
-import { AudioParamSetting } from "../components/graph/elems/AudioParamForm"
+import Sound from "./Sound"
+import { SynthLocalStore } from "../components/side/Load"
+import { validateSound } from "./helpers"
+
 export const AUDIO_CONTEXT_DESTINATION = "destination"
 
 // @ts-ignore
@@ -6,53 +9,26 @@ export const AUDIO_CONTEXT_DESTINATION = "destination"
 AudioContext = window.AudioContext || window.webkitAudioContext
 export let audioContext = new AudioContext()
 
-/**
- * AudioNodes holder
- */
-export const audioNodes = new Map<string, AudioNode>()
-
-export const destroyAudioNodes = () => {
-  audioNodes.forEach(node => {
-    try {
-      node.disconnect()
-    } catch (e) {
-      console.error("Disconnect before reload failed", [node, e])
-    }
-  })
-  audioNodes.clear()
-}
+export const sound = new Sound(audioContext)
 
 export const restartAudioContext = async () => {
   await audioContext.close()
-  audioNodes.clear()
   audioContext = new AudioContext()
   return audioContext
 }
 
-export const applyParams = (node: AudioNode, params: AudioParamSetting[], time?: number) => {
-  if (time === undefined) {
-    time = audioContext.currentTime
-  }
-  params.forEach(param => {
-    const values = [...param.values]
-    if (
-      [
-        "setValueAtTime",
-        "linearRampToValueAtTime",
-        "exponentialRampToValueAtTime",
-        "setTargetAtTime",
-        "setValueCurveAtTime",
-      ].includes(param.call)
-    ) {
-      // @ts-ignore
-      values[1] += time
-    }
-    if (["cancelScheduledValues", "cancelAndHoldAtTime"].includes(param.call)) {
-      // @ts-ignore
-      values[0] += time
-    }
+export const loadSound = (name: string) => {
+  const data = localStorage.getItem(name)
+  if (!data) return null
+  const obj: SynthLocalStore = JSON.parse(data)
+  if (!validateSound(obj)) return null
 
-    // @ts-ignore
-    node[param.name][param.call](...values)
-  })
+  const s = new Sound(audioContext)
+
+  obj.analysers.forEach(node => s.setAnalyser(node))
+  obj.gains.forEach(node => s.setGain(node))
+  obj.biquadFilters.forEach(node => s.setBiquadFilter(node))
+  obj.oscillators.forEach(node => s.setOscillator(node))
+
+  return s
 }

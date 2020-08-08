@@ -2,36 +2,35 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { AudioParamSetting } from "../../components/graph/elems/AudioParamForm"
 import Analyser, { FFTSize } from "../../components/graph/nodes/Analyser"
 import { RootState } from "../../store"
+import { XYPosition } from "react-flow-renderer"
 
 type Connect = {
   source: string
   target: string
 }
 
-export type Analyser = {
+export type BaseNode = {
   id: string
   connectIds: string[]
+  position?: XYPosition
+}
+
+export interface Analyser extends BaseNode {
   fftSize: FFTSize
   color: string
   lineWidth: number
 }
 
-export type Gain = {
-  id: string
-  connectIds: string[]
+export interface Gain extends BaseNode {
   params: AudioParamSetting[]
 }
 
-export type BiquadFilter = {
-  id: string
-  connectIds: string[]
+export interface BiquadFilter extends BaseNode {
   type: BiquadFilterType
   params: AudioParamSetting[]
 }
 
-export type Oscillator = {
-  id: string
-  connectIds: string[]
+export interface Oscillator extends BaseNode {
   type: OscillatorType
   params: AudioParamSetting[]
 }
@@ -78,10 +77,13 @@ const activeSoundSlice = createSlice({
         node.connectIds = node.connectIds.filter(id => id !== payload.target)
       }
     },
-
-    setAnalysers: (state: ActiveSound, { payload }: PayloadAction<Analyser[]>) => {
-      state.analysers = payload
+    emptyNodes: state => {
+      state.analysers = []
+      state.gains = []
+      state.biquadFilters = []
+      state.oscillators = []
     },
+
     setAnalyser: (state: ActiveSound, { payload }: PayloadAction<Analyser>) => {
       const index = state.analysers.findIndex(node => node.id === payload.id)
       if (index === -1) {
@@ -94,9 +96,6 @@ const activeSoundSlice = createSlice({
       state.analysers = state.analysers.filter(node => node.id !== payload)
     },
 
-    setGains: (state: ActiveSound, { payload }: PayloadAction<Gain[]>) => {
-      state.gains = payload
-    },
     setGain: (state: ActiveSound, { payload }: PayloadAction<Gain>) => {
       const index = state.gains.findIndex(node => node.id === payload.id)
       if (index === -1) {
@@ -109,9 +108,6 @@ const activeSoundSlice = createSlice({
       state.gains = state.gains.filter(node => node.id !== payload)
     },
 
-    setBiquadFilters: (state: ActiveSound, { payload }: PayloadAction<BiquadFilter[]>) => {
-      state.biquadFilters = payload
-    },
     setBiquadFilter: (state: ActiveSound, { payload }: PayloadAction<BiquadFilter>) => {
       const index = state.biquadFilters.findIndex(node => node.id === payload.id)
       if (index === -1) {
@@ -124,9 +120,6 @@ const activeSoundSlice = createSlice({
       state.biquadFilters = state.biquadFilters.filter(node => node.id !== payload)
     },
 
-    setOscillators: (state: ActiveSound, { payload }: PayloadAction<Oscillator[]>) => {
-      state.oscillators = payload
-    },
     setOscillator: (state: ActiveSound, { payload }: PayloadAction<Oscillator>) => {
       const index = state.oscillators.findIndex(node => node.id === payload.id)
       if (index === -1) {
@@ -171,16 +164,13 @@ export const {
   setPlayFrequency,
   addConnect,
   delConnect,
-  setAnalysers,
+  emptyNodes,
   setAnalyser,
   delAnalyser,
-  setGains,
   setGain,
   delGain,
-  setBiquadFilters,
   setBiquadFilter,
   delBiquadFilter,
-  setOscillators,
   setOscillator,
   delOscillator,
 } = activeSoundSlice.actions

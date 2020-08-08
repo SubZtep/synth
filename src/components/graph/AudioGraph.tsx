@@ -41,7 +41,7 @@ export const audioNodeTypes = {
   gain: Gain,
 }
 
-const defaultNode: Node = {
+export const defaultNode: Node = {
   id: AUDIO_CONTEXT_DESTINATION,
   data: { label: "Audio Output" },
   type: "output",

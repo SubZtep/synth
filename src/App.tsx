@@ -9,7 +9,7 @@ import AudioGraph from "./components/graph/AudioGraph"
 import MenuOpener from "./components/side/MenuOpener"
 import Analysers2D from "./components/side/Analysers2D"
 import { Main, SideBar, WidgetRows } from "./styled"
-import Audio from "./components/side/Audio"
+import Sequencer from "./components/Sequencer"
 import Piano from "./components/side/Piano"
 import Brand from "./components/side/Brand"
 import Load from "./components/side/Load"
@@ -40,9 +40,9 @@ export default function App() {
               <Load />
               <Save />
             </WidgetRows>
-            <Audio />
             <Analysers2D />
             <Piano />
+            <Sequencer />
           </SideBar>
         </Main>
         <ToastContainer
