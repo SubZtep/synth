@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { ToastContainer, toast, Slide } from "react-toastify"
 import { ReactFlowProvider } from "react-flow-renderer"
 import { toggleEditMode, toggleDelSelected, selectSideLeft } from "./features/ux/uxSlice"
-import AudioGraph from "./components/graph/AudioGraph"
+// import AudioGraph from "./components/graph/AudioGraph"
+import Spatial from "./components/Spatial"
 import MenuOpener from "./components/side/MenuOpener"
 import Analysers2D from "./components/side/Analysers2D"
 import { Main, SideBar, WidgetRows } from "./styled"
@@ -32,7 +33,8 @@ export default function App() {
     <ReactFlowProvider>
       <HotKeys keyMap={keyMap} handlers={handlers}>
         <Main className={sideLeft ? "rev" : ""}>
-          <AudioGraph />
+          {/* <AudioGraph /> */}
+          <Spatial />
           <SideBar>
             <Brand />
             <MenuOpener />

@@ -50,7 +50,6 @@ export default ({ defaultText, onChange, unchangeable, disabled, selected }: Pro
     >
       <option value="">{defaultText ?? "--- Please, Select ---"}</option>
       {names.map(name => (
-        // <option key={name} value={name} selected={name === selected}>
         <option key={name} value={name}>
           {name}
         </option>
