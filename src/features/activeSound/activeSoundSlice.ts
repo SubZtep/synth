@@ -2,36 +2,35 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { AudioParamSetting } from "../../components/graph/elems/AudioParamForm"
 import Analyser, { FFTSize } from "../../components/graph/nodes/Analyser"
 import { RootState } from "../../store"
+import { XYPosition } from "react-flow-renderer"
 
 type Connect = {
   source: string
   target: string
 }
 
-export type Analyser = {
+export type BaseNode = {
   id: string
   connectIds: string[]
+  position?: XYPosition
+}
+
+export interface Analyser extends BaseNode {
   fftSize: FFTSize
   color: string
   lineWidth: number
 }
 
-export type Gain = {
-  id: string
-  connectIds: string[]
+export interface Gain extends BaseNode {
   params: AudioParamSetting[]
 }
 
-export type BiquadFilter = {
-  id: string
-  connectIds: string[]
+export interface BiquadFilter extends BaseNode {
   type: BiquadFilterType
   params: AudioParamSetting[]
 }
 
-export type Oscillator = {
-  id: string
-  connectIds: string[]
+export interface Oscillator extends BaseNode {
   type: OscillatorType
   params: AudioParamSetting[]
 }

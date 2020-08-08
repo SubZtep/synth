@@ -2,10 +2,15 @@
 import { jsx } from "@emotion/core"
 import { toast } from "react-toastify"
 import { useSelector, useDispatch } from "react-redux"
-import { useStoreState, Elements } from "react-flow-renderer"
+import { useStoreState, Node } from "react-flow-renderer"
 import { useRef, useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { setName, selectName, selectAudioNodes } from "../../features/activeSound/activeSoundSlice"
+import {
+  setName,
+  selectName,
+  selectAudioNodes,
+  BaseNode,
+} from "../../features/activeSound/activeSoundSlice"
 import { IconButton } from "../../styled"
 
 export default () => {
@@ -20,19 +25,23 @@ export default () => {
   }, [name])
 
   const save = () => {
-    //FIXME: after succesful save it kills the app
-    const elems = elements.map((element: any) => {
-      if (element.__rf !== undefined) {
-        if (element.__rf.position !== undefined) {
-          element.position = element.__rf.position
-        }
-        delete element.__rf
-      }
-      return element
-    }) as Elements
+    const addPosition = (node: BaseNode) => ({
+      ...node,
+      position: (elements.find(element => element.id === node.id) as Node | undefined)?.__rf
+        .position,
+    })
 
     try {
-      localStorage.setItem(name, JSON.stringify({ elements: elems, ...audioNodes }))
+      localStorage.setItem(
+        name,
+        JSON.stringify({
+          destination: addPosition({ id: "destination", connectIds: [] }),
+          analysers: audioNodes.analysers.flatMap(addPosition),
+          gains: audioNodes.gains.flatMap(addPosition),
+          biquadFilters: audioNodes.biquadFilters.flatMap(addPosition),
+          oscillators: audioNodes.oscillators.flatMap(addPosition),
+        })
+      )
       toast.success(`Sound "${name}" saved`)
     } catch (e) {
       toast.error(e.message)

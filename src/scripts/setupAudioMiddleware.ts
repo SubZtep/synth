@@ -37,6 +37,12 @@ const setupAudioMiddleware: Middleware = () => (next: Dispatch<AnyAction>) => (
       case "delOscillator":
         sound.delNode((action.payload as unknown) as string)
         break
+      case "addConnect":
+        sound.addConnect((action.payload as any).source, (action.payload as any).target)
+        break
+      case "delConnect":
+        sound.delConnect((action.payload as any).source, (action.payload as any).target)
+        break
       case "setPlayFrequency":
         if (action.payload === null) {
           sound.stop()

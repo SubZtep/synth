@@ -19,16 +19,16 @@ import { WidgetRows } from "../../../styled"
 const fftSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768] as const
 export type FFTSize = typeof fftSizes[number]
 
-export default ({ id }: NodeComponentProps) => {
+export default ({ id, data }: NodeComponentProps) => {
   const basic: Analyser = useMemo(
     () => ({
       id,
-      connectIds: [],
-      fftSize: fftSizes[6],
-      color: "#d66853",
-      lineWidth: 2,
+      connectIds: data?.connectIds ?? [],
+      fftSize: data?.fftSize ?? fftSizes[6],
+      color: data?.color ?? "#d66853",
+      lineWidth: data?.lineWidth ?? 2,
     }),
-    [id]
+    [id, data]
   )
   const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("AnalyserNode")

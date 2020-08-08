@@ -1,5 +1,11 @@
 import { AudioParamSetting } from "../components/graph/elems/AudioParamForm"
-import { Analyser, Gain, BiquadFilter, Oscillator } from "../features/activeSound/activeSoundSlice"
+import {
+  Analyser,
+  Gain,
+  BiquadFilter,
+  Oscillator,
+  BaseNode,
+} from "../features/activeSound/activeSoundSlice"
 import { AUDIO_CONTEXT_DESTINATION } from "./audio"
 
 export type AudioNodeType = "AnalyserNode" | "BiquadFilterNode" | "GainNode" | "OscillatorNode"
@@ -13,14 +19,20 @@ type SoundNode = {
   params: AudioParamSetting[]
 }
 
+const soundNodeFactory = (node: BaseNode, type: AudioNodeType): SoundNode => {
+  return {
+    id: node.id,
+    // connectIds: node.connectIds,
+    connectIds: [],
+    type,
+    attrs: {},
+    params: [],
+  }
+}
+
 export default class {
   audioContext: AudioContext | null = null
   nodes = new Map<string, SoundNode>()
-
-  gains = []
-  biquadFilters = []
-  oscillators = []
-  analysers = []
 
   constructor(audioContext: AudioContext) {
     this.audioContext = audioContext
@@ -64,96 +76,65 @@ export default class {
   }
 
   setGain(node: Gain) {
-    let soundNode: SoundNode
-    if (this.nodes.has(node.id)) {
-      soundNode = this.nodes.get(node.id)!
-      soundNode.connectIds = node.connectIds
-      soundNode.params = node.params
-    } else {
-      soundNode = {
-        id: node.id,
-        audioNode: this.audioContext !== null ? this.audioContext.createGain() : undefined,
-        connectIds: node.connectIds,
-        type: "GainNode",
-        attrs: {},
-        params: node.params,
-      }
+    let soundNode = this.nodes.get(node.id) || soundNodeFactory(node, "GainNode")
+    soundNode.connectIds = node.connectIds
+    soundNode.params = node.params
+    if (!this.nodes.has(node.id)) {
       this.nodes.set(node.id, soundNode)
     }
   }
 
   setAnalyser(node: Analyser) {
-    let soundNode: SoundNode
-    if (this.nodes.has(node.id)) {
-      soundNode = this.nodes.get(node.id)!
-      soundNode.connectIds = node.connectIds
-      soundNode.attrs.fftSize = node.fftSize
-    } else {
-      soundNode = {
-        id: node.id,
-        audioNode: this.audioContext !== null ? this.audioContext.createAnalyser() : undefined,
-        connectIds: node.connectIds,
-        type: "AnalyserNode",
-        attrs: {
-          fftSize: node.fftSize,
-        },
-        params: [],
-      }
-      this.nodes.set(node.id, soundNode)
-    }
+    let soundNode = this.nodes.get(node.id) || soundNodeFactory(node, "AnalyserNode")
+    soundNode.connectIds = node.connectIds
+    soundNode.attrs.fftSize = node.fftSize
     if (soundNode.audioNode !== undefined) {
       ;(soundNode.audioNode as AnalyserNode).fftSize = soundNode.attrs.fftSize
+    }
+    if (!this.nodes.has(node.id)) {
+      this.nodes.set(node.id, soundNode)
     }
   }
 
   setBiquadFilter(node: BiquadFilter) {
-    let soundNode: SoundNode
-    if (this.nodes.has(node.id)) {
-      soundNode = this.nodes.get(node.id)!
-      soundNode.attrs.type = node.type
-      soundNode.connectIds = node.connectIds
-      soundNode.params = node.params
-    } else {
-      soundNode = {
-        id: node.id,
-        audioNode: this.audioContext !== null ? this.audioContext.createBiquadFilter() : undefined,
-        connectIds: node.connectIds,
-        type: "BiquadFilterNode",
-        attrs: {
-          type: node.type,
-        },
-        params: node.params,
-      }
-      this.nodes.set(node.id, soundNode)
-    }
+    let soundNode = this.nodes.get(node.id) || soundNodeFactory(node, "BiquadFilterNode")
+    soundNode.connectIds = node.connectIds
+    soundNode.attrs.type = node.type
+    soundNode.params = node.params
     if (soundNode.audioNode !== undefined) {
       ;(soundNode.audioNode as BiquadFilterNode).type = soundNode.attrs.type
+    }
+    if (!this.nodes.has(node.id)) {
+      this.nodes.set(node.id, soundNode)
     }
   }
 
   setOscillator(node: Oscillator) {
-    let soundNode: SoundNode
-    if (this.nodes.has(node.id)) {
-      soundNode = this.nodes.get(node.id)!
-      soundNode.attrs.type = node.type
-      soundNode.connectIds = node.connectIds
-      soundNode.params = node.params
-    } else {
-      soundNode = {
-        id: node.id,
-        type: "OscillatorNode",
-        attrs: {
-          type: node.type,
-        },
-        connectIds: node.connectIds,
-        params: node.params,
-      }
+    let soundNode = this.nodes.get(node.id) || soundNodeFactory(node, "OscillatorNode")
+    soundNode.connectIds = node.connectIds
+    soundNode.attrs.type = node.type
+    soundNode.params = node.params
+    if (!this.nodes.has(node.id)) {
       this.nodes.set(node.id, soundNode)
     }
   }
 
   delNode(id: string) {
     this.nodes.delete(id)
+  }
+
+  addConnect(id: string, target: string) {
+    const node = this.nodes.get(id)
+    if (node) {
+      node.connectIds.push(target)
+    }
+  }
+
+  delConnect(id: string, target: string) {
+    const node = this.nodes.get(id)
+    if (node) {
+      node.connectIds = node.connectIds.filter(toId => toId !== target)
+    }
   }
 
   play(frequency: number, playDelay = 0.01) {

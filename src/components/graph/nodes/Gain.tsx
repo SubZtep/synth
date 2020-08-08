@@ -14,14 +14,14 @@ import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"
 import AudioParams from "../elems/AudioParams"
 
-export default ({ id }: NodeComponentProps) => {
+export default ({ id, data }: NodeComponentProps) => {
   const basic: Gain = useMemo(
     () => ({
       id,
-      connectIds: [],
-      params: [],
+      connectIds: data?.connectIds ?? [],
+      params: data?.params ?? [],
     }),
-    [id]
+    [id, data]
   )
   const editMode = useSelector(selectEditMode)
   const defs = useAudioNodeDefs("GainNode")

@@ -2,9 +2,10 @@
 import { jsx } from "@emotion/core"
 import { useState, useEffect, useMemo } from "react"
 import PlaybackControls from "./PlaybackControls"
+import { sound } from "../../scripts/audio"
+import useTimer from "../../hooks/useTimer"
 import BarSettings from "./BarSettings"
 import Bar from "./Bar"
-import useTimer from "../../hooks/useTimer"
 
 export type StepValue = number | null
 
@@ -39,6 +40,12 @@ export default () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepsPerBar])
+
+  useEffect(() => {
+    if (!playing) {
+      sound.stop()
+    }
+  }, [playing])
 
   return (
     <div>
