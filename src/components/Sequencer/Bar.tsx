@@ -42,6 +42,7 @@ export default ({ beatsPerBar, stepsPerBar, cursor }: Props) => {
       dispatch(setPlayFrequency(null))
       setTimeout(() => void dispatch(setPlayFrequency(freq)))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursor])
 
   return (

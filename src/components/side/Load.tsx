@@ -7,14 +7,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { setLoadElements } from "../../features/ux/uxSlice"
 import {
   setName,
-  setGains,
-  setAnalysers,
-  setOscillators,
-  setBiquadFilters,
+  emptyNodes,
+  setGain,
+  setAnalyser,
+  setOscillator,
+  setBiquadFilter,
   selectName,
+  Analyser,
+  Gain,
+  BiquadFilter,
+  Oscillator,
 } from "../../features/activeSound/activeSoundSlice"
 import { validateSound } from "../../scripts/helpers"
 import { IconButton } from "../../styled"
+import { Elements } from "react-flow-renderer"
 
 const retreiveNames = () =>
   Object.keys(localStorage).filter(name => {
@@ -27,6 +33,15 @@ const retreiveNames = () =>
     return validateSound(obj)
   })
 
+type SynthLocalStore = {
+  name: string
+  elements: Elements
+  analysers: Analyser[]
+  gains: Gain[]
+  biquadFilters: BiquadFilter[]
+  oscillators: Oscillator[]
+}
+
 export default () => {
   const dispatch = useDispatch()
   const currentName = useSelector(selectName)
@@ -36,12 +51,13 @@ export default () => {
   const load = (name: string) => {
     const data = localStorage.getItem(name)
     if (data) {
-      const obj = JSON.parse(data)
+      const obj: SynthLocalStore = JSON.parse(data)
       if (validateSound(obj)) {
-        dispatch(setAnalysers(obj.analysers))
-        dispatch(setGains(obj.gains))
-        dispatch(setBiquadFilters(obj.biquadFilters))
-        dispatch(setOscillators(obj.oscillators))
+        dispatch(emptyNodes())
+        obj.analysers.forEach(node => void dispatch(setAnalyser(node)))
+        obj.gains.forEach(node => void dispatch(setGain(node)))
+        obj.biquadFilters.forEach(node => void dispatch(setBiquadFilter(node)))
+        obj.oscillators.forEach(node => void dispatch(setOscillator(node)))
         dispatch(setLoadElements(obj.elements))
         dispatch(setName(name))
         toast.success(`Sound "${name}" loaded`)
@@ -58,8 +74,9 @@ export default () => {
 
   useEffect(() => {
     if (currentName && names.includes(currentName)) {
-      load(currentName)
+      setTimeout(() => load(currentName))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [names])
 
   const loadSelected = (event: ChangeEvent<HTMLSelectElement>) => {

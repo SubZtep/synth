@@ -33,7 +33,7 @@ export default ({
       <span css={{ marginLeft: 4 }}>
         BPM:
         <input
-          css={[selectStyle, { width: 60 }]}
+          css={[selectStyle, { width: 48 }]}
           type="number"
           defaultValue={BPM}
           onChange={event => setBPM(event.currentTarget.valueAsNumber)}
@@ -42,7 +42,7 @@ export default ({
       <span css={{ marginLeft: 4 }}>
         Beats:
         <input
-          css={[selectStyle, { width: 40 }]}
+          css={[selectStyle, { width: 32 }]}
           type="number"
           min={1}
           defaultValue={beatsPerBar}
@@ -52,7 +52,7 @@ export default ({
       <span css={{ marginLeft: 4 }}>
         Notes/Beat:
         <input
-          css={[selectStyle, { width: 40 }]}
+          css={[selectStyle, { width: 32 }]}
           type="number"
           min={1}
           defaultValue={notesPerBeat}

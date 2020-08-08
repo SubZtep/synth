@@ -4,9 +4,10 @@ import { jsx } from "@emotion/core"
 import { toast } from "react-toastify"
 import { useRef, useEffect } from "react"
 import { useSelector } from "react-redux"
-import { audioNodes } from "../../scripts/audio"
+// import { audioNodes } from "../../scripts/audio"
 import { selectAnalysers } from "../../features/activeSound/activeSoundSlice"
 import { dpiFix } from "../../scripts/utils"
+import { sound } from "../../scripts/audio"
 
 export default () => {
   const analysers = useSelector(selectAnalysers)
@@ -36,19 +37,18 @@ export default () => {
     timer.current = null
     ctx.current!.clearRect(0, 0, width.current, height.current)
     analysers.forEach(analyser => {
-      const node = audioNodes.get(analyser.id) as AnalyserNode
-      if (node) {
+      const node = sound.nodes.get(analyser.id)
+      if (node && node.audioNode) {
         ctx.current!.lineWidth = analyser.lineWidth
         try {
-          drawWave(node, analyser.color)
+          drawWave(node.audioNode as AnalyserNode, analyser.color)
         } catch (e) {
           toast.error(e.message)
         }
       }
     })
-
-    requestAnimationFrame(draw)
-    // timer.current = setTimeout(draw, 100)
+    // requestAnimationFrame(draw)
+    timer.current = setTimeout(draw, 100)
   }
 
   useEffect(() => {
