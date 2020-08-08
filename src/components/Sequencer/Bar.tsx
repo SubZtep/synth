@@ -6,6 +6,9 @@ import { useState, useEffect } from "react"
 import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
 import { StepValue } from "./Sequencer"
 import Step from "./Step"
+import { IconButton } from "../../styled"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import LocalSoundSelect from "../misc/LocalSoundSelect"
 
 const sequenceStyle = css`
   width: 100%;
@@ -13,15 +16,17 @@ const sequenceStyle = css`
   justify-items: stretch;
   align-items: stretch;
   background-color: #000;
+  flex-grow: 1;
 `
 
 type Props = {
   beatsPerBar: number
   stepsPerBar: number
   cursor: number
+  main?: boolean
 }
 
-export default ({ beatsPerBar, stepsPerBar, cursor }: Props) => {
+export default ({ beatsPerBar, stepsPerBar, cursor, main }: Props) => {
   const [steps, setSteps] = useState<StepValue[]>(new Array(stepsPerBar).fill(null))
   const dispatch = useDispatch()
 
@@ -45,20 +50,40 @@ export default ({ beatsPerBar, stepsPerBar, cursor }: Props) => {
   }, [cursor])
 
   return (
-    <div css={sequenceStyle}>
-      {steps.map((step, index) => (
-        <Step
-          key={index.toString()}
-          step={step}
-          secondary={Math.floor(index / beatsPerBar) % 2 !== 0}
-          setStep={s => {
-            const ss = [...steps]
-            ss[index] = s
-            setSteps(ss)
-          }}
-          active={cursor === index}
-        />
-      ))}
+    <div
+      css={css`
+        display: flex;
+        > select {
+          padding: 0px !important;
+          font-size: 0.9rem !important;
+          width: 35px;
+        }
+      `}
+    >
+      <LocalSoundSelect disabled={main} />
+      <div css={sequenceStyle}>
+        {steps.map((step, index) => (
+          <Step
+            key={index.toString()}
+            step={step}
+            secondary={Math.floor(index / beatsPerBar) % 2 !== 0}
+            setStep={s => {
+              const ss = [...steps]
+              ss[index] = s
+              setSteps(ss)
+            }}
+            active={cursor === index}
+          />
+        ))}
+      </div>
+      <IconButton
+        disabled={main}
+        onClick={() => {
+          alert("Worst Easter Egg Ever #weee")
+        }}
+      >
+        <FontAwesomeIcon icon={["fad", "layer-minus"]} />
+      </IconButton>
     </div>
   )
 }

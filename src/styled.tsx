@@ -170,14 +170,27 @@ export const IconButton = styled.button`
   opacity: 0.5;
   cursor: not-allowed !important;
 
+  div {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.8rem;
+    position: relative;
+  }
+
   &:not([disabled]) {
     cursor: pointer !important;
     opacity: 1;
     svg {
       transition: 50ms;
-      &:hover {
+    }
+    &:hover {
+      svg {
         transition: 50ms;
         transform: scale(1.25);
+      }
+      div {
+        font-size: 0.85rem;
+        top: 1px;
       }
     }
   }

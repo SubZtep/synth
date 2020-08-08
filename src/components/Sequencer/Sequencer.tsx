@@ -1,11 +1,14 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core"
-import { useState, useEffect, useMemo } from "react"
+import { jsx, css } from "@emotion/core"
+import { useState, useEffect, useMemo, useRef } from "react"
 import PlaybackControls from "./PlaybackControls"
 import { sound } from "../../scripts/audio"
 import useTimer from "../../hooks/useTimer"
 import BarSettings from "./BarSettings"
 import Bar from "./Bar"
+import { IconButton } from "../../styled"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import LocalSoundSelect from "../misc/LocalSoundSelect"
 
 export type StepValue = number | null
 
@@ -26,6 +29,8 @@ export default () => {
   const timePerStep = useMemo(() => timePerSequence / totalSteps, [timePerSequence, totalSteps])
   const [cursor, setCursor] = useState(0)
   const [playing, setPlaying] = useState(false)
+  const addBarSound = useRef("")
+  const [barSounds, setBarSounds] = useState<string[]>([""])
 
   useTimer(
     () => {
@@ -56,7 +61,36 @@ export default () => {
         />
       </div>
       <div>
-        <Bar {...{ cursor, beatsPerBar, stepsPerBar }} />
+        {barSounds.map((barSound, index) => (
+          <Bar
+            key={`${index}-${barSound}`}
+            {...{ cursor, beatsPerBar, stepsPerBar }}
+            main={index === 0}
+          />
+        ))}
+      </div>
+      <div
+        css={css`
+          > select {
+            padding: 2px !important;
+            font-size: 0.8rem !important;
+          }
+        `}
+      >
+        <IconButton
+          onClick={() => {
+            setBarSounds([...barSounds, addBarSound.current])
+          }}
+        >
+          <FontAwesomeIcon icon={["fad", "layer-plus"]} />
+          <div>Add Bar with pre-selected sound</div>
+        </IconButton>
+        <LocalSoundSelect
+          defaultText="--- Current ---"
+          onChange={name => {
+            addBarSound.current = name
+          }}
+        />
       </div>
     </div>
   )
