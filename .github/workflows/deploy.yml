@@ -16,7 +16,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Packages
-        run: npm install
+        run: |
+          npm config set "@fortawesome:registry" https://npm.fontawesome.com/ && npm config set '//npm.fontawesome.com/:_authToken' "${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}"
+          npm install
       - name: Build page
         run: npm run build
       - name: Deploy to gh-pages
