@@ -126,7 +126,7 @@ export default class {
   addConnect(id: string, target: string) {
     const node = this.nodes.get(id)
     if (node) {
-      node.connectIds.push(target)
+      node.connectIds = [...node.connectIds, target]
     }
   }
 

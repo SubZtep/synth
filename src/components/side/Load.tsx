@@ -17,6 +17,7 @@ import {
   BiquadFilter,
   Oscillator,
   BaseNode,
+  emptyNodes,
 } from "../../features/activeSound/activeSoundSlice"
 import { validateSound } from "../../scripts/helpers"
 import { IconButton } from "../../styled"
@@ -59,7 +60,7 @@ export default () => {
 
       const obj: SynthLocalStore = JSON.parse(data)
       if (validateSound(obj)) {
-        // dispatch(emptyNodes()) <- async call
+        dispatch(emptyNodes())
 
         const nodeFactory = (node: BaseNode, type: string, data?: any) => ({
           id: node.id,

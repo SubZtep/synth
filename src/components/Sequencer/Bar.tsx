@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
 import { useDispatch } from "react-redux"
@@ -32,7 +33,6 @@ export default ({ beatsPerBar, stepsPerBar, cursor }: Props) => {
       s.fill(null, oldLength)
     }
     setSteps(s)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepsPerBar])
 
   useEffect(() => {
@@ -42,14 +42,13 @@ export default ({ beatsPerBar, stepsPerBar, cursor }: Props) => {
       dispatch(setPlayFrequency(null))
       setTimeout(() => void dispatch(setPlayFrequency(freq)))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursor])
 
   return (
     <div css={sequenceStyle}>
       {steps.map((step, index) => (
         <Step
-          key={`${index.toString()}-${step ? step.toString() : ""}`}
+          key={index.toString()}
           step={step}
           secondary={Math.floor(index / beatsPerBar) % 2 !== 0}
           setStep={s => {

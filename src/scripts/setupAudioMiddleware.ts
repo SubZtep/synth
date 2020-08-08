@@ -1,23 +1,15 @@
 import { Middleware, PayloadAction, Dispatch, AnyAction } from "@reduxjs/toolkit"
 import { Analyser, Gain, BiquadFilter, Oscillator } from "../features/activeSound/activeSoundSlice"
-import { sound, restartAudioContext } from "./audio"
+import { sound } from "./audio"
 
 const setupAudioMiddleware: Middleware = () => (next: Dispatch<AnyAction>) => (
   action: PayloadAction
 ) => {
-  let promiseNext = false
-
   if (action.type.startsWith("activeSound/") && !action.type.endsWith("setName")) {
     const asActionType = action.type.substring(action.type.indexOf("/") + 1)
     switch (asActionType) {
       case "emptyNodes":
-        promiseNext = true
         sound.destroyAudioNodes()
-        sound.audioContext = null
-        restartAudioContext().then(ctx => {
-          sound.audioContext = ctx
-          next(action)
-        })
         break
       case "setGain":
         sound.setGain((action.payload as unknown) as Gain)
@@ -53,7 +45,7 @@ const setupAudioMiddleware: Middleware = () => (next: Dispatch<AnyAction>) => (
     }
   }
 
-  if (!promiseNext) next(action)
+  next(action)
 }
 
 export default setupAudioMiddleware

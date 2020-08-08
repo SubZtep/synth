@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { useRef } from "react"
 import { jsx, css } from "@emotion/core"
 import { StepValue } from "./Sequencer"
 
@@ -34,11 +35,25 @@ type Props = {
 }
 
 export default ({ step, secondary, setStep, active }: Props) => {
+  const established = useRef(false)
+
+  const updateStep = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!established.current && event.buttons === 1) {
+      established.current = true
+      setStep(step === null ? 440 : null)
+    }
+  }
+
   return (
     <div
       css={[beatStyle, secondary && newBeatStyle]}
-      onClick={() => {
-        setStep(step === null ? 440 : null)
+      onMouseDown={updateStep}
+      onMouseMove={updateStep}
+      onMouseUp={() => {
+        established.current = false
+      }}
+      onMouseLeave={() => {
+        established.current = false
       }}
     >
       <div css={[dotStyle, step !== null && dotOnStyle, active && dotActiveStyle]} />
