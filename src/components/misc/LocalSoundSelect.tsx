@@ -34,7 +34,7 @@ export default ({ defaultText, onChange, unchangeable, disabled, selected }: Pro
   return (
     <select
       ref={select}
-      value={selected ?? ""}
+      value={selected}
       disabled={disabled}
       onChange={event => {
         if (onChange) {

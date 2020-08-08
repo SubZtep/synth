@@ -17,7 +17,7 @@ export const restartAudioContext = async () => {
   return audioContext
 }
 
-export const loadSound = (name: string): Sound | null => {
+export const loadSound = (name: string) => {
   const data = localStorage.getItem(name)
   if (!data) return null
   const obj: SynthLocalStore = JSON.parse(data)

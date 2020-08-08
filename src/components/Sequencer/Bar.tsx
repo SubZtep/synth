@@ -59,6 +59,7 @@ export default ({ beatsPerBar, stepsPerBar, cursor, main, barSound }: Props) => 
         dispatch(setPlayFrequency(null))
         setTimeout(() => void dispatch(setPlayFrequency(freq)))
       } else {
+        sound.current.stop()
         sound.current.play(freq, 0.01)
       }
     }
