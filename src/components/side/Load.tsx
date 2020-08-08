@@ -24,7 +24,7 @@ import { defaultNode } from "../graph/AudioGraph"
 import { sound } from "../../scripts/audio"
 import LocalSoundSelect from "../misc/LocalSoundSelect"
 
-type SynthLocalStore = {
+export type SynthLocalStore = {
   name: string
   destination: {
     position: XYPosition

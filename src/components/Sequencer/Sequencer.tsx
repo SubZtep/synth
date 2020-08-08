@@ -66,6 +66,7 @@ export default () => {
             key={`${index}-${barSound}`}
             {...{ cursor, beatsPerBar, stepsPerBar }}
             main={index === 0}
+            barSound={barSound}
           />
         ))}
       </div>

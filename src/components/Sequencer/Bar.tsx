@@ -2,13 +2,15 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
 import { useDispatch } from "react-redux"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
 import { StepValue } from "./Sequencer"
 import Step from "./Step"
 import { IconButton } from "../../styled"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import LocalSoundSelect from "../misc/LocalSoundSelect"
+import Sound from "../../scripts/Sound"
+import { loadSound } from "../../scripts/audio"
 
 const sequenceStyle = css`
   width: 100%;
@@ -24,11 +26,20 @@ type Props = {
   stepsPerBar: number
   cursor: number
   main?: boolean
+  barSound?: string
 }
 
-export default ({ beatsPerBar, stepsPerBar, cursor, main }: Props) => {
+export default ({ beatsPerBar, stepsPerBar, cursor, main, barSound }: Props) => {
   const [steps, setSteps] = useState<StepValue[]>(new Array(stepsPerBar).fill(null))
   const dispatch = useDispatch()
+  const [soundName, setSoundName] = useState(barSound ?? "")
+  const sound = useRef<Sound | null>(null)
+
+  useEffect(() => {
+    if (soundName !== "") {
+      sound.current = loadSound(soundName)
+    }
+  }, [soundName])
 
   useEffect(() => {
     const s = [...steps]
@@ -43,9 +54,13 @@ export default ({ beatsPerBar, stepsPerBar, cursor, main }: Props) => {
   useEffect(() => {
     const freq = steps[cursor]
     if (freq !== null) {
-      //FIXME: Use proper timing
-      dispatch(setPlayFrequency(null))
-      setTimeout(() => void dispatch(setPlayFrequency(freq)))
+      if (sound.current === null) {
+        //FIXME: Use proper timing
+        dispatch(setPlayFrequency(null))
+        setTimeout(() => void dispatch(setPlayFrequency(freq)))
+      } else {
+        sound.current.play(freq, 0.01)
+      }
     }
   }, [cursor])
 
@@ -60,7 +75,7 @@ export default ({ beatsPerBar, stepsPerBar, cursor, main }: Props) => {
         }
       `}
     >
-      <LocalSoundSelect disabled={main} />
+      <LocalSoundSelect disabled={main} selected={soundName} onChange={setSoundName} />
       <div css={sequenceStyle}>
         {steps.map((step, index) => (
           <Step
