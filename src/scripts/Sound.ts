@@ -1,4 +1,4 @@
-import { AudioParamSetting } from "../components/graph/elems/AudioParamForm"
+import { AudioParamSetting } from "../components/AudioGraph/elems/AudioParamForm"
 import {
   Analyser,
   Gain,

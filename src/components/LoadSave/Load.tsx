@@ -20,7 +20,7 @@ import {
 import { validateSound } from "../../scripts/helpers"
 import { IconButton } from "../../styled"
 import { Elements, XYPosition } from "react-flow-renderer"
-import { defaultNode } from "../graph/AudioGraph"
+import { defaultNode } from "../AudioGraph/AudioGraph"
 import { sound } from "../../scripts/audio"
 import LocalSoundSelect from "../misc/LocalSoundSelect"
 

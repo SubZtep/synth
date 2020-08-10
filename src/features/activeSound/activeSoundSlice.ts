@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { AudioParamSetting } from "../../components/graph/elems/AudioParamForm"
-import Analyser, { FFTSize } from "../../components/graph/nodes/Analyser"
+import { AudioParamSetting } from "../../components/AudioGraph/elems/AudioParamForm"
+import Analyser, { FFTSize } from "../../components/AudioGraph/nodes/Analyser"
 import { RootState } from "../../store"
 import { XYPosition } from "react-flow-renderer"
 
