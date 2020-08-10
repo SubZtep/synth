@@ -76,7 +76,7 @@ export default ({ beatsPerBar, stepsPerBar, cursor, main, barSound }: Props) => 
         }
       `}
     >
-      <LocalSoundSelect disabled={main} selected={soundName} onChange={setSoundName} />
+      <LocalSoundSelect selected={soundName} onChange={setSoundName} />
       <div css={sequenceStyle}>
         {steps.map((step, index) => (
           <Step
