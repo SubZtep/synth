@@ -1,14 +1,12 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
-import { useState, useEffect, useMemo, useRef } from "react"
+import { v4 as uuidv4 } from "uuid"
+import { useState, useEffect, useMemo } from "react"
 import PlaybackControls from "./PlaybackControls"
 import { sound } from "../../scripts/audio"
 import useTimer from "../../hooks/useTimer"
 import BarSettings from "./BarSettings"
 import Bar from "./Bar"
-import { IconButton } from "../../styled"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import LocalSoundSelect from "../misc/LocalSoundSelect"
 
 export type StepValue = number | null
 
@@ -29,8 +27,7 @@ export default () => {
   const timePerStep = useMemo(() => timePerSequence / totalSteps, [timePerSequence, totalSteps])
   const [cursor, setCursor] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const addBarSound = useRef("")
-  const [barSounds, setBarSounds] = useState<string[]>([""])
+  const [bars, setBars] = useState<string[]>([uuidv4()])
 
   useTimer(
     () => {
@@ -57,16 +54,32 @@ export default () => {
       <div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <PlaybackControls {...{ playing, setPlaying }} />
         <BarSettings
-          {...{ BPM, setBPM, notesPerBeat, setNotesPerBeat, beatsPerBar, setBeatsPerBar }}
+          {...{
+            BPM,
+            setBPM,
+            notesPerBeat,
+            setNotesPerBeat,
+            beatsPerBar,
+            setBeatsPerBar,
+          }}
+          onAddBar={() => {
+            setBars([...bars, uuidv4()])
+          }}
         />
       </div>
       <div>
-        {barSounds.map((barSound, index) => (
+        {bars.map(barId => (
           <Bar
-            key={`${index}-${barSound}`}
+            key={barId}
             {...{ cursor, beatsPerBar, stepsPerBar }}
-            main={index === 0}
-            barSound={barSound}
+            onRemove={() => {
+              const index = bars.indexOf(barId)
+              if (index !== -1) {
+                const tmp = [...bars]
+                tmp.splice(index, 1)
+                setBars(tmp)
+              }
+            }}
           />
         ))}
       </div>
@@ -77,22 +90,7 @@ export default () => {
             font-size: 0.8rem !important;
           }
         `}
-      >
-        <IconButton
-          onClick={() => {
-            setBarSounds([...barSounds, addBarSound.current])
-          }}
-        >
-          <FontAwesomeIcon icon={["fad", "layer-plus"]} />
-          <div>Add Bar with pre-selected sound</div>
-        </IconButton>
-        <LocalSoundSelect
-          defaultText="--- Current ---"
-          onChange={name => {
-            addBarSound.current = name
-          }}
-        />
-      </div>
+      ></div>
     </div>
   )
 }

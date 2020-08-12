@@ -1,5 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
+import { IconButton } from "../../styled"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const fontStyle = css`
   font-size: 0.8rem !important;
@@ -18,6 +20,7 @@ type Props = {
   setBeatsPerBar: (beatsPerBar: number) => void
   notesPerBeat: number
   setNotesPerBeat: (stepsPerBar: number) => void
+  onAddBar: () => void
 }
 
 export default ({
@@ -27,12 +30,13 @@ export default ({
   setBeatsPerBar,
   notesPerBeat,
   setNotesPerBeat,
+  onAddBar,
 }: Props) => {
   return (
     <div css={fontStyle}>
       <span css={{ marginLeft: 4 }}>
-        BPM:
         <input
+          title="BPM"
           css={[selectStyle, { width: 48 }]}
           type="number"
           defaultValue={BPM}
@@ -40,8 +44,8 @@ export default ({
         />
       </span>
       <span css={{ marginLeft: 4 }}>
-        Beats:
         <input
+          title="Beats"
           css={[selectStyle, { width: 32 }]}
           type="number"
           min={1}
@@ -50,8 +54,8 @@ export default ({
         />
       </span>
       <span css={{ marginLeft: 4 }}>
-        Notes/Beat:
         <input
+          title="Notes/Beat"
           css={[selectStyle, { width: 32 }]}
           type="number"
           min={1}
@@ -59,6 +63,9 @@ export default ({
           onChange={event => setNotesPerBeat(event.currentTarget.valueAsNumber)}
         />
       </span>
+      <IconButton onClick={onAddBar}>
+        <FontAwesomeIcon icon={["fad", "layer-plus"]} />
+      </IconButton>
     </div>
   )
 }

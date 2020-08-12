@@ -25,14 +25,13 @@ type Props = {
   beatsPerBar: number
   stepsPerBar: number
   cursor: number
-  main?: boolean
-  barSound?: string
+  onRemove: () => void
 }
 
-export default ({ beatsPerBar, stepsPerBar, cursor, main, barSound }: Props) => {
+export default ({ beatsPerBar, stepsPerBar, cursor, onRemove }: Props) => {
   const [steps, setSteps] = useState<StepValue[]>(new Array(stepsPerBar).fill(null))
   const dispatch = useDispatch()
-  const [soundName, setSoundName] = useState(barSound ?? "")
+  const [soundName, setSoundName] = useState("")
   const sound = useRef<Sound | null>(null)
 
   useEffect(() => {
@@ -92,12 +91,7 @@ export default ({ beatsPerBar, stepsPerBar, cursor, main, barSound }: Props) => 
           />
         ))}
       </div>
-      <IconButton
-        disabled={main}
-        onClick={() => {
-          alert("Worst Easter Egg Ever #weee")
-        }}
-      >
+      <IconButton onClick={onRemove}>
         <FontAwesomeIcon icon={["fad", "layer-minus"]} />
       </IconButton>
     </div>
