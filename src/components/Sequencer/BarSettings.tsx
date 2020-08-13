@@ -1,5 +1,14 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
+import { useDispatch, useSelector } from "react-redux"
+import {
+  setBPM,
+  setNotesPerBeat,
+  setBeatsPerBar,
+  selectBPM,
+  selectNotesPerBeat,
+  selectBeatsPerBar,
+} from "../../features/sounds/soundsSlice"
 
 const selectStyle = css`
   font-size: 0.8rem !important;
@@ -7,23 +16,12 @@ const selectStyle = css`
   margin-left: 2px;
 `
 
-type Props = {
-  BPM: number
-  setBPM: (bpm: number) => void
-  beatsPerBar: number
-  setBeatsPerBar: (beatsPerBar: number) => void
-  notesPerBeat: number
-  setNotesPerBeat: (stepsPerBar: number) => void
-}
+export default () => {
+  const dispatch = useDispatch()
+  const BPM = useSelector(selectBPM)
+  const notesPerBeat = useSelector(selectNotesPerBeat)
+  const beatsPerBar = useSelector(selectBeatsPerBar)
 
-export default ({
-  BPM,
-  setBPM,
-  beatsPerBar,
-  setBeatsPerBar,
-  notesPerBeat,
-  setNotesPerBeat,
-}: Props) => {
   return (
     <div
       css={css`
@@ -40,7 +38,7 @@ export default ({
           css={[selectStyle, { width: 55 }]}
           type="number"
           defaultValue={BPM}
-          onChange={event => setBPM(event.currentTarget.valueAsNumber)}
+          onChange={event => dispatch(setBPM(event.currentTarget.valueAsNumber))}
         />
       </div>
       <div>
@@ -51,7 +49,7 @@ export default ({
           type="number"
           min={1}
           defaultValue={beatsPerBar}
-          onChange={event => setBeatsPerBar(event.currentTarget.valueAsNumber)}
+          onChange={event => dispatch(setBeatsPerBar(event.currentTarget.valueAsNumber))}
         />
       </div>
       <div>
@@ -62,7 +60,7 @@ export default ({
           type="number"
           min={1}
           defaultValue={notesPerBeat}
-          onChange={event => setNotesPerBeat(event.currentTarget.valueAsNumber)}
+          onChange={event => dispatch(setNotesPerBeat(event.currentTarget.valueAsNumber))}
         />
       </div>
     </div>

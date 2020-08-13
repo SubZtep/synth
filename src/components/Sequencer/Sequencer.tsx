@@ -1,7 +1,15 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core"
-import { v4 as uuidv4 } from "uuid"
+import { jsx } from "@emotion/core"
 import { useState, useEffect, useMemo } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import {
+  selectBPM,
+  selectNotesPerBeat,
+  selectBeatsPerBar,
+  selectBars,
+  addBar,
+  delBar,
+} from "../../features/sounds/soundsSlice"
 import PlaybackControls from "./PlaybackControls"
 import { sound } from "../../scripts/audio"
 import useTimer from "../../hooks/useTimer"
@@ -13,14 +21,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 export type StepValue = number | null
 
 export default () => {
+  const dispatch = useDispatch()
+  const bars = useSelector(selectBars)
+  const BPM = useSelector(selectBPM)
+  const notesPerBeat = useSelector(selectNotesPerBeat)
+  const beatsPerBar = useSelector(selectBeatsPerBar)
   const baseBPMPerOneSecond = 60
   const barsPerSequence = 1
-  const [notesPerBeat, setNotesPerBeat] = useState(4)
-  const [beatsPerBar, setBeatsPerBar] = useState(4)
   const stepsPerBar = useMemo(() => notesPerBeat * beatsPerBar, [notesPerBeat, beatsPerBar])
   const totalSteps = stepsPerBar * barsPerSequence
   const totalBeats = beatsPerBar * barsPerSequence
-  const [BPM, setBPM] = useState(140)
   const timePerSequence = useMemo(() => (baseBPMPerOneSecond / BPM) * 1000 * totalBeats, [
     baseBPMPerOneSecond,
     BPM,
@@ -30,7 +40,6 @@ export default () => {
   const [cursor, setCursor] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
-  const [bars, setBars] = useState<string[]>([uuidv4()])
 
   useTimer(
     () => {
@@ -66,47 +75,21 @@ export default () => {
           >
             <FontAwesomeIcon icon={["fad", "cogs"]} />
           </IconButton>
-          <IconButton onClick={() => setBars([...bars, uuidv4()])} title="Add Bar">
+          <IconButton onClick={() => void dispatch(addBar())} title="Add Bar">
             <FontAwesomeIcon icon={["fad", "layer-plus"]} />
           </IconButton>
         </div>
       </div>
-      {showSettings && (
-        <BarSettings
-          {...{
-            BPM,
-            setBPM,
-            notesPerBeat,
-            setNotesPerBeat,
-            beatsPerBar,
-            setBeatsPerBar,
-          }}
-        />
-      )}
+      {showSettings && <BarSettings />}
       <div>
         {bars.map(barId => (
           <Bar
             key={barId}
             {...{ cursor, beatsPerBar, stepsPerBar }}
-            onRemove={() => {
-              const index = bars.indexOf(barId)
-              if (index !== -1) {
-                const tmp = [...bars]
-                tmp.splice(index, 1)
-                setBars(tmp)
-              }
-            }}
+            onRemove={() => void dispatch(delBar(barId))}
           />
         ))}
       </div>
-      <div
-        css={css`
-          > select {
-            padding: 2px !important;
-            font-size: 0.8rem !important;
-          }
-        `}
-      ></div>
     </div>
   )
 }

@@ -71,7 +71,7 @@ export default ({ beatsPerBar, stepsPerBar, cursor, onRemove }: Props) => {
         > select {
           padding: 0px !important;
           font-size: 0.9rem !important;
-          width: 48px;
+          width: 45px;
         }
       `}
     >
