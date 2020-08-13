@@ -1,11 +1,5 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
-import { IconButton } from "../../styled"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-
-const fontStyle = css`
-  font-size: 0.8rem !important;
-`
 
 const selectStyle = css`
   font-size: 0.8rem !important;
@@ -20,7 +14,6 @@ type Props = {
   setBeatsPerBar: (beatsPerBar: number) => void
   notesPerBeat: number
   setNotesPerBeat: (stepsPerBar: number) => void
-  onAddBar: () => void
 }
 
 export default ({
@@ -30,42 +23,48 @@ export default ({
   setBeatsPerBar,
   notesPerBeat,
   setNotesPerBeat,
-  onAddBar,
 }: Props) => {
   return (
-    <div css={fontStyle}>
-      <span css={{ marginLeft: 4 }}>
+    <div
+      css={css`
+        font-size: 0.8rem !important;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+      `}
+    >
+      <div>
+        BPM:
         <input
           title="BPM"
-          css={[selectStyle, { width: 48 }]}
+          css={[selectStyle, { width: 55 }]}
           type="number"
           defaultValue={BPM}
           onChange={event => setBPM(event.currentTarget.valueAsNumber)}
         />
-      </span>
-      <span css={{ marginLeft: 4 }}>
+      </div>
+      <div>
+        Beats:
         <input
           title="Beats"
-          css={[selectStyle, { width: 32 }]}
+          css={[selectStyle, { width: 45 }]}
           type="number"
           min={1}
           defaultValue={beatsPerBar}
           onChange={event => setBeatsPerBar(event.currentTarget.valueAsNumber)}
         />
-      </span>
-      <span css={{ marginLeft: 4 }}>
+      </div>
+      <div>
+        Notes/Beat:
         <input
           title="Notes/Beat"
-          css={[selectStyle, { width: 32 }]}
+          css={[selectStyle, { width: 45 }]}
           type="number"
           min={1}
           defaultValue={notesPerBeat}
           onChange={event => setNotesPerBeat(event.currentTarget.valueAsNumber)}
         />
-      </span>
-      <IconButton onClick={onAddBar}>
-        <FontAwesomeIcon icon={["fad", "layer-plus"]} />
-      </IconButton>
+      </div>
     </div>
   )
 }

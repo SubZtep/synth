@@ -71,11 +71,16 @@ export default ({ beatsPerBar, stepsPerBar, cursor, onRemove }: Props) => {
         > select {
           padding: 0px !important;
           font-size: 0.9rem !important;
-          width: 35px;
+          width: 48px;
         }
       `}
     >
-      <LocalSoundSelect selected={soundName} onChange={setSoundName} />
+      <LocalSoundSelect
+        selected={soundName}
+        onChange={setSoundName}
+        defaultText="Editor Sound"
+        title="Bar's Instrument"
+      />
       <div css={sequenceStyle}>
         {steps.map((step, index) => (
           <Step
@@ -91,7 +96,7 @@ export default ({ beatsPerBar, stepsPerBar, cursor, onRemove }: Props) => {
           />
         ))}
       </div>
-      <IconButton onClick={onRemove}>
+      <IconButton onClick={onRemove} title="Remove Bar">
         <FontAwesomeIcon icon={["fad", "layer-minus"]} />
       </IconButton>
     </div>

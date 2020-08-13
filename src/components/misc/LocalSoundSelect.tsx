@@ -10,6 +10,7 @@ type Props = {
   unchangeable?: boolean
   disabled?: boolean
   selected?: string
+  title?: string
 }
 
 const retreiveNames = () =>
@@ -23,7 +24,7 @@ const retreiveNames = () =>
     return validateSound(obj)
   })
 
-export default ({ defaultText, onChange, unchangeable, disabled, selected }: Props) => {
+export default ({ defaultText, onChange, unchangeable, disabled, selected, title }: Props) => {
   const [names, setNames] = useState<string[]>([])
   const select = useRef<HTMLSelectElement>(null)
 
@@ -36,6 +37,7 @@ export default ({ defaultText, onChange, unchangeable, disabled, selected }: Pro
       ref={select}
       value={selected}
       disabled={disabled}
+      title={title}
       onChange={event => {
         if (onChange) {
           onChange(event.currentTarget.value)

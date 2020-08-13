@@ -7,6 +7,8 @@ import { sound } from "../../scripts/audio"
 import useTimer from "../../hooks/useTimer"
 import BarSettings from "./BarSettings"
 import Bar from "./Bar"
+import { IconButton } from "../../styled"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 export type StepValue = number | null
 
@@ -27,6 +29,7 @@ export default () => {
   const timePerStep = useMemo(() => timePerSequence / totalSteps, [timePerSequence, totalSteps])
   const [cursor, setCursor] = useState(0)
   const [playing, setPlaying] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const [bars, setBars] = useState<string[]>([uuidv4()])
 
   useTimer(
@@ -53,6 +56,22 @@ export default () => {
     <div>
       <div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <PlaybackControls {...{ playing, setPlaying }} />
+        <div>
+          <IconButton onClick={() => {}} title="Render To Audio File">
+            <FontAwesomeIcon icon={["fad", "file-audio"]} fixedWidth size="lg" />
+          </IconButton>
+          <IconButton
+            onClick={() => setShowSettings(!showSettings)}
+            title="Open/Close Bar Settings"
+          >
+            <FontAwesomeIcon icon={["fad", "cogs"]} />
+          </IconButton>
+          <IconButton onClick={() => setBars([...bars, uuidv4()])} title="Add Bar">
+            <FontAwesomeIcon icon={["fad", "layer-plus"]} />
+          </IconButton>
+        </div>
+      </div>
+      {showSettings && (
         <BarSettings
           {...{
             BPM,
@@ -62,11 +81,8 @@ export default () => {
             beatsPerBar,
             setBeatsPerBar,
           }}
-          onAddBar={() => {
-            setBars([...bars, uuidv4()])
-          }}
         />
-      </div>
+      )}
       <div>
         {bars.map(barId => (
           <Bar
