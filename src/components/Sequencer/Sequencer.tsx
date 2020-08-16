@@ -9,8 +9,10 @@ import useTimer from "../../hooks/useTimer"
 import {
   selectBPM,
   selectBeatsPerBar,
-  selectBars,
+  selectBarKeys,
+  selectNotesPerBeat,
   selectStepsPerBar,
+  selectBars,
   addBar,
   delBar,
 } from "../../features/sounds/soundsSlice"
@@ -18,13 +20,16 @@ import { selectName } from "../../features/activeSound/activeSoundSlice"
 import { IconButton } from "../../styled"
 import BarSettings from "./BarSettings"
 import Bar from "./Bar"
+import Widget from "../misc/Widget"
 
 export default () => {
   const dispatch = useDispatch()
-  const bars = useSelector(selectBars)
+  const barKeys = useSelector(selectBarKeys)
   const BPM = useSelector(selectBPM)
+  const notesPerBeat = useSelector(selectNotesPerBeat)
   const beatsPerBar = useSelector(selectBeatsPerBar)
   const stepsPerBar = useSelector(selectStepsPerBar)
+  const bars = useSelector(selectBars)
   const name = useSelector(selectName)
 
   const baseBPMPerOneSecond = 60
@@ -61,8 +66,12 @@ export default () => {
     }
   }, [playing])
 
+  useEffect(() => {
+    localStorage.setItem("sequencer", JSON.stringify({ BPM, notesPerBeat, beatsPerBar, bars }))
+  }, [BPM, notesPerBeat, beatsPerBar, bars])
+
   return (
-    <div>
+    <Widget title="Sequencer">
       <div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <PlaybackControls {...{ playing, setPlaying }} />
         <div>
@@ -82,14 +91,14 @@ export default () => {
       </div>
       {showSettings && <BarSettings />}
       <div>
-        {bars.map(barId => (
+        {barKeys.map(barKey => (
           <Bar
-            key={barId}
-            {...{ cursor, beatsPerBar, barId }}
-            onRemove={() => void dispatch(delBar(barId))}
+            key={barKey}
+            {...{ cursor, beatsPerBar, barId: barKey }}
+            onRemove={() => void dispatch(delBar(barKey))}
           />
         ))}
       </div>
-    </div>
+    </Widget>
   )
 }

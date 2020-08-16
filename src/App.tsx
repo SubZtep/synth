@@ -8,12 +8,12 @@ import { toggleEditMode, toggleDelSelected, selectSideLeft } from "./features/ux
 import AudioGraph from "./components/AudioGraph"
 import MenuOpener from "./components/Menu/MenuOpener"
 import Analysers2D from "./components/Analyser2D"
-import { Main, SideBar, WidgetRows } from "./styled"
+import { Main, SideBar } from "./styled"
 import Sequencer from "./components/Sequencer"
 import Piano from "./components/Piano"
 import Brand from "./components/misc/Brand"
-import Load from "./components/LoadSave/Load"
-import Save from "./components/LoadSave/Save"
+import SelectSound from "./components/SelectSound"
+import FileSys from "./components/FileSys"
 
 const keyMap = {
   TOGGLE_EDIT_MODE: "m",
@@ -35,11 +35,9 @@ export default function App() {
           <AudioGraph />
           <SideBar>
             <Brand />
+            <FileSys />
             <MenuOpener />
-            <WidgetRows>
-              <Load />
-              <Save />
-            </WidgetRows>
+            <SelectSound />
             <Analysers2D />
             <Piano />
             <Sequencer />

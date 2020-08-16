@@ -45,7 +45,7 @@ type ActiveSound = {
 }
 
 const initialState: ActiveSound = {
-  name: "No Name",
+  name: "",
   playFrequency: null,
   analysers: [],
   gains: [],

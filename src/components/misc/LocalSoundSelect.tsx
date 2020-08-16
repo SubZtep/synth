@@ -29,8 +29,10 @@ export default ({ defaultText, onChange, unchangeable, disabled, selected, title
   const select = useRef<HTMLSelectElement>(null)
 
   useEffect(() => {
-    setNames(retreiveNames())
-  }, [])
+    setTimeout(() => {
+      setNames(retreiveNames())
+    })
+  }, [selected])
 
   return (
     <select
@@ -45,9 +47,6 @@ export default ({ defaultText, onChange, unchangeable, disabled, selected, title
         if (unchangeable) {
           select.current!.value = ""
         }
-      }}
-      onDoubleClick={() => {
-        setNames(retreiveNames())
       }}
     >
       <option value="">{defaultText ?? "--- Please, Select ---"}</option>

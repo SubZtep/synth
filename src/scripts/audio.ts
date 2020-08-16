@@ -1,6 +1,6 @@
 import Sound from "./Sound"
-import { SynthLocalStore } from "../components/LoadSave/Load"
 import { validateSound } from "./helpers"
+import { SynthLocalStore } from "../components/SelectSound/SelectSound"
 
 export const AUDIO_CONTEXT_DESTINATION = "destination"
 

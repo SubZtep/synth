@@ -4,19 +4,21 @@ import { RootState } from "../../store"
 
 export type StepValue = number | null
 
-type Sounds = {
-  BPM: number
-  notesPerBeat: number
-  beatsPerBar: number
-  bars: {
-    [barId: string]: {
-      soundName: string
-      steps: StepValue[]
-    }
+export type Bars = {
+  [barId: string]: {
+    soundName: string
+    steps: StepValue[]
   }
 }
 
-const initialState: Sounds = {
+export type Sequencer = {
+  BPM: number
+  notesPerBeat: number
+  beatsPerBar: number
+  bars: Bars
+}
+
+const initialState: Sequencer = {
   BPM: 140,
   notesPerBeat: 4,
   beatsPerBar: 4,
@@ -27,10 +29,10 @@ const soundsSlice = createSlice({
   name: "sounds",
   initialState,
   reducers: {
-    setBPM: (state: Sounds, { payload }: PayloadAction<number>) => {
+    setBPM: (state: Sequencer, { payload }: PayloadAction<number>) => {
       state.BPM = payload
     },
-    setNotesPerBeat: (state: Sounds, { payload }: PayloadAction<number>) => {
+    setNotesPerBeat: (state: Sequencer, { payload }: PayloadAction<number>) => {
       state.notesPerBeat = payload
       // resize all the bars
       const barLength = state.notesPerBeat * state.beatsPerBar
@@ -40,7 +42,7 @@ const soundsSlice = createSlice({
         bar.steps.fill(null, oldLength)
       })
     },
-    setBeatsPerBar: (state: Sounds, { payload }: PayloadAction<number>) => {
+    setBeatsPerBar: (state: Sequencer, { payload }: PayloadAction<number>) => {
       state.beatsPerBar = payload
       // resize all the bars
       const barLength = state.notesPerBeat * state.beatsPerBar
@@ -50,24 +52,27 @@ const soundsSlice = createSlice({
         bar.steps.fill(null, oldLength)
       })
     },
-    addBar: (state: Sounds, { payload }: PayloadAction<string>) => {
+    setBars: (state: Sequencer, { payload }: PayloadAction<Bars>) => {
+      state.bars = payload
+    },
+    addBar: (state: Sequencer, { payload }: PayloadAction<string>) => {
       state.bars[uuidv4()] = {
         // soundName: payload,
         soundName: "",
         steps: new Array(state.notesPerBeat * state.beatsPerBar).fill(null),
       }
     },
-    delBar: (state: Sounds, { payload }: PayloadAction<string>) => {
+    delBar: (state: Sequencer, { payload }: PayloadAction<string>) => {
       delete state.bars[payload]
     },
     setStep: (
-      state: Sounds,
+      state: Sequencer,
       { payload }: PayloadAction<{ barId: string; stepNr: number; step: StepValue }>
     ) => {
       state.bars[payload.barId].steps[payload.stepNr] = payload.step
     },
     setSoundName: (
-      state: Sounds,
+      state: Sequencer,
       { payload }: PayloadAction<{ barId: string; soundName: string }>
     ) => {
       state.bars[payload.barId].soundName = payload.soundName
@@ -79,6 +84,7 @@ export const {
   setBPM,
   setNotesPerBeat,
   setBeatsPerBar,
+  setBars,
   addBar,
   delBar,
   setStep,
@@ -88,7 +94,8 @@ export const {
 export const selectBPM = ({ sounds }: RootState) => sounds.BPM
 export const selectNotesPerBeat = ({ sounds }: RootState) => sounds.notesPerBeat
 export const selectBeatsPerBar = ({ sounds }: RootState) => sounds.beatsPerBar
-export const selectBars = ({ sounds }: RootState) => Object.keys(sounds.bars)
+export const selectBarKeys = ({ sounds }: RootState) => Object.keys(sounds.bars)
+export const selectBars = ({ sounds }: RootState) => sounds.bars
 export const selectStepsPerBar = ({ sounds }: RootState) => sounds.notesPerBeat * sounds.beatsPerBar
 export const selectSteps = ({ sounds }: RootState) => (barId: string) => sounds.bars[barId].steps
 export const selectStep = ({ sounds }: RootState) => (barId: string, stepNr: number) =>

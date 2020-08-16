@@ -45,7 +45,9 @@ export default ({ barId, beatsPerBar, cursor, onRemove }: Props) => {
 
   useEffect(() => {
     if (soundName !== "") {
-      sound.current = loadSound(soundName)
+      setTimeout(() => {
+        sound.current = loadSound(soundName)
+      })
     }
   }, [soundName])
 
