@@ -2,18 +2,25 @@ import { v4 as uuidv4 } from "uuid"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../store"
 
+export type StepValue = number | null
+
 type Sounds = {
   BPM: number
   notesPerBeat: number
   beatsPerBar: number
-  bars: string[]
+  bars: {
+    [barId: string]: {
+      soundName: string
+      steps: StepValue[]
+    }
+  }
 }
 
 const initialState: Sounds = {
   BPM: 140,
   notesPerBeat: 4,
   beatsPerBar: 4,
-  bars: [uuidv4()],
+  bars: {},
 }
 
 const soundsSlice = createSlice({
@@ -25,31 +32,68 @@ const soundsSlice = createSlice({
     },
     setNotesPerBeat: (state: Sounds, { payload }: PayloadAction<number>) => {
       state.notesPerBeat = payload
+      // resize all the bars
+      const barLength = state.notesPerBeat * state.beatsPerBar
+      Object.values(state.bars).forEach(bar => {
+        const oldLength = bar.steps.length
+        bar.steps.length = barLength
+        bar.steps.fill(null, oldLength)
+      })
     },
     setBeatsPerBar: (state: Sounds, { payload }: PayloadAction<number>) => {
       state.beatsPerBar = payload
+      // resize all the bars
+      const barLength = state.notesPerBeat * state.beatsPerBar
+      Object.values(state.bars).forEach(bar => {
+        const oldLength = bar.steps.length
+        bar.steps.length = barLength
+        bar.steps.fill(null, oldLength)
+      })
     },
-    addBar: state => {
-      state.bars = [...state.bars, uuidv4()]
+    addBar: (state: Sounds, { payload }: PayloadAction<string>) => {
+      state.bars[uuidv4()] = {
+        // soundName: payload,
+        soundName: "",
+        steps: new Array(state.notesPerBeat * state.beatsPerBar).fill(null),
+      }
     },
     delBar: (state: Sounds, { payload }: PayloadAction<string>) => {
-      const index = state.bars.indexOf(payload)
-      if (index !== -1) {
-        state.bars.splice(index, 1)
-      }
-      // const tmp = [...state.bars]
-      // tmp.splice(index, 1)
-      // setBars(tmp)
-      // //
+      delete state.bars[payload]
+    },
+    setStep: (
+      state: Sounds,
+      { payload }: PayloadAction<{ barId: string; stepNr: number; step: StepValue }>
+    ) => {
+      state.bars[payload.barId].steps[payload.stepNr] = payload.step
+    },
+    setSoundName: (
+      state: Sounds,
+      { payload }: PayloadAction<{ barId: string; soundName: string }>
+    ) => {
+      state.bars[payload.barId].soundName = payload.soundName
     },
   },
 })
 
-export const { setBPM, setNotesPerBeat, setBeatsPerBar, addBar, delBar } = soundsSlice.actions
+export const {
+  setBPM,
+  setNotesPerBeat,
+  setBeatsPerBar,
+  addBar,
+  delBar,
+  setStep,
+  setSoundName,
+} = soundsSlice.actions
 
 export const selectBPM = ({ sounds }: RootState) => sounds.BPM
 export const selectNotesPerBeat = ({ sounds }: RootState) => sounds.notesPerBeat
 export const selectBeatsPerBar = ({ sounds }: RootState) => sounds.beatsPerBar
-export const selectBars = ({ sounds }: RootState) => sounds.bars
+export const selectBars = ({ sounds }: RootState) => Object.keys(sounds.bars)
+export const selectStepsPerBar = ({ sounds }: RootState) => sounds.notesPerBeat * sounds.beatsPerBar
+export const selectSteps = ({ sounds }: RootState) => (barId: string) => sounds.bars[barId].steps
+export const selectStep = ({ sounds }: RootState) => (barId: string, stepNr: number) =>
+  sounds.bars[barId].steps[stepNr]
+export const selectSoundName = ({ sounds }: RootState) => (barId: string) =>
+  sounds.bars[barId].soundName
 
 export default soundsSlice.reducer

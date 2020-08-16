@@ -2,33 +2,33 @@
 import { jsx } from "@emotion/core"
 import { useState, useEffect, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import {
-  selectBPM,
-  selectNotesPerBeat,
-  selectBeatsPerBar,
-  selectBars,
-  addBar,
-  delBar,
-} from "../../features/sounds/soundsSlice"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import PlaybackControls from "./PlaybackControls"
 import { sound } from "../../scripts/audio"
 import useTimer from "../../hooks/useTimer"
+import {
+  selectBPM,
+  selectBeatsPerBar,
+  selectBars,
+  selectStepsPerBar,
+  addBar,
+  delBar,
+} from "../../features/sounds/soundsSlice"
+import { selectName } from "../../features/activeSound/activeSoundSlice"
+import { IconButton } from "../../styled"
 import BarSettings from "./BarSettings"
 import Bar from "./Bar"
-import { IconButton } from "../../styled"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-
-export type StepValue = number | null
 
 export default () => {
   const dispatch = useDispatch()
   const bars = useSelector(selectBars)
   const BPM = useSelector(selectBPM)
-  const notesPerBeat = useSelector(selectNotesPerBeat)
   const beatsPerBar = useSelector(selectBeatsPerBar)
+  const stepsPerBar = useSelector(selectStepsPerBar)
+  const name = useSelector(selectName)
+
   const baseBPMPerOneSecond = 60
   const barsPerSequence = 1
-  const stepsPerBar = useMemo(() => notesPerBeat * beatsPerBar, [notesPerBeat, beatsPerBar])
   const totalSteps = stepsPerBar * barsPerSequence
   const totalBeats = beatsPerBar * barsPerSequence
   const timePerSequence = useMemo(() => (baseBPMPerOneSecond / BPM) * 1000 * totalBeats, [
@@ -75,7 +75,7 @@ export default () => {
           >
             <FontAwesomeIcon icon={["fad", "cogs"]} />
           </IconButton>
-          <IconButton onClick={() => void dispatch(addBar())} title="Add Bar">
+          <IconButton onClick={() => void dispatch(addBar(name))} title="Add Bar">
             <FontAwesomeIcon icon={["fad", "layer-plus"]} />
           </IconButton>
         </div>
@@ -85,7 +85,7 @@ export default () => {
         {bars.map(barId => (
           <Bar
             key={barId}
-            {...{ cursor, beatsPerBar, stepsPerBar }}
+            {...{ cursor, beatsPerBar, barId }}
             onRemove={() => void dispatch(delBar(barId))}
           />
         ))}

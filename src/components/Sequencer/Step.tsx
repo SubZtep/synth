@@ -1,7 +1,7 @@
 /** @jsx jsx */
-import { useRef } from "react"
 import { jsx, css } from "@emotion/core"
-import { StepValue } from "./Sequencer"
+import { useDispatch } from "react-redux"
+import { setStep, StepValue } from "../../features/sounds/soundsSlice"
 
 const beatStyle = css`
   padding: 1px;
@@ -28,33 +28,20 @@ const dotActiveStyle = css`
 `
 
 type Props = {
+  barId: string
+  stepNr: number
   step: StepValue
   secondary: boolean
-  setStep: (step: StepValue) => void
   active: boolean
 }
 
-export default ({ step, secondary, setStep, active }: Props) => {
-  const established = useRef(false)
-
-  const updateStep = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (!established.current && event.buttons === 1) {
-      established.current = true
-      setStep(step === null ? 440 : null)
-    }
-  }
+export default ({ barId, stepNr, step, secondary, active }: Props) => {
+  const dispatch = useDispatch()
 
   return (
     <div
       css={[beatStyle, secondary && newBeatStyle]}
-      onMouseDown={updateStep}
-      onMouseMove={updateStep}
-      onMouseUp={() => {
-        established.current = false
-      }}
-      onMouseLeave={() => {
-        established.current = false
-      }}
+      onClick={() => void dispatch(setStep({ barId, stepNr, step: step === null ? 440 : null }))}
     >
       <div css={[dotStyle, step !== null && dotOnStyle, active && dotActiveStyle]} />
     </div>
