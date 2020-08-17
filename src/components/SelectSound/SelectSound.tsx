@@ -24,11 +24,10 @@ import {
   setOscillator,
   selectAudioNodes,
 } from "../../features/activeSound/activeSoundSlice"
-
+import { Sounds, resetSoundsState } from "../../features/sounds/soundsSlice"
 import { sound } from "../../scripts/audio"
 import { IconButton } from "../../styled"
 import Widget from "../misc/Widget"
-import { Sequencer } from "../../features/sounds/soundsSlice"
 
 export type SynthLocalStore = {
   name: string
@@ -39,7 +38,7 @@ export type SynthLocalStore = {
   gains: Gain[]
   biquadFilters: BiquadFilter[]
   oscillators: Oscillator[]
-  sequencer?: Sequencer
+  sequencer?: Sounds
 }
 
 export default () => {
@@ -64,9 +63,10 @@ export default () => {
 
   const newSound = () => {
     save()
-    dispatch(setName(""))
+    dispatch(setName("No Name"))
     dispatch(emptyNodes())
     dispatch(setLoadElements([]))
+    dispatch(resetSoundsState())
     setShowSelect(false)
     toast.success(`Create New Sound`)
   }

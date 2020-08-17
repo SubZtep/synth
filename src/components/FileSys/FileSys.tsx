@@ -7,7 +7,13 @@ import { useDispatch } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { IconButton } from "../../styled"
 import Widget from "../misc/Widget"
-import { setBPM, setNotesPerBeat, setBeatsPerBar, setBars } from "../../features/sounds/soundsSlice"
+import {
+  setBPM,
+  setNotesPerBeat,
+  setBeatsPerBar,
+  setBars,
+  refreshSoundNames,
+} from "../../features/sounds/soundsSlice"
 
 export default () => {
   const fileInput = useRef<HTMLInputElement>(null)
@@ -23,6 +29,7 @@ export default () => {
         //TODO: Validation
         localStorage.clear()
         const data = JSON.parse(reader.result as string)
+        console.log("data", data)
         Object.entries(data).forEach(([key, value]) => {
           if (key === "sequencer") {
             dispatch(setBPM((value as any).BPM))
@@ -33,6 +40,7 @@ export default () => {
             localStorage.setItem(key, JSON.stringify(value))
           }
         })
+        dispatch(refreshSoundNames())
         toast.info(`${file.name} loaded`)
       }
       reader.readAsText(file)

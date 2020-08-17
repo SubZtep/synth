@@ -75,9 +75,6 @@ export default () => {
       <div css={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <PlaybackControls {...{ playing, setPlaying }} />
         <div>
-          <IconButton onClick={() => {}} title="Render To Audio File">
-            <FontAwesomeIcon icon={["fad", "file-audio"]} fixedWidth size="lg" />
-          </IconButton>
           <IconButton
             onClick={() => setShowSettings(!showSettings)}
             title="Open/Close Bar Settings"
