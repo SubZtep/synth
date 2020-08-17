@@ -68,6 +68,7 @@ export default () => {
     dispatch(setLoadElements([]))
     dispatch(resetSoundsState())
     setShowSelect(false)
+    localStorage.clear()
     toast.success(`Create New Sound`)
   }
 

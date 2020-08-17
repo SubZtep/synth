@@ -31,11 +31,14 @@ export type Sounds = {
   soundNames: string[]
 }
 
+const local: Partial<Sounds> =
+  localStorage.getItem("sequencer") !== null ? JSON.parse(localStorage.getItem("sequencer")!) : {}
+
 const initialState: Sounds = {
-  BPM: 140,
-  notesPerBeat: 4,
-  beatsPerBar: 4,
-  bars: {},
+  BPM: local.BPM ?? 140,
+  notesPerBeat: local.notesPerBeat ?? 4,
+  beatsPerBar: local.beatsPerBar ?? 4,
+  bars: local.bars ?? {},
   soundNames: retreiveSoundNames(),
 }
 

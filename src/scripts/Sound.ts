@@ -32,11 +32,11 @@ const soundNodeFactory = (node: BaseNode, type: AudioNodeType): SoundNode => {
 }
 
 export default class {
-  audioCtx: AudioContext | null = null
+  audioCtx: BaseAudioContext | null = null
   offlineCtx = new OfflineAudioContext(2, 44100 * 40, 44100)
   nodes = new Map<string, SoundNode>()
 
-  constructor(audioContext: AudioContext) {
+  constructor(audioContext: BaseAudioContext) {
     this.audioCtx = audioContext
   }
 
