@@ -183,7 +183,7 @@ export default class {
     })
   }
 
-  stop() {
+  stop(stopDelay?: number) {
     if (this.audioCtx === null) return
     this.nodes.forEach(node => {
       if (node.audioNode === undefined) return
@@ -192,6 +192,7 @@ export default class {
         let stopTime: number
 
         if (
+          stopDelay === undefined &&
           node.startTime !== undefined &&
           node.params.every(param => param.name !== "frequency")
         ) {
@@ -206,19 +207,18 @@ export default class {
           stopTime = this.audioCtx!.currentTime
         }
 
-        ;(node.audioNode as OscillatorNode).stop(stopTime)
+        ;(node.audioNode as OscillatorNode).stop(stopDelay ?? stopTime)
       }
-
-      node.connectIds.forEach(toId => {
-        if (toId === AUDIO_CONTEXT_DESTINATION) {
-          node.audioNode?.disconnect()
-        } else {
-          node.audioNode?.disconnect(this.nodes.get(toId)!.audioNode!)
-        }
-      })
-      if (node.type !== undefined && node.audioNode !== undefined) {
-        node.audioNode = undefined
-      }
+      // node.connectIds.forEach(toId => {
+      //   if (toId === AUDIO_CONTEXT_DESTINATION) {
+      //     node.audioNode?.disconnect()
+      //   } else {
+      //     node.audioNode?.disconnect(this.nodes.get(toId)!.audioNode!)
+      //   }
+      // })
+      // if (node.type !== undefined && node.audioNode !== undefined) {
+      //   node.audioNode = undefined
+      // }
     })
   }
 }

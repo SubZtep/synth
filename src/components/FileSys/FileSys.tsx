@@ -102,38 +102,51 @@ export default () => {
     }
   }
 
-  // const renderMusic = async () => {
-  const renderMusic = () => {
+  const renderMusic = async () => {
     const offlineCtx = new OfflineAudioContext(
       2,
-      audioContext.sampleRate * 5,
+      audioContext.sampleRate * 30,
       audioContext.sampleRate
     )
-    const sounds: { [key: string]: Sound } = {}
-    Object.values(bars).forEach(bar => {
-      sounds[bar.soundName] = loadSound(bar.soundName, offlineCtx)!
-      setTimeout(() => {
-        sounds[bar.soundName].play(440)
-      }, 1500)
-      sounds[bar.soundName].play(440)
-    })
 
-    // @ts-ignore
-    offlineCtx.oncomplete = e => {
-      saveBlob(
-        new Blob([
-          Buffer.from(wavHeader(2, 44_100, 32, e.renderedBuffer.length)),
-          e.renderedBuffer.getChannelData(0),
-        ]),
-        "lol.wav"
-      )
-    }
-    offlineCtx.startRendering()
-    // const buffer = await offlineCtx.startRendering()
-    // saveBlob(
-    //   new Blob([Buffer.from(wavHeader(2, 44_100, 32, buffer.length)), buffer.getChannelData(0)]),
-    //   "lol.wav"
-    // )
+    // const sounds: { [key: string]: Sound } = {}
+    // let i = 0
+    // Object.values(bars).forEach(bar => {
+    //   sounds[bar.soundName] = loadSound(bar.soundName, offlineCtx)!
+
+    //   sounds[bar.soundName].play(440, i)
+    //   sounds[bar.soundName].play(440, i + 60)
+    //   sounds[bar.soundName].play(440, i + 120)
+    //   i += 30
+    // })
+    const lengthOfStep = 1
+
+    const sound1 = loadSound("Kick", offlineCtx)!
+    const sound11 = loadSound("Kick", offlineCtx)!
+    const sound2 = loadSound("HiHat", offlineCtx)!
+    sound1.play(440, 1)
+    // sound1.stop(2)
+    // sound1.play(440, 2)
+    // sound1.stop(2.5)
+    sound11.play(440, 3)
+    // sound1.stop(4)
+    // sound1.play(440, 4)
+    sound2.play(440, 0)
+    sound2.play(440, 0.5)
+    sound2.play(440, 1)
+    sound2.play(440, 1.5)
+    sound2.play(440, 2)
+    sound2.play(440, 2.5)
+    sound2.play(440, 3)
+    sound2.play(440, 3.5)
+    sound2.play(440, 4)
+    sound2.play(440, 4.5)
+
+    const buffer = await offlineCtx.startRendering()
+    saveBlob(
+      new Blob([Buffer.from(wavHeader(2, 44_100, 32, buffer.length)), buffer.getChannelData(0)]),
+      "lol.wav"
+    )
   }
 
   return (
