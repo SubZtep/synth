@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable array-callback-return */
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
@@ -14,9 +15,10 @@ import {
   setBars,
   refreshSoundNames,
   selectBars,
+  selectStepsPerBar,
+  selectBPM,
 } from "../../features/sounds/soundsSlice"
 import { loadSound } from "../../scripts/audio"
-import Sound from "../../scripts/Sound"
 import { wavHeader } from "../../scripts/wav"
 import { audioContext } from "../../scripts/audio"
 
@@ -24,6 +26,8 @@ export default () => {
   const fileInput = useRef<HTMLInputElement>(null)
   const dispatch = useDispatch()
   const bars = useSelector(selectBars)
+  const stepsPerBar = useSelector(selectStepsPerBar) //FIXME: selectNotesPerBeat + selectBeatsPerBar
+  const BPM = useSelector(selectBPM)
 
   const loadSerialized = (readed: string, filename?: string) => {
     localStorage.clear()
@@ -108,39 +112,23 @@ export default () => {
       audioContext.sampleRate * 30,
       audioContext.sampleRate
     )
+    // const offlineCtx = audioContext
 
-    // const sounds: { [key: string]: Sound } = {}
-    // let i = 0
-    // Object.values(bars).forEach(bar => {
-    //   sounds[bar.soundName] = loadSound(bar.soundName, offlineCtx)!
+    // const stepsPerBar = 16
+    const bps = BPM / 60
+    const stepsPerBeat = stepsPerBar / 2 // / 4
+    let lengthOfStep = bps / stepsPerBeat
 
-    //   sounds[bar.soundName].play(440, i)
-    //   sounds[bar.soundName].play(440, i + 60)
-    //   sounds[bar.soundName].play(440, i + 120)
-    //   i += 30
-    // })
-    const lengthOfStep = 1
-
-    const sound1 = loadSound("Kick", offlineCtx)!
-    const sound11 = loadSound("Kick", offlineCtx)!
-    const sound2 = loadSound("HiHat", offlineCtx)!
-    sound1.play(440, 1)
-    // sound1.stop(2)
-    // sound1.play(440, 2)
-    // sound1.stop(2.5)
-    sound11.play(440, 3)
-    // sound1.stop(4)
-    // sound1.play(440, 4)
-    sound2.play(440, 0)
-    sound2.play(440, 0.5)
-    sound2.play(440, 1)
-    sound2.play(440, 1.5)
-    sound2.play(440, 2)
-    sound2.play(440, 2.5)
-    sound2.play(440, 3)
-    sound2.play(440, 3.5)
-    sound2.play(440, 4)
-    sound2.play(440, 4.5)
+    Object.values(bars).forEach(bar => {
+      const sound = loadSound(bar.soundName, offlineCtx)
+      if (sound !== null) {
+        bar.steps.forEach((step, index) => {
+          if (step !== null) {
+            sound.play(step, lengthOfStep * (index + 1))
+          }
+        })
+      }
+    })
 
     const buffer = await offlineCtx.startRendering()
     saveBlob(

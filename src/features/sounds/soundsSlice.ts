@@ -16,11 +16,13 @@ const retreiveSoundNames = () =>
 
 export type StepValue = number | null
 
+export type Bar = {
+  soundName: string
+  steps: StepValue[]
+}
+
 export type Bars = {
-  [barId: string]: {
-    soundName: string
-    steps: StepValue[]
-  }
+  [barId: string]: Bar
 }
 
 export type Sounds = {
