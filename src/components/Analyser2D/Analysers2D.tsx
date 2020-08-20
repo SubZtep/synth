@@ -8,6 +8,7 @@ import { useSelector } from "react-redux"
 import { selectAnalysers } from "../../features/activeSound/activeSoundSlice"
 import { dpiFix } from "../../scripts/utils"
 import { sound } from "../../scripts/audio"
+import Widget from "../misc/Widget"
 
 export default () => {
   const analysers = useSelector(selectAnalysers)
@@ -85,8 +86,10 @@ export default () => {
   }
 
   return (
-    <div css={{ height: 120, boxShadow: "inset 0 0 25px #101319" }}>
-      <canvas ref={canvas} css={{ width: "100%", height: "100%" }} />
-    </div>
+    <Widget title="Analyser's 2D Waveforms">
+      <div css={{ height: 120, boxShadow: "inset 0 0 25px #101319" }}>
+        <canvas ref={canvas} css={{ width: "100%", height: "100%" }} />
+      </div>
+    </Widget>
   )
 }

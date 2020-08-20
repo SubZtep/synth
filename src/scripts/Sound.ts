@@ -1,14 +1,13 @@
-import { AudioParamSetting } from "../components/graph/elems/AudioParamForm"
 import {
-  Analyser,
+  AudioNodeType,
+  AudioParamSetting,
+  BaseNode,
+  AUDIO_CONTEXT_DESTINATION,
   Gain,
+  Analyser,
   BiquadFilter,
   Oscillator,
-  BaseNode,
-} from "../features/activeSound/activeSoundSlice"
-import { AUDIO_CONTEXT_DESTINATION } from "./audio"
-
-export type AudioNodeType = "AnalyserNode" | "BiquadFilterNode" | "GainNode" | "OscillatorNode"
+} from "../audio.d"
 
 type SoundNode = {
   id: string
@@ -17,12 +16,12 @@ type SoundNode = {
   type: AudioNodeType
   attrs: { [key: string]: any }
   params: AudioParamSetting[]
+  startTime?: number
 }
 
 const soundNodeFactory = (node: BaseNode, type: AudioNodeType): SoundNode => {
   return {
     id: node.id,
-    // connectIds: node.connectIds,
     connectIds: [],
     type,
     attrs: {},
@@ -31,11 +30,11 @@ const soundNodeFactory = (node: BaseNode, type: AudioNodeType): SoundNode => {
 }
 
 export default class {
-  audioContext: AudioContext | null = null
+  audioCtx: BaseAudioContext | null = null
   nodes = new Map<string, SoundNode>()
 
-  constructor(audioContext: AudioContext) {
-    this.audioContext = audioContext
+  constructor(audioContext: BaseAudioContext) {
+    this.audioCtx = audioContext
   }
 
   destroyAudioNodes() {
@@ -47,9 +46,9 @@ export default class {
   }
 
   applyParams(node: AudioNode, params: AudioParamSetting[], time?: number) {
-    if (this.audioContext === null) return
+    if (this.audioCtx === null) return
     if (time === undefined) {
-      time = this.audioContext.currentTime
+      time = this.audioCtx.currentTime
     }
     params.forEach(param => {
       const values = [...param.values]
@@ -138,28 +137,29 @@ export default class {
   }
 
   play(frequency: number, playDelay = 0.01) {
-    if (this.audioContext === null) return
-    const t = this.audioContext.currentTime + playDelay
+    if (this.audioCtx === null) return
+    const t = this.audioCtx.currentTime + playDelay
 
     this.nodes.forEach(node => {
       if (node.type === "OscillatorNode") {
-        node.audioNode = this.audioContext!.createOscillator()
+        node.audioNode = this.audioCtx!.createOscillator()
         ;(node.audioNode as OscillatorNode).type = node.attrs.type
         ;(node.audioNode as OscillatorNode).frequency.setValueAtTime(frequency, 0)
         ;(node.audioNode as OscillatorNode).start(t)
+        node.startTime = t
       } else {
         if (node.audioNode === undefined) {
           switch (node.type) {
             case "AnalyserNode":
-              node.audioNode = this.audioContext!.createAnalyser()
+              node.audioNode = this.audioCtx!.createAnalyser()
               ;(node.audioNode as AnalyserNode).fftSize = node.attrs.fftSize
               break
             case "BiquadFilterNode":
-              node.audioNode = this.audioContext!.createBiquadFilter()
+              node.audioNode = this.audioCtx!.createBiquadFilter()
               ;(node.audioNode as BiquadFilterNode).type = node.attrs.type
               break
             case "GainNode":
-              node.audioNode = this.audioContext!.createGain()
+              node.audioNode = this.audioCtx!.createGain()
               break
           }
         }
@@ -173,32 +173,49 @@ export default class {
       node.connectIds.forEach(toId => {
         node.audioNode!.connect(
           toId === AUDIO_CONTEXT_DESTINATION
-            ? this.audioContext!.destination
+            ? this.audioCtx!.destination
             : this.nodes.get(toId)!.audioNode!
         )
       })
     })
   }
 
-  stop() {
-    if (this.audioContext === null) return
+  stop(stopDelay?: number) {
+    if (this.audioCtx === null) return
     this.nodes.forEach(node => {
       if (node.audioNode === undefined) return
 
       if (node.type === "OscillatorNode") {
-        //FIXME: Stop without click noise https://webaudiotech.com/2017/02/27/stopping-a-web-audio-oscillator-at-cycle-completion/
-        ;(node.audioNode as OscillatorNode).stop()
-      }
-      node.connectIds.forEach(toId => {
-        if (toId === AUDIO_CONTEXT_DESTINATION) {
-          node.audioNode?.disconnect()
+        let stopTime: number
+
+        if (
+          stopDelay === undefined &&
+          node.startTime !== undefined &&
+          node.params.every(param => param.name !== "frequency")
+        ) {
+          //FIXME: Stop without click noise
+          //https://webaudiotech.com/2017/02/27/stopping-a-web-audio-oscillator-at-cycle-completion/
+          let halfCycleDuration = 0.5 / (node.attrs?.frequency ?? 440) //FIXME: read default from setting
+          let runningTime = this.audioCtx!.currentTime - node.startTime
+          let completedHalfCycles = Math.floor(runningTime / halfCycleDuration)
+          let timeOfLastZC = node.startTime + halfCycleDuration * completedHalfCycles
+          stopTime = timeOfLastZC + halfCycleDuration
         } else {
-          node.audioNode?.disconnect(this.nodes.get(toId)!.audioNode!)
+          stopTime = this.audioCtx!.currentTime
         }
-      })
-      if (node.type !== undefined && node.audioNode !== undefined) {
-        node.audioNode = undefined
+
+        ;(node.audioNode as OscillatorNode).stop(stopDelay ?? stopTime)
       }
+      // node.connectIds.forEach(toId => {
+      //   if (toId === AUDIO_CONTEXT_DESTINATION) {
+      //     node.audioNode?.disconnect()
+      //   } else {
+      //     node.audioNode?.disconnect(this.nodes.get(toId)!.audioNode!)
+      //   }
+      // })
+      // if (node.type !== undefined && node.audioNode !== undefined) {
+      //   node.audioNode = undefined
+      // }
     })
   }
 }

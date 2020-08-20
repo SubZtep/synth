@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
-import { useDispatch } from "react-redux"
-import { useState, useEffect, useRef } from "react"
-import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
-import { StepValue } from "./Sequencer"
-import Step from "./Step"
-import { IconButton } from "../../styled"
+import { useEffect, useRef } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { setPlayFrequency } from "../../features/activeSound/activeSoundSlice"
+import { selectSteps, selectSoundName, setSoundName } from "../../features/sounds/soundsSlice"
 import LocalSoundSelect from "../misc/LocalSoundSelect"
-import Sound from "../../scripts/Sound"
 import { loadSound } from "../../scripts/audio"
+import { IconButton } from "../../styled"
+import Sound from "../../scripts/Sound"
+import Step from "./Step"
 
 const sequenceStyle = css`
   width: 100%;
@@ -21,35 +21,35 @@ const sequenceStyle = css`
   flex-grow: 1;
 `
 
+const barStyle = css`
+  display: flex;
+  > select {
+    padding: 0px !important;
+    font-size: 0.9rem !important;
+    width: 45px;
+  }
+`
+
 type Props = {
+  barId: string
   beatsPerBar: number
-  stepsPerBar: number
   cursor: number
-  main?: boolean
-  barSound?: string
+  onRemove: () => void
 }
 
-export default ({ beatsPerBar, stepsPerBar, cursor, main, barSound }: Props) => {
-  const [steps, setSteps] = useState<StepValue[]>(new Array(stepsPerBar).fill(null))
+export default ({ barId, beatsPerBar, cursor, onRemove }: Props) => {
   const dispatch = useDispatch()
-  const [soundName, setSoundName] = useState(barSound ?? "")
+  const steps = useSelector(selectSteps)(barId)
+  const soundName = useSelector(selectSoundName)(barId)
   const sound = useRef<Sound | null>(null)
 
   useEffect(() => {
     if (soundName !== "") {
-      sound.current = loadSound(soundName)
+      setTimeout(() => {
+        sound.current = loadSound(soundName)
+      })
     }
   }, [soundName])
-
-  useEffect(() => {
-    const s = [...steps]
-    const oldLength = s.length
-    s.length = stepsPerBar
-    if (stepsPerBar > oldLength) {
-      s.fill(null, oldLength)
-    }
-    setSteps(s)
-  }, [stepsPerBar])
 
   useEffect(() => {
     const freq = steps[cursor]
@@ -66,38 +66,26 @@ export default ({ beatsPerBar, stepsPerBar, cursor, main, barSound }: Props) => 
   }, [cursor])
 
   return (
-    <div
-      css={css`
-        display: flex;
-        > select {
-          padding: 0px !important;
-          font-size: 0.9rem !important;
-          width: 35px;
-        }
-      `}
-    >
-      <LocalSoundSelect disabled={main} selected={soundName} onChange={setSoundName} />
+    <div css={barStyle}>
+      <LocalSoundSelect
+        selected={soundName}
+        onChange={name => void dispatch(setSoundName({ barId, soundName: name }))}
+        defaultText="Editor Sound"
+        title="Bar's Instrument"
+      />
       <div css={sequenceStyle}>
         {steps.map((step, index) => (
           <Step
             key={index.toString()}
             step={step}
+            barId={barId}
+            stepNr={index}
             secondary={Math.floor(index / beatsPerBar) % 2 !== 0}
-            setStep={s => {
-              const ss = [...steps]
-              ss[index] = s
-              setSteps(ss)
-            }}
             active={cursor === index}
           />
         ))}
       </div>
-      <IconButton
-        disabled={main}
-        onClick={() => {
-          alert("Worst Easter Egg Ever #weee")
-        }}
-      >
+      <IconButton onClick={onRemove} title="Remove Bar">
         <FontAwesomeIcon icon={["fad", "layer-minus"]} />
       </IconButton>
     </div>

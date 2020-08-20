@@ -5,15 +5,14 @@ import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
 import { H1, FormWrapper, Hr, NodeBody, H2, DataRow, DataKey } from "../elems/styled"
+import { Oscillator, AudioParamSetting } from "../../../audio"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
 import AudioParamDefaults from "../elems/AudioParamDefaults"
-import { AudioParamSetting } from "../elems/AudioParamForm"
 import {
   setOscillator,
   delOscillator,
   selectOscillator,
-  Oscillator,
 } from "../../../features/activeSound/activeSoundSlice"
 import AudioParamsView from "../elems/AudioParamsView"
 import HandleOutputs from "../elems/HandleOutputs"

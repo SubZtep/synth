@@ -1,8 +1,6 @@
 import Sound from "./Sound"
-import { SynthLocalStore } from "../components/side/Load"
 import { validateSound } from "./helpers"
-
-export const AUDIO_CONTEXT_DESTINATION = "destination"
+import { SynthStore } from "../audio"
 
 // @ts-ignore
 // eslint-disable-next-line no-native-reassign
@@ -17,13 +15,13 @@ export const restartAudioContext = async () => {
   return audioContext
 }
 
-export const loadSound = (name: string) => {
+export const loadSound = (name: string, ctx?: BaseAudioContext) => {
   const data = localStorage.getItem(name)
   if (!data) return null
-  const obj: SynthLocalStore = JSON.parse(data)
+  const obj: SynthStore = JSON.parse(data)
   if (!validateSound(obj)) return null
 
-  const s = new Sound(audioContext)
+  const s = new Sound(ctx ?? audioContext)
 
   obj.analysers.forEach(node => s.setAnalyser(node))
   obj.gains.forEach(node => s.setGain(node))

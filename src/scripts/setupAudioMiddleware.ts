@@ -1,5 +1,5 @@
 import { Middleware, PayloadAction, Dispatch, AnyAction } from "@reduxjs/toolkit"
-import { Analyser, Gain, BiquadFilter, Oscillator } from "../features/activeSound/activeSoundSlice"
+import { Gain, Analyser, BiquadFilter, Oscillator } from "../audio"
 import { sound } from "./audio"
 
 const setupAudioMiddleware: Middleware = () => (next: Dispatch<AnyAction>) => (

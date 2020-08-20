@@ -2,24 +2,7 @@
 import { jsx } from "@emotion/core"
 import { Fragment, ChangeEvent } from "react"
 import { AudioParams } from "../../../hooks/useAudioNodeDefs"
-
-const audioParamCalls = [
-  "setValueAtTime",
-  "linearRampToValueAtTime",
-  "exponentialRampToValueAtTime",
-  "setTargetAtTime",
-  "setValueCurveAtTime",
-] as const
-
-type Call = typeof audioParamCalls[number]
-type CallParams = (number | number[])[]
-
-export type AudioParamSetting = {
-  name: string
-  call: Call
-  /** `call` values in order */
-  values: CallParams
-}
+import { Call, CallParams, audioParamCalls } from "../../../audio.d"
 
 export type AudioParamUpdate = {
   name?: string

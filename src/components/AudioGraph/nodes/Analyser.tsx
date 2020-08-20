@@ -6,18 +6,15 @@ import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
 import { H1, DataRow, DataKey, NodeBody } from "../elems/styled"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
+import { Analyser, fftSizes, FFTSize } from "../../../audio.d"
 import {
   setAnalyser,
   delAnalyser,
   selectAnalyser,
-  Analyser,
 } from "../../../features/activeSound/activeSoundSlice"
 import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"
 import { WidgetRows } from "../../../styled"
-
-const fftSizes = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768] as const
-export type FFTSize = typeof fftSizes[number]
 
 export default ({ id, data }: NodeComponentProps) => {
   const basic: Analyser = useMemo(

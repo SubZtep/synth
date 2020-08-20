@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { AudioNodeType } from "../scripts/Sound"
+import { AudioNodeType } from "../audio.d"
 
 export type AudioParams = {
   [key: string]: {

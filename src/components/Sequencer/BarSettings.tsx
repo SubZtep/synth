@@ -1,9 +1,14 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
-
-const fontStyle = css`
-  font-size: 0.8rem !important;
-`
+import { useDispatch, useSelector } from "react-redux"
+import {
+  setBPM,
+  setNotesPerBeat,
+  setBeatsPerBar,
+  selectBPM,
+  selectNotesPerBeat,
+  selectBeatsPerBar,
+} from "../../features/sounds/soundsSlice"
 
 const selectStyle = css`
   font-size: 0.8rem !important;
@@ -11,54 +16,53 @@ const selectStyle = css`
   margin-left: 2px;
 `
 
-type Props = {
-  BPM: number
-  setBPM: (bpm: number) => void
-  beatsPerBar: number
-  setBeatsPerBar: (beatsPerBar: number) => void
-  notesPerBeat: number
-  setNotesPerBeat: (stepsPerBar: number) => void
-}
+export default () => {
+  const dispatch = useDispatch()
+  const BPM = useSelector(selectBPM)
+  const notesPerBeat = useSelector(selectNotesPerBeat)
+  const beatsPerBar = useSelector(selectBeatsPerBar)
 
-export default ({
-  BPM,
-  setBPM,
-  beatsPerBar,
-  setBeatsPerBar,
-  notesPerBeat,
-  setNotesPerBeat,
-}: Props) => {
   return (
-    <div css={fontStyle}>
-      <span css={{ marginLeft: 4 }}>
+    <div
+      css={css`
+        font-size: 0.8rem !important;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+      `}
+    >
+      <div>
         BPM:
         <input
-          css={[selectStyle, { width: 48 }]}
+          title="BPM"
+          css={[selectStyle, { width: 55 }]}
           type="number"
           defaultValue={BPM}
-          onChange={event => setBPM(event.currentTarget.valueAsNumber)}
+          onChange={event => dispatch(setBPM(event.currentTarget.valueAsNumber))}
         />
-      </span>
-      <span css={{ marginLeft: 4 }}>
+      </div>
+      <div>
         Beats:
         <input
-          css={[selectStyle, { width: 32 }]}
+          title="Beats"
+          css={[selectStyle, { width: 45 }]}
           type="number"
           min={1}
           defaultValue={beatsPerBar}
-          onChange={event => setBeatsPerBar(event.currentTarget.valueAsNumber)}
+          onChange={event => dispatch(setBeatsPerBar(event.currentTarget.valueAsNumber))}
         />
-      </span>
-      <span css={{ marginLeft: 4 }}>
+      </div>
+      <div>
         Notes/Beat:
         <input
-          css={[selectStyle, { width: 32 }]}
+          title="Notes/Beat"
+          css={[selectStyle, { width: 45 }]}
           type="number"
           min={1}
           defaultValue={notesPerBeat}
-          onChange={event => setNotesPerBeat(event.currentTarget.valueAsNumber)}
+          onChange={event => dispatch(setNotesPerBeat(event.currentTarget.valueAsNumber))}
         />
-      </span>
+      </div>
     </div>
   )
 }
