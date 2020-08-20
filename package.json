@@ -1,6 +1,6 @@
 {
   "name": "synth",
-  "version": "0.2.3-4",
+  "version": "0.2.4",
   "private": true,
   "homepage": "https://subztep.github.io/synth/",
   "dependencies": {
