@@ -63,7 +63,7 @@ export default () => {
   }
 
   const loadDefaultSave = async () => {
-    const filename = "Synth-1597604407952.json"
+    const filename = "Synth.json"
     try {
       const res = await fetch(`${window.location.pathname}/samples/${filename}`)
       if (res.ok) {
@@ -148,20 +148,20 @@ export default () => {
         Buffer.from(wavHeader(1, sampleRate, 32, buffer.length * 4 + 44)),
         buffer.getChannelData(0),
       ]),
-      "lol.wav"
+      `Synth-${new Date().getTime()}.json`
     )
   }
 
   return (
     <Widget title="File System">
       <div>
-        <IconButton onClick={() => fileInput.current!.click()}>
+        <IconButton onClick={() => fileInput.current!.click()} title="Load Synth File">
           <FontAwesomeIcon icon={["fad", "folder-open"]} fixedWidth size="lg" />
         </IconButton>
         <IconButton onClick={saveFile} title="Save To File">
           <FontAwesomeIcon icon={["fad", "save"]} fixedWidth size="lg" />
         </IconButton>
-        <IconButton onClick={renderMusic}>
+        <IconButton onClick={renderMusic} title="Export To Wav File">
           <FontAwesomeIcon icon={["fad", "file-music"]} fixedWidth size="lg" />
         </IconButton>
         <input type="file" ref={fileInput} css={{ display: "none" }} />

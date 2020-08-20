@@ -1,29 +1,4 @@
 {
-  "No Name #2": {
-    "destination": {
-      "id": "destination",
-      "connectIds": [],
-      "position": {
-        "x": 565,
-        "y": 322
-      }
-    },
-    "analysers": [],
-    "gains": [],
-    "biquadFilters": [],
-    "oscillators": [
-      {
-        "id": "1",
-        "connectIds": [],
-        "type": "sine",
-        "params": [],
-        "position": {
-          "x": 142.3823315991007,
-          "y": 166.32693807028193
-        }
-      }
-    ]
-  },
   "HiHat": {
     "destination": {
       "id": "destination",
@@ -37,41 +12,27 @@
     "gains": [
       {
         "id": "10",
-        "connectIds": [
-          "destination"
-        ],
+        "connectIds": ["destination"],
         "params": [
           {
             "name": "gain",
             "call": "setValueAtTime",
-            "values": [
-              0.00001,
-              0
-            ]
+            "values": [0.00001, 0]
           },
           {
             "name": "gain",
             "call": "exponentialRampToValueAtTime",
-            "values": [
-              1,
-              0.02
-            ]
+            "values": [1, 0.02]
           },
           {
             "name": "gain",
             "call": "exponentialRampToValueAtTime",
-            "values": [
-              0.3,
-              0.03
-            ]
+            "values": [0.3, 0.03]
           },
           {
             "name": "gain",
             "call": "exponentialRampToValueAtTime",
-            "values": [
-              0.00001,
-              0.3
-            ]
+            "values": [0.00001, 0.3]
           }
         ],
         "position": {
@@ -83,18 +44,13 @@
     "biquadFilters": [
       {
         "id": "2",
-        "connectIds": [
-          "3"
-        ],
+        "connectIds": ["3"],
         "type": "bandpass",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              10000,
-              0
-            ]
+            "values": [10000, 0]
           }
         ],
         "position": {
@@ -104,18 +60,13 @@
       },
       {
         "id": "3",
-        "connectIds": [
-          "10"
-        ],
+        "connectIds": ["10"],
         "type": "highpass",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              7000,
-              0
-            ]
+            "values": [7000, 0]
           }
         ],
         "position": {
@@ -127,26 +78,18 @@
     "oscillators": [
       {
         "id": "4",
-        "connectIds": [
-          "2"
-        ],
+        "connectIds": ["2"],
         "type": "square",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              80,
-              0
-            ]
+            "values": [80, 0]
           },
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              0,
-              0.2
-            ]
+            "values": [0, 0.2]
           }
         ],
         "position": {
@@ -156,26 +99,18 @@
       },
       {
         "id": "5",
-        "connectIds": [
-          "2"
-        ],
+        "connectIds": ["2"],
         "type": "square",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              120,
-              0
-            ]
+            "values": [120, 0]
           },
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              0,
-              0.2
-            ]
+            "values": [0, 0.2]
           }
         ],
         "position": {
@@ -185,26 +120,18 @@
       },
       {
         "id": "6",
-        "connectIds": [
-          "2"
-        ],
+        "connectIds": ["2"],
         "type": "square",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              166.4,
-              0
-            ]
+            "values": [166.4, 0]
           },
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              0,
-              0.2
-            ]
+            "values": [0, 0.2]
           }
         ],
         "position": {
@@ -214,26 +141,18 @@
       },
       {
         "id": "7",
-        "connectIds": [
-          "2"
-        ],
+        "connectIds": ["2"],
         "type": "square",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              217.2,
-              0
-            ]
+            "values": [217.2, 0]
           },
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              0,
-              0.2
-            ]
+            "values": [0, 0.2]
           }
         ],
         "position": {
@@ -243,26 +162,18 @@
       },
       {
         "id": "8",
-        "connectIds": [
-          "2"
-        ],
+        "connectIds": ["2"],
         "type": "square",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              271.6,
-              0
-            ]
+            "values": [271.6, 0]
           },
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              0,
-              0.2
-            ]
+            "values": [0, 0.2]
           }
         ],
         "position": {
@@ -272,26 +183,18 @@
       },
       {
         "id": "9",
-        "connectIds": [
-          "2"
-        ],
+        "connectIds": ["2"],
         "type": "square",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              328.4,
-              0
-            ]
+            "values": [328.4, 0]
           },
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              0,
-              0.2
-            ]
+            "values": [0, 0.2]
           }
         ],
         "position": {
@@ -350,16 +253,6 @@
       }
     }
   },
-  "No Name": {
-    "destination": {
-      "id": "destination",
-      "connectIds": []
-    },
-    "analysers": [],
-    "gains": [],
-    "biquadFilters": [],
-    "oscillators": []
-  },
   "Kick": {
     "destination": {
       "id": "destination",
@@ -372,9 +265,7 @@
     "analysers": [
       {
         "id": "3",
-        "connectIds": [
-          "destination"
-        ],
+        "connectIds": ["destination"],
         "fftSize": 2048,
         "color": "#962813",
         "lineWidth": 4,
@@ -387,25 +278,17 @@
     "gains": [
       {
         "id": "2",
-        "connectIds": [
-          "3"
-        ],
+        "connectIds": ["3"],
         "params": [
           {
             "name": "gain",
             "call": "setValueAtTime",
-            "values": [
-              1,
-              0
-            ]
+            "values": [1, 0]
           },
           {
             "name": "gain",
             "call": "exponentialRampToValueAtTime",
-            "values": [
-              0.01,
-              0.5
-            ]
+            "values": [0.01, 0.5]
           }
         ],
         "position": {
@@ -418,34 +301,23 @@
     "oscillators": [
       {
         "id": "1",
-        "connectIds": [
-          "2"
-        ],
+        "connectIds": ["2"],
         "type": "sine",
         "params": [
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              150,
-              0
-            ]
+            "values": [150, 0]
           },
           {
             "name": "frequency",
             "call": "exponentialRampToValueAtTime",
-            "values": [
-              0.01,
-              0.5
-            ]
+            "values": [0.01, 0.5]
           },
           {
             "name": "frequency",
             "call": "setValueAtTime",
-            "values": [
-              0,
-              0.5
-            ]
+            "values": [0, 0.5]
           }
         ],
         "position": {
