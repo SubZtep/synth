@@ -110,48 +110,42 @@ export default () => {
 
   const renderMusic = async () => {
     let i: number
+    let j: number
     let bar: Bar
     let barId: string
     let step: StepValue
     let sound: Sound | null
-
+    let repeat = 1
     let lengthOfStep = stepsPerBar / BPM
+    // let sampleRate = 44_100
+    let sampleRate = audioContext.sampleRate
+
     const offlineCtx = new OfflineAudioContext(
       1,
-      ((60 * stepsPerBar) / BPM) * audioContext.sampleRate,
-      audioContext.sampleRate
+      lengthOfStep * stepsPerBar * sampleRate * repeat,
+      sampleRate
     )
     // const offlineCtx = audioContext
 
     for (barId in bars) {
       bar = bars[barId]
-      for (i = 0; i < stepsPerBar; i++) {
-        step = bar.steps[i]
-        if (step !== null) {
-          sound = loadSound(bar.soundName, offlineCtx)
-          if (sound !== null) {
-            sound.play(step, lengthOfStep * i)
+      for (j = 0; j < repeat; j++)
+        for (i = 0; i < stepsPerBar; i++) {
+          step = bar.steps[i]
+          if (step !== null) {
+            sound = loadSound(bar.soundName, offlineCtx)
+            if (sound !== null) {
+              sound.play(step, lengthOfStep * i + j * stepsPerBar * lengthOfStep)
+            }
           }
         }
-      }
     }
-    // for (barId in bars) {
-    //   bar = bars[barId]
-    //   sound = loadSound(bar.soundName, offlineCtx)
-    //   if (sound !== null) {
-    //     for (i = 0; i < stepsPerBar; i++) {
-    //       step = bar.steps[i]
-    //       if (step !== null) {
-    //         sound.play(step, lengthOfStep * i)
-    //       }
-    //     }
-    //   }
-    // }
 
     const buffer = await offlineCtx.startRendering()
     saveBlob(
       new Blob([
-        Buffer.from(wavHeader(1, audioContext.sampleRate, 32, buffer.length + 44)),
+        // Sample size is fix 32-bit https://www.w3.org/TR/webaudio/#audio-sample-format
+        Buffer.from(wavHeader(1, sampleRate, 32, buffer.length * 4 + 44)),
         buffer.getChannelData(0),
       ]),
       "lol.wav"
