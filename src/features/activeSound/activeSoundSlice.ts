@@ -1,38 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { AudioParamSetting } from "../../components/AudioGraph/elems/AudioParamForm"
-import Analyser, { FFTSize } from "../../components/AudioGraph/nodes/Analyser"
+import { Analyser, Gain, BiquadFilter, Oscillator } from "../../audio"
 import { RootState } from "../../store"
-import { XYPosition } from "react-flow-renderer"
 
 type Connect = {
   source: string
   target: string
-}
-
-export type BaseNode = {
-  id: string
-  connectIds: string[]
-  position?: XYPosition
-}
-
-export interface Analyser extends BaseNode {
-  fftSize: FFTSize
-  color: string
-  lineWidth: number
-}
-
-export interface Gain extends BaseNode {
-  params: AudioParamSetting[]
-}
-
-export interface BiquadFilter extends BaseNode {
-  type: BiquadFilterType
-  params: AudioParamSetting[]
-}
-
-export interface Oscillator extends BaseNode {
-  type: OscillatorType
-  params: AudioParamSetting[]
 }
 
 type ActiveSound = {
@@ -78,10 +50,14 @@ const activeSoundSlice = createSlice({
       }
     },
     emptyNodes: state => {
-      state.analysers = []
-      state.gains = []
-      state.biquadFilters = []
-      state.oscillators = []
+      // state.analysers = []
+      // state.gains = []
+      // state.biquadFilters = []
+      // state.oscillators = []
+      state.analysers.length = 0
+      state.gains.length = 0
+      state.biquadFilters.length = 0
+      state.oscillators.length = 0
     },
 
     setAnalyser: (state: ActiveSound, { payload }: PayloadAction<Analyser>) => {

@@ -16,6 +16,7 @@ import ReactFlow, {
 import { jsx, Global } from "@emotion/core"
 import { useSelector, useDispatch } from "react-redux"
 import { useState, useRef, useEffect, Fragment } from "react"
+import { globalGraph, globalGraphEditMode, globalGraphDraggableMode } from "./styled"
 import { addConnect, delConnect } from "../../features/activeSound/activeSoundSlice"
 import {
   selectEditMode,
@@ -24,9 +25,8 @@ import {
   toggleDelSelected,
   setLoadElements,
 } from "../../features/ux/uxSlice"
-import { globalGraph, globalGraphEditMode, globalGraphDraggableMode } from "./styled"
-import { AUDIO_CONTEXT_DESTINATION } from "../../scripts/audio"
 import { getNextId, checkSize } from "../../scripts/helpers"
+import { AUDIO_CONTEXT_DESTINATION } from "../../audio.d"
 import { newNodePosition } from "../../scripts/utils"
 import BiquadFilter from "./nodes/BiquadFilter"
 import Oscillator from "./nodes/Oscillator"

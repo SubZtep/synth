@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { validateSound } from "../../scripts/helpers"
+import { Bars, StepValue, Sounds } from "../../audio.d"
 import { RootState } from "../../store"
 
 const retreiveSoundNames = () =>
@@ -13,25 +14,6 @@ const retreiveSoundNames = () =>
     }
     return validateSound(obj)
   })
-
-export type StepValue = number | null
-
-export type Bar = {
-  soundName: string
-  steps: StepValue[]
-}
-
-export type Bars = {
-  [barId: string]: Bar
-}
-
-export type Sounds = {
-  BPM: number
-  notesPerBeat: number
-  beatsPerBar: number
-  bars: Bars
-  soundNames: string[]
-}
 
 const local: Partial<Sounds> =
   localStorage.getItem("sequencer") !== null ? JSON.parse(localStorage.getItem("sequencer")!) : {}

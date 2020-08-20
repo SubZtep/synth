@@ -21,6 +21,8 @@ import {
 import { loadSound } from "../../scripts/audio"
 import { wavHeader } from "../../scripts/wav"
 import { audioContext } from "../../scripts/audio"
+import { StepValue, Bar } from "../../audio"
+import Sound from "../../scripts/Sound"
 
 export default () => {
   const fileInput = useRef<HTMLInputElement>(null)
@@ -107,32 +109,51 @@ export default () => {
   }
 
   const renderMusic = async () => {
+    let i: number
+    let bar: Bar
+    let barId: string
+    let step: StepValue
+    let sound: Sound | null
+
+    let lengthOfStep = stepsPerBar / BPM
     const offlineCtx = new OfflineAudioContext(
-      2,
-      audioContext.sampleRate * 30,
+      1,
+      ((60 * stepsPerBar) / BPM) * audioContext.sampleRate,
       audioContext.sampleRate
     )
     // const offlineCtx = audioContext
 
-    // const stepsPerBar = 16
-    const bps = BPM / 60
-    const stepsPerBeat = stepsPerBar / 2 // / 4
-    let lengthOfStep = bps / stepsPerBeat
-
-    Object.values(bars).forEach(bar => {
-      const sound = loadSound(bar.soundName, offlineCtx)
-      if (sound !== null) {
-        bar.steps.forEach((step, index) => {
-          if (step !== null) {
-            sound.play(step, lengthOfStep * (index + 1))
+    for (barId in bars) {
+      bar = bars[barId]
+      for (i = 0; i < stepsPerBar; i++) {
+        step = bar.steps[i]
+        if (step !== null) {
+          sound = loadSound(bar.soundName, offlineCtx)
+          if (sound !== null) {
+            sound.play(step, lengthOfStep * i)
           }
-        })
+        }
       }
-    })
+    }
+    // for (barId in bars) {
+    //   bar = bars[barId]
+    //   sound = loadSound(bar.soundName, offlineCtx)
+    //   if (sound !== null) {
+    //     for (i = 0; i < stepsPerBar; i++) {
+    //       step = bar.steps[i]
+    //       if (step !== null) {
+    //         sound.play(step, lengthOfStep * i)
+    //       }
+    //     }
+    //   }
+    // }
 
     const buffer = await offlineCtx.startRendering()
     saveBlob(
-      new Blob([Buffer.from(wavHeader(2, 44_100, 32, buffer.length)), buffer.getChannelData(0)]),
+      new Blob([
+        Buffer.from(wavHeader(1, audioContext.sampleRate, 32, buffer.length + 44)),
+        buffer.getChannelData(0),
+      ]),
       "lol.wav"
     )
   }

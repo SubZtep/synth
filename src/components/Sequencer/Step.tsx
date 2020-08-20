@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core"
 import { useDispatch } from "react-redux"
-import { setStep, StepValue } from "../../features/sounds/soundsSlice"
+import { setStep } from "../../features/sounds/soundsSlice"
+import { StepValue } from "../../audio.d"
 
 const beatStyle = css`
   padding: 1px;

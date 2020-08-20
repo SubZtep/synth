@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core"
 import { Fragment } from "react"
-import AudioParamForm, { AudioParamSetting, AudioParamUpdate } from "./AudioParamForm"
-import { AudioParams } from "../../../hooks/useAudioNodeDefs"
-import { IconButton } from "../../../styled"
+import { jsx } from "@emotion/core"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import AudioParamForm, { AudioParamUpdate } from "./AudioParamForm"
+import { AudioParams } from "../../../hooks/useAudioNodeDefs"
+import { AudioParamSetting } from "../../../audio"
+import { IconButton } from "../../../styled"
 
 type Props = {
   audioParams: AudioParams

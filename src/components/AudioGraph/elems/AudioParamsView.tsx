@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core"
 import { useEffect, useState, Fragment } from "react"
-import { AudioParamSetting } from "./AudioParamForm"
 import { DataRow, DataKey, DataNote, H2 } from "./styled"
+import { AudioParamSetting } from "../../../audio"
 
 /** Processed AudioParamSetting for display on coordinate system */
 type CoordParam = {

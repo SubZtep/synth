@@ -4,16 +4,15 @@ import { useSelector, useDispatch } from "react-redux"
 import { NodeComponentProps } from "react-flow-renderer"
 import { useMemo, useEffect, Fragment, ChangeEvent } from "react"
 import { FormWrapper, H1, H2, NodeBody, DataRow, DataKey, Hr } from "../elems/styled"
+import { BiquadFilter, AudioParamSetting } from "../../../audio"
 import useAudioNodeDefs from "../../../hooks/useAudioNodeDefs"
 import { selectEditMode } from "../../../features/ux/uxSlice"
+import AudioParamDefaults from "../elems/AudioParamDefaults"
 import {
   setBiquadFilter,
   delBiquadFilter,
   selectBiquadFilter,
-  BiquadFilter,
 } from "../../../features/activeSound/activeSoundSlice"
-import AudioParamDefaults from "../elems/AudioParamDefaults"
-import { AudioParamSetting } from "../elems/AudioParamForm"
 import AudioParamsView from "../elems/AudioParamsView"
 import HandleOutputs from "../elems/HandleOutputs"
 import HandleInputs from "../elems/HandleInputs"

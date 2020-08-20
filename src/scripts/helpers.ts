@@ -1,5 +1,5 @@
 import { Elements, isNode } from "react-flow-renderer"
-import { AUDIO_CONTEXT_DESTINATION } from "./audio"
+import { AUDIO_CONTEXT_DESTINATION } from "../audio.d"
 
 export const checkSize = (prev: number, next: number) => prev === next
 

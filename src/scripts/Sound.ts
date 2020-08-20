@@ -1,14 +1,13 @@
-import { AudioParamSetting } from "../components/AudioGraph/elems/AudioParamForm"
 import {
-  Analyser,
+  AudioNodeType,
+  AudioParamSetting,
+  BaseNode,
+  AUDIO_CONTEXT_DESTINATION,
   Gain,
+  Analyser,
   BiquadFilter,
   Oscillator,
-  BaseNode,
-} from "../features/activeSound/activeSoundSlice"
-import { AUDIO_CONTEXT_DESTINATION } from "./audio"
-
-export type AudioNodeType = "AnalyserNode" | "BiquadFilterNode" | "GainNode" | "OscillatorNode"
+} from "../audio.d"
 
 type SoundNode = {
   id: string
@@ -23,7 +22,6 @@ type SoundNode = {
 const soundNodeFactory = (node: BaseNode, type: AudioNodeType): SoundNode => {
   return {
     id: node.id,
-    // connectIds: node.connectIds,
     connectIds: [],
     type,
     attrs: {},
@@ -33,7 +31,6 @@ const soundNodeFactory = (node: BaseNode, type: AudioNodeType): SoundNode => {
 
 export default class {
   audioCtx: BaseAudioContext | null = null
-  offlineCtx = new OfflineAudioContext(2, 44100 * 40, 44100)
   nodes = new Map<string, SoundNode>()
 
   constructor(audioContext: BaseAudioContext) {

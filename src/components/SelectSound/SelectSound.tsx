@@ -4,7 +4,9 @@ import { toast } from "react-toastify"
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { XYPosition, Elements, useStoreState, Node } from "react-flow-renderer"
+import { Elements, useStoreState, Node } from "react-flow-renderer"
+import { BaseNode, SynthStore } from "../../audio"
+import { resetSoundsState } from "../../features/sounds/soundsSlice"
 import { setLoadElements } from "../../features/ux/uxSlice"
 import LocalSoundSelect from "../misc/LocalSoundSelect"
 import { defaultNode } from "../AudioGraph/AudioGraph"
@@ -12,34 +14,16 @@ import { validateSound } from "../../scripts/helpers"
 import {
   selectName,
   setName,
-  Analyser,
-  Gain,
-  BiquadFilter,
-  Oscillator,
   emptyNodes,
-  BaseNode,
   setAnalyser,
   setGain,
   setBiquadFilter,
   setOscillator,
   selectAudioNodes,
 } from "../../features/activeSound/activeSoundSlice"
-import { Sounds, resetSoundsState } from "../../features/sounds/soundsSlice"
 import { sound } from "../../scripts/audio"
 import { IconButton } from "../../styled"
 import Widget from "../misc/Widget"
-
-export type SynthLocalStore = {
-  name: string
-  destination: {
-    position: XYPosition
-  }
-  analysers: Analyser[]
-  gains: Gain[]
-  biquadFilters: BiquadFilter[]
-  oscillators: Oscillator[]
-  sequencer?: Sounds
-}
 
 export default () => {
   const dispatch = useDispatch()
@@ -78,7 +62,7 @@ export default () => {
     if (data) {
       sound.destroyAudioNodes()
 
-      const obj: SynthLocalStore = JSON.parse(data)
+      const obj: SynthStore = JSON.parse(data)
       if (validateSound(obj)) {
         dispatch(setName(name))
         dispatch(emptyNodes())
